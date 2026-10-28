@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
+/* โทนสีตาม Figma "ม่านทอง Pro" */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #faf8f4;
+  --foreground: #1c1410;
+  --card: #ffffff;
+  --primary: #b5831f;
+  --primary-foreground: #ffffff;
+  --accent: #d4a843;
+  --muted: #ede8e1;
+  --muted-foreground: #7a6a58;
+  --border: #a0825033;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --font-sans: var(--font-thai);
+  --font-serif: var(--font-display);
+  --font-mono: var(--font-mono-dm);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-thai), sans-serif;
 }
