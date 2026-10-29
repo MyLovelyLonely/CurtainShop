@@ -105,3 +105,11 @@ export const splitList = (s: string) =>
 
 export const formatPrice = (n: number) =>
   n.toLocaleString("th-TH", { maximumFractionDigits: 2 });
+
+/**
+ * next/image ย่อรูปได้เฉพาะ host ที่ตั้งไว้ใน next.config (Supabase Storage / R2) ถ้าเป็น host อื่น
+ * (เช่น URL ในข้อมูลตั้งต้น) จะ throw ทั้งหน้า → ใส่ unoptimized={!canOptimize(src)} ให้แสดงรูปตรง ๆ แทน
+ */
+export const canOptimize = (src: string) =>
+  /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\//.test(src) ||
+  /^https:\/\/[^/]+\.r2\.dev\//.test(src);

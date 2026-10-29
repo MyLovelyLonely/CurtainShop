@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { api } from "@/lib/fetcher";
 import type { Category } from "@/types/db";
-import { LIGHT_FILTERS, formatPrice, type CatalogView, type LightFilter, type ProductView } from "@/types/catalog";
+import { LIGHT_FILTERS, canOptimize, formatPrice, type CatalogView, type LightFilter, type ProductView } from "@/types/catalog";
 
 export default function CatalogBrowser() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -170,7 +170,7 @@ function ProductCard({ p }: { p: ProductView }) {
     <Link href={`/catalog/${p.product_id}`} className="card overflow-hidden transition active:scale-[0.98]">
       <div className="relative aspect-square bg-stone-100">
         {p.image_url ? (
-          <Image src={p.image_url} alt={p.name} fill sizes="(max-width: 448px) 50vw, 224px" className="object-cover" />
+          <Image src={p.image_url} alt={p.name} fill unoptimized={!canOptimize(p.image_url)} sizes="(max-width: 448px) 50vw, 224px" className="object-cover" />
         ) : (
           <div className="flex size-full items-center justify-center text-xs text-stone-400">ไม่มีรูป</div>
         )}

@@ -4,6 +4,7 @@ import { HttpError, check } from "@/lib/api";
 import { db } from "@/lib/db";
 import { removeFiles, uploadFile } from "@/lib/storage";
 import { ingestCatalog, reembedProducts } from "@/lib/ai-client";
+import { TEST_CATALOG, TEST_PRODUCTS, findTestProduct } from "@/services/test-products";
 import type { Catalog, Category, Product } from "@/types/db";
 import {
   LIGHT_FILTERS,
@@ -151,6 +152,14 @@ export async function listCategories(): Promise<Category[]> {
 }
 
 export async function listCatalogs(opts: { categoryId?: number; visibleOnly: boolean }): Promise<CatalogView[]> {
+  const catalogs = await listDbCatalogs(opts);
+  // ชั่วคราวช่วงทดสอบจำลอง: แคตตาล็อกของสินค้าทดสอบ (ฝั่งลูกค้าเท่านั้น)
+  if (opts.visibleOnly && (!opts.categoryId || opts.categoryId === TEST_CATALOG.category_id))
+    catalogs.push({ ...TEST_CATALOG, category: null, product_count: TEST_PRODUCTS.length });
+  return catalogs;
+}
+
+async function listDbCatalogs(opts: { categoryId?: number; visibleOnly: boolean }): Promise<CatalogView[]> {
   let q = db().from("catalog").select("*").order("catalog_id", { ascending: false });
   if (opts.categoryId) q = q.eq("category_id", opts.categoryId);
   if (opts.visibleOnly) q = q.eq("is_visible", true);
@@ -183,9 +192,25 @@ export async function listProducts(opts: {
   categoryId?: number;
   visibleOnly: boolean;
 }): Promise<ProductView[]> {
+  // ชั่วคราวช่วงทดสอบจำลอง: ต่อท้ายด้วยสินค้าทดสอบที่ไม่อยู่ใน DB (ฝั่งลูกค้าเท่านั้น)
+  const test =
+    opts.visibleOnly &&
+    (!opts.catalogId || opts.catalogId === TEST_CATALOG.catalog_id) &&
+    (!opts.categoryId || opts.categoryId === TEST_CATALOG.category_id)
+      ? TEST_PRODUCTS
+      : [];
+  if (opts.catalogId === TEST_CATALOG.catalog_id) return test;
+  return [...(await listDbProducts(opts)), ...test];
+}
+
+async function listDbProducts(opts: {
+  catalogId?: number;
+  categoryId?: number;
+  visibleOnly: boolean;
+}): Promise<ProductView[]> {
   let catalogIds: number[] | undefined;
   if (opts.visibleOnly || opts.categoryId) {
-    catalogIds = (await listCatalogs({ categoryId: opts.categoryId, visibleOnly: opts.visibleOnly })).map(
+    catalogIds = (await listDbCatalogs({ categoryId: opts.categoryId, visibleOnly: opts.visibleOnly })).map(
       (c) => c.catalog_id,
     );
     if (opts.catalogId) catalogIds = catalogIds.filter((id) => id === opts.catalogId);
@@ -199,6 +224,8 @@ export async function listProducts(opts: {
 }
 
 export async function getProduct(id: number, visibleOnly: boolean): Promise<ProductView & { catalog: Catalog }> {
+  const test = visibleOnly ? findTestProduct(id) : undefined;
+  if (test) return { ...test, catalog: TEST_CATALOG };
   const p: Product | null = check(await db().from("product").select("*").eq("product_id", id).maybeSingle());
   if (!p) throw new HttpError(404, "ไม่พบสินค้า");
   const catalog = await getCatalog(p.catalog_id);

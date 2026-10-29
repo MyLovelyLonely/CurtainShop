@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/fetcher";
 import type { Catalog } from "@/types/db";
-import { LIGHT_FILTERS, formatPrice, type ProductView } from "@/types/catalog";
+import { LIGHT_FILTERS, canOptimize, formatPrice, type ProductView } from "@/types/catalog";
 
 export default function ProductDetail() {
   const { id } = useParams<{ id: string }>();
@@ -50,7 +50,7 @@ export default function ProductDetail() {
     <div className="flex flex-1 flex-col pb-24">
       <div className="relative aspect-square bg-stone-100">
         {d.images[active] ? (
-          <Image src={d.images[active]} alt={p.name} fill priority sizes="448px" className="object-cover" />
+          <Image src={d.images[active]} alt={p.name} fill priority unoptimized={!canOptimize(d.images[active])} sizes="448px" className="object-cover" />
         ) : (
           <div className="flex size-full items-center justify-center text-stone-400">ไม่มีรูป</div>
         )}
@@ -72,7 +72,7 @@ export default function ProductDetail() {
                 i === active ? "border-brand" : "border-transparent"
               }`}
             >
-              <Image src={src} alt="" fill sizes="56px" className="object-cover" />
+              <Image src={src} alt="" fill unoptimized={!canOptimize(src)} sizes="56px" className="object-cover" />
             </button>
           ))}
         </div>

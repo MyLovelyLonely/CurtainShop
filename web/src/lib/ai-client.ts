@@ -12,7 +12,11 @@ export async function aiPost(path: string, body: unknown, timeoutMs = 15_000): P
       body: JSON.stringify(body),
       signal: AbortSignal.timeout(timeoutMs),
     });
-    if (!res.ok) return { ok: false, error: `AI server ตอบ ${res.status}` };
+    if (!res.ok) {
+      // FastAPI ส่งเหตุผลมาใน detail (เช่น 400 จาก HTTPException)
+      const detail = await res.json().then((b) => b?.detail, () => null);
+      return { ok: false, error: `AI server ตอบ ${res.status}${typeof detail === "string" ? `: ${detail}` : ""}` };
+    }
     return { ok: true, data: await res.json() };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "ติดต่อ AI server ไม่ได้" };
@@ -43,3 +47,19 @@ export async function extractCatalog(file: File): Promise<AiResult> {
 /** สร้าง embedding ใหม่ของสินค้าที่เพิ่ม/แก้ */
 export const reembedProducts = (productIds: number[]) =>
   aiPost("/ai/catalog/reembed", { product_ids: productIds });
+
+/** YOLOv11 หากรอบหน้าต่างในรูปห้อง (ครั้งแรกต้องโหลดโมเดล จึงเผื่อเวลา) */
+export const detectWindows = (imageUrl: string) => aiPost("/ai/window/detect", { image_url: imageUrl }, 120_000);
+
+/** SAM2 + วาดม่านจากลายผ้า + Stable Diffusion/IP-Adapter → รูป JPEG base64 */
+export const renderCurtain = (body: {
+  image_url: string;
+  swatch_url: string;
+  style: string;
+  regions: { quad: [number, number][]; floor: [number, number]; rail: [number, number] }[];
+  open_ratio: number;
+  length: string;
+  drop: number;
+  light_filter: string | null;
+  repeat_cm: number | null;
+}) => aiPost("/ai/simulate/render", body, 5 * 60_000);
