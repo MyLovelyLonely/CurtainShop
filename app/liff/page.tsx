@@ -1,7 +1,7 @@
 "use client";
 // หน้าหลักลูกค้า: ทักทาย + ทางลัดไปเมนูต่าง ๆ + แจ้งยอดที่ต้องชำระ
 import Link from "next/link";
-import { BookOpen, ChevronRight, FileText, Wallet } from "lucide-react";
+import { BookOpen, ChevronRight, ClipboardList, FileText, Wallet } from "lucide-react";
 import { baht } from "@/components/admin/ui";
 import { useLiffData } from "@/components/liff/LiffProvider";
 import { Panel } from "@/components/liff/ui";
@@ -35,6 +35,7 @@ export default function LiffHome() {
         {[
           { href: "/liff/catalog", icon: BookOpen, title: "แคตตาล็อกผ้าม่าน", sub: "ค้นหาลายผ้า และประเมินราคา" },
           { href: "/liff/documents", icon: FileText, title: "เอกสารของฉัน", sub: "ใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ" },
+          { href: "/liff/jobs", icon: ClipboardList, title: "สถานะงาน", sub: "ติดตามขั้นตอนการติดตั้ง" },
           { href: "/liff/payments", icon: Wallet, title: "ชำระเงิน", sub: "ชำระด้วย QR พร้อมเพย์ หรือเงินสด" },
         ].map(({ href, icon: Icon, title, sub }) => (
           <Link key={href} href={href}>

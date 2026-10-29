@@ -41,7 +41,7 @@ export default async function NewQuotation({ searchParams }: { searchParams: Pro
         </div>
       </Card>
       <QuotationForm
-        estimateId={estimate.estimate_id}
+        mode={{ kind: "create", estimateId: estimate.estimate_id }}
         initialItems={items.rows}
         roomCount={Number(estimate.room_count) || 1}
         admins={admins.rows}

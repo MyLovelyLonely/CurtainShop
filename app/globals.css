@@ -33,3 +33,9 @@ body {
   color: var(--foreground);
   font-family: var(--font-thai), sans-serif;
 }
+
+/* พิมพ์เอกสาร (ใบสัญญาซื้อขาย) ขนาด A4 พื้นขาว */
+@page { size: A4; margin: 15mm; }
+@media print {
+  body { background: #fff; }
+}

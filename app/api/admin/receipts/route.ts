@@ -71,6 +71,11 @@ export async function POST(req: NextRequest) {
     );
 
     // 2. ใบเสร็จ พร้อมบันทึกรับเงิน (เงินสด = 1, QR = โอนเงิน 5)
+    const isCash = payment.pay_method === "cash";
+    if (!isCash && !process.env.FLOWACCOUNT_BANK_ACCOUNT_ID) {
+      await client.query("rollback");
+      return NextResponse.json({ error: "ยังไม่ได้ตั้งค่า FLOWACCOUNT_BANK_ACCOUNT_ID (บัญชีรับโอนของร้าน)" }, { status: 500 });
+    }
     const receiptFa = await flowAccount("POST", "/upgrade/receipts/with-payment", {
       ...common,
       creditType: 3,
@@ -81,11 +86,15 @@ export async function POST(req: NextRequest) {
           referenceDocumentType: FA_DOC_TYPE.taxInvoice,
         },
       ], // required
-      paymentMethod: payment.pay_method === "cash" ? 1 : 5,
-      // โอนเงินต้องระบุบัญชีธนาคารของร้านใน FlowAccount (GET /bank-channel/bank-accounts)
-      ...(payment.pay_method === "cash" ? {} : { bankAccountId: Number(process.env.FLOWACCOUNT_BANK_ACCOUNT_ID) }),
+      documentPaymentStructureType: isCash ? "SimpleDocumentWithPaymentReceivingCash" : "SimpleDocumentWithPaymentReceivingTransfer",
+      paymentMethod: isCash ? 1 : 5,
+      // โอนเงินต้องระบุบัญชีธนาคารของร้านใน FlowAccount (GET /bank-accounts)
+      ...(isCash ? {} : { bankAccountId: Number(process.env.FLOWACCOUNT_BANK_ACCOUNT_ID) }),
       paymentDate: paidDate, // required
       collected: amount, // required
+      paymentRemarks: isCash ? "รับชำระเงินสด" : `PromptPay ผ่าน Stripe ${payment.qr_ref ?? ""}`.trim(),
+      remainingCollectedType: 51,
+      remainingCollected: 0,
     });
     const receiptDoc = faDoc(receiptFa);
     if (!receiptDoc) {

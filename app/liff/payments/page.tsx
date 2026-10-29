@@ -4,10 +4,11 @@ import Link from "next/link";
 import { CalendarDays, ChevronRight, ReceiptText } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
 import { useLiffData } from "@/components/liff/LiffProvider";
+import { DocButton } from "@/components/liff/DocButton";
 import { invoiceLabel, PageTitle, Panel } from "@/components/liff/ui";
 
 type ToPay = { invoice_id: number; type: string; amount: string; due_date: string; flowaccount_serial: string | null; qt_serial: string | null; project_name: string | null };
-type History = { payment_id: number; type: string; amount: string; pay_method: string; paid_at: string; inv_serial: string | null; receipt_serial: string | null; tax_serial: string | null };
+type History = { payment_id: number; type: string; amount: string; pay_method: string; paid_at: string; inv_serial: string | null; receipt_serial: string | null; tax_serial: string | null; receipt_record_id: string | null };
 
 export default function LiffPayments() {
   const { data, error } = useLiffData<{ to_pay: ToPay[]; history: History[] }>("/api/liff/invoices");
@@ -62,6 +63,8 @@ export default function LiffPayments() {
                   {p.receipt_serial ? `ใบเสร็จ ${p.receipt_serial}` : "ร้านกำลังออกใบเสร็จ"}
                   {p.tax_serial && ` · ใบกำกับภาษี ${p.tax_serial}`}
                 </p>
+                {/* Use Case 10 ข้อ 4: ดาวน์โหลดหลักฐานการชำระเงิน */}
+                <DocButton docType="receipts" recordId={p.receipt_record_id} label="ดูใบเสร็จ" />
               </Panel>
             ))}
           </section>

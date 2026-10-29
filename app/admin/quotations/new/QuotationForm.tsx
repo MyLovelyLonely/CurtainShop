@@ -1,5 +1,6 @@
 "use client";
-// ฟอร์มใบเสนอราคา (Use Case 12): แอดมินแก้ได้แค่ กว้าง / สูง / จำนวนหน้าต่างต่อห้อง แล้ว POST /api/admin/quotations
+// ฟอร์มใบเสนอราคา (Use Case 12): แอดมินแก้ได้แค่ กว้าง / สูง / จำนวนหน้าต่างต่อห้อง
+//   สร้าง = POST /api/admin/quotations, แก้ไข (Use Case 15 Alternate Flow) = PUT /api/admin/quotations/{id}
 // สินค้า ราคาต่อหน่วย จำนวนห้อง และมัดจำ มาจากใบประเมินราคาและสินค้า แก้ไม่ได้
 // แต่ละสินค้าเป็นการ์ดของตัวเอง ช่องกรอกใหญ่ มีป้ายบอกชัด และแสดงวิธีคิดเงินเป็นประโยค
 import { useRouter } from "next/navigation";
@@ -7,6 +8,7 @@ import { useState } from "react";
 import { baht, Card } from "@/components/admin/ui";
 import { isAreaUnit, lineArea, lineTotal, missingSize } from "@/lib/pricing";
 
+// item_id = price_estimate_item.item_id (สร้าง) หรือ quotation_item_id (แก้ไข)
 type Item = {
   item_id: number; name: string; price_unit: string; unit_price: number;
   width: number | null; height: number | null; quantity: number; // quantity = หน้าต่างต่อห้อง
@@ -16,13 +18,16 @@ const VAT_RATE = 0.07;
 const DEPOSIT_RATE = 0.5;
 const r2 = (n: number) => Math.round(n * 100) / 100;
 
-export function QuotationForm({ estimateId, initialItems, roomCount, admins }: {
-  estimateId: number; initialItems: Item[]; roomCount: number; admins: { admin_id: number; full_name: string }[];
+type Mode = { kind: "create"; estimateId: number } | { kind: "edit"; quotationId: number; projectName: string };
+
+export function QuotationForm({ mode, initialItems, roomCount, admins = [] }: {
+  mode: Mode; initialItems: Item[]; roomCount: number; admins?: { admin_id: number; full_name: string }[];
 }) {
   const router = useRouter();
+  const editing = mode.kind === "edit";
   const [items, setItems] = useState<Item[]>(initialItems);
   const [adminId, setAdminId] = useState(admins[0]?.admin_id ?? 0);
-  const [projectName, setProjectName] = useState("");
+  const [projectName, setProjectName] = useState(editing ? mode.projectName : "");
   const [wantTaxInvoice, setWantTaxInvoice] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -40,21 +45,32 @@ export function QuotationForm({ estimateId, initialItems, roomCount, admins }: {
 
   async function save() {
     setSaving(true);
-    const res = await fetch("/api/admin/quotations", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        estimate_id: estimateId,
-        admin_id: adminId,
-        items: items.map(({ item_id, width, height, quantity }) => ({ item_id, width, height, quantity })),
-        project_name: projectName || undefined,
-        want_tax_invoice: wantTaxInvoice,
-      }),
-    });
+    const sizes = items.map(({ item_id, width, height, quantity }) => ({ width, height, quantity, item_id }));
+    const res = mode.kind === "create"
+      ? await fetch("/api/admin/quotations", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            estimate_id: mode.estimateId,
+            admin_id: adminId,
+            items: sizes,
+            project_name: projectName || undefined,
+            want_tax_invoice: wantTaxInvoice,
+          }),
+        })
+      : await fetch(`/api/admin/quotations/${mode.quotationId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            items: sizes.map(({ item_id, ...s }) => ({ ...s, quotation_item_id: item_id })),
+            project_name: projectName,
+          }),
+        });
     const data = await res.json().catch(() => ({}));
     setSaving(false);
     if (!res.ok) return alert(data.error ?? "บันทึกไม่สำเร็จ");
     router.push(`/admin/quotations/${data.quotation.quotation_id}`);
+    router.refresh();
   }
 
   const input = "w-full h-12 border-2 border-border rounded-xl px-3 text-lg font-mono bg-white focus:outline-none focus:border-primary";
@@ -125,20 +141,20 @@ export function QuotationForm({ estimateId, initialItems, roomCount, admins }: {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card title="ข้อมูลเอกสาร" size="lg">
           <div className="px-5 pb-5 space-y-4 text-base">
-            <label className="block">
+            {!editing && <label className="block">
               <span className="font-medium">ผู้จัดทำ</span>
               <select className={`${input} font-sans`} value={adminId} onChange={(e) => setAdminId(Number(e.target.value))}>
                 {admins.map((a) => <option key={a.admin_id} value={a.admin_id}>{a.full_name}</option>)}
               </select>
-            </label>
+            </label>}
             <label className="block">
               <span className="font-medium">ชื่อโปรเจค / สถานที่ติดตั้ง (ไม่บังคับ)</span>
               <input className={`${input} font-sans`} value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="เช่น บ้านคุณสมชาย ห้องนอน" />
             </label>
-            <label className="flex items-center gap-3 cursor-pointer">
+            {!editing && <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" className="w-6 h-6 accent-primary" checked={wantTaxInvoice} onChange={(e) => setWantTaxInvoice(e.target.checked)} />
               <span className="text-lg">ลูกค้าขอใบกำกับภาษี</span>
-            </label>
+            </label>}
           </div>
         </Card>
 
@@ -157,7 +173,7 @@ export function QuotationForm({ estimateId, initialItems, roomCount, admins }: {
             {invalid && <p className="text-base text-red-600 pt-2">ยังกรอกข้อมูลไม่ครบ ดูช่องที่เป็นสีแดงด้านบน</p>}
             <button onClick={save} disabled={saving || !items.length || invalid}
               className="w-full mt-3 bg-primary text-primary-foreground py-4 rounded-xl text-lg font-semibold hover:opacity-90 disabled:opacity-50">
-              {saving ? "กำลังบันทึก..." : "บันทึกและสร้างใบเสนอราคา"}
+              {saving ? "กำลังบันทึก..." : editing ? "บันทึกการแก้ไข" : "บันทึกและสร้างใบเสนอราคา"}
             </button>
           </div>
         </Card>

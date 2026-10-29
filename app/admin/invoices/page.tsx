@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { pool } from "@/lib/db";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { DocLinks } from "@/components/admin/DocLinks";
 import { Badge, baht, Card, PageHeader, PAYMENT_STATUS, StatusBadge, Table, thDate } from "@/components/admin/ui";
 
 export default async function Invoices() {
@@ -13,7 +14,7 @@ export default async function Invoices() {
       from invoice i join quotation q using (quotation_id)
       order by i.invoice_id desc`),
     pool.query(`
-      select p.*, i.flowaccount_serial as inv_serial, q.details->'customer'->>'name' as customer
+      select p.*, i.flowaccount_serial as inv_serial, i.flowaccount_record_id as inv_record_id, q.details->'customer'->>'name' as customer
       from payment p join invoice i using (invoice_id) join quotation q using (quotation_id)
       where p.status = 'paid' and not exists (select 1 from receipt r where r.payment_id = p.payment_id)
       order by p.paid_at`),
@@ -42,7 +43,7 @@ export default async function Invoices() {
           {waiting.rows.map((p) => (
             <tr key={p.payment_id}>
               <td>{p.customer}</td>
-              <td className="font-mono text-xs">{p.inv_serial}</td>
+              <td><DocLinks docType="billing-notes" recordId={p.inv_record_id} serial={p.inv_serial} /></td>
               <td className="font-mono">{baht(p.amount)}</td>
               <td>{p.pay_method === "cash" ? "เงินสด" : "QR Code"}</td>
               <td className="text-muted-foreground">{thDate(p.paid_at, true)}</td>
@@ -56,7 +57,7 @@ export default async function Invoices() {
         <Table headers={["เลขที่", "ลูกค้า", "ใบเสนอราคา", "ประเภท", "ยอด", "ครบกำหนด", "สถานะ"]} empty={!invoices.rows.length}>
           {invoices.rows.map((i) => (
             <tr key={i.invoice_id} className="hover:bg-muted/30">
-              <td className="font-mono text-xs">{i.flowaccount_serial ?? `#${i.invoice_id}`}</td>
+              <td><DocLinks docType="billing-notes" recordId={i.flowaccount_record_id} serial={i.flowaccount_serial ?? `#${i.invoice_id}`} /></td>
               <td>{i.customer}</td>
               <td className="font-mono text-xs">
                 <Link href={`/admin/quotations/${i.quotation_id}`} className="text-primary hover:underline">{i.qt_serial ?? `#${i.quotation_id}`}</Link>

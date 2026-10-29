@@ -57,3 +57,18 @@ export async function flowAccount(method: string, path: string, body?: unknown) 
   const data = await res.json().catch(() => null);
   return { status: res.status, data };
 }
+
+// ลิงก์หน้าเอกสารที่ลูกค้าเปิดดู/ดาวน์โหลดได้โดยไม่ต้องล็อกอิน (POST /{docType}/sharedocument)
+export async function shareLink(docType: DocType, recordId: number): Promise<string | null> {
+  const { status, data } = await flowAccount("POST", `/${docType}/sharedocument`, { documentId: recordId, culture: "th" });
+  return status === 200 && data?.status ? data.data?.link ?? null : null;
+}
+
+// ไฟล์ PDF ต้นฉบับ (POST /{docType}/{id}/export-pdf/base64) ไม่สำเร็จ = null
+export async function exportPdf(docType: DocType, recordId: number): Promise<Buffer | null> {
+  const { status, data } = await flowAccount("POST", `/${docType}/${recordId}/export-pdf/base64`, {
+    culture: "th",
+    document: { original: true, copy: false },
+  });
+  return status === 200 && data?.status && typeof data.data === "string" ? Buffer.from(data.data, "base64") : null;
+}
