@@ -41,8 +41,11 @@ export async function createPromptPay(amount: number, metadata: Record<string, s
   const params: Record<string, string> = {
     amount: String(Math.round(amount * 100)), // หน่วยสตางค์
     currency: "thb",
-    "payment_method_types[]": "promptpay",
+    // Stripe เลิกรับ payment_method_types แล้ว: ระบุ promptpay ผ่าน payment_method_data
+    // และปิด redirect (PromptPay ไม่ต้องพาลูกค้าออกจากหน้า เลยไม่ต้องมี return_url)
     "payment_method_data[type]": "promptpay",
+    "automatic_payment_methods[enabled]": "true",
+    "automatic_payment_methods[allow_redirects]": "never",
     confirm: "true",
   };
   if (email) params["payment_method_data[billing_details][email]"] = email;
