@@ -1,0 +1,12 @@
+# Python 3.12 (PaddlePaddle ยังไม่มี wheel ของ 3.15)
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+httpx
+openai
+supabase
+pymupdf
+pillow
+paddlepaddle
+paddleocr
