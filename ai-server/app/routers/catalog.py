@@ -1,10 +1,11 @@
 """OCR + สร้าง embedding"""
 import threading
+import time
 
 from fastapi import APIRouter, BackgroundTasks, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
-from app.services import catalog_ingest, vlm
+from app.services import catalog_ingest, product_search, vlm
 
 router = APIRouter(prefix="/ai/catalog", tags=["catalog"])
 
@@ -19,7 +20,20 @@ class IngestRequest(BaseModel):
 
 
 class ReembedRequest(BaseModel):
-    product_ids: list[int]
+    product_ids: list[int] = []
+    all: bool = False  # true = สร้างใหม่ทุกสินค้า (ใช้ตอนเริ่มระบบ/เปลี่ยนโมเดล)
+
+
+# ผลการสร้างเวกเตอร์ครั้งล่าสุด (ดูได้ที่ GET /reembed)
+_reembed: dict = {"status": "idle"}
+
+
+def _run_reembed(ids: list[int] | None):
+    _reembed.update(status="running", started=time.time())
+    try:
+        _reembed.update(status="done", result=product_search.index_products(ids), finished=time.time())
+    except Exception as e:  # noqa: BLE001 — เก็บ error ไว้ให้ดูผ่าน GET
+        _reembed.update(status="error", error=str(e))
 
 
 def _run_ingest(req: IngestRequest):
@@ -69,7 +83,15 @@ def extract(file: UploadFile = File(...)):
     return {"count": len(out), "products": out}
 
 
-@router.post("/reembed")
-def reembed(req: ReembedRequest):
-    # TODO: สร้าง embedding (BGE-M3 ข้อความ + OpenCLIP รูป) ของสินค้าเหล่านี้ใหม่
-    raise HTTPException(501, "ยังไม่ได้ทำ")
+@router.post("/reembed", status_code=202)
+def reembed(req: ReembedRequest, background: BackgroundTasks):
+    """สร้าง embedding (BGE-M3 ข้อความ + OpenCLIP รูป) ของสินค้าใหม่ เก็บใน vector_embedding (ทำงานเบื้องหลัง)"""
+    if not req.all and not req.product_ids:
+        raise HTTPException(400, "ระบุ product_ids หรือ all=true")
+    background.add_task(_run_reembed, None if req.all else req.product_ids)
+    return {"status": "queued"}
+
+
+@router.get("/reembed")
+def reembed_status():
+    return _reembed

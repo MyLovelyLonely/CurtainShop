@@ -10,3 +10,20 @@ pymupdf
 pillow
 paddlepaddle
 paddleocr
+
+# จำลองผ้าม่าน (YOLOE/YOLOv11 + SAM2 + Stable Diffusion + IP-Adapter)
+# torch ต้องติดตั้งแบบ CUDA ก่อน: uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+torch
+torchvision
+ultralytics
+clip @ git+https://github.com/ultralytics/CLIP.git
+diffusers
+transformers
+accelerate
+safetensors
+numpy
+
+# ค้นหาสินค้า (BGE-M3 + OpenCLIP + pgvector)
+sentence-transformers
+open_clip_torch
+psycopg[binary]
