@@ -7,7 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
 import { amountFields, contactFields, FA_DOC_TYPE, faDoc, today } from "@/lib/documents";
-import { notifyJobStatus } from "@/lib/line";
+import { notifyJobStatus, notifyReceiptIssued } from "@/lib/line";
 
 export async function POST(req: NextRequest) {
   const { payment_id } = await req.json();
@@ -119,6 +119,7 @@ export async function POST(req: NextRequest) {
     }
 
     await client.query("commit");
+    await notifyReceiptIssued(receipt.rows[0].receipt_id); // แจ้งลูกค้าว่าออกใบเสร็จแล้ว
     if (closedJobId) await notifyJobStatus(closedJobId); // แจ้งลูกค้าว่า "ปิดงาน"
     return NextResponse.json({ tax_invoice: tax.rows[0], receipt: receipt.rows[0] }, { status: 201 });
   } catch (e) {

@@ -1,6 +1,5 @@
 // เรียก FlowAccount Open API ใช้ฝั่งเซิร์ฟเวอร์เท่านั้น
 import "server-only";
-import { mockFlowAccount } from "./flowaccount-mock";
 
 const BASE_URL = process.env.FLOWACCOUNT_BASE_URL!;
 
@@ -41,8 +40,6 @@ async function getToken(): Promise<string> {
 
 // ยิง request ไป FlowAccount แล้วคืน status + body ตามที่ได้มา
 export async function flowAccount(method: string, path: string, body?: unknown) {
-  if (process.env.FLOWACCOUNT_MOCK === "true") return mockFlowAccount(method, path, body);
-
   const token = await getToken();
 
   const res = await fetch(`${BASE_URL}${path}`, {

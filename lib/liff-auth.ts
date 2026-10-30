@@ -24,7 +24,8 @@ async function verifyIdToken(idToken: string) {
 
 // คืนข้อมูลลูกค้า หรือ null ถ้ายืนยันตัวตนไม่ได้; ลูกค้าใหม่ = สร้างให้อัตโนมัติ
 export async function currentCustomer(req: Request): Promise<Customer | null> {
-  if (process.env.LIFF_MOCK === "true") {
+  // เฉพาะ npm run dev: ตั้ง LIFF_MOCK บน Vercel (production) ก็ไม่มีผล กันทุกคนกลายเป็นลูกค้าคนแรก
+  if (process.env.LIFF_MOCK === "true" && process.env.NODE_ENV === "development") {
     const r = process.env.LIFF_MOCK_LINE_USER_ID
       ? await pool.query(`select * from customer where line_user_id = $1`, [process.env.LIFF_MOCK_LINE_USER_ID])
       : await pool.query(`select * from customer order by customer_id limit 1`);

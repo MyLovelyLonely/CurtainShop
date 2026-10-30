@@ -140,4 +140,53 @@ export async function notifyJobStatus(jobId: number) {
     { label: "ดูสถานะงาน", url: liffUrl("jobs") },
   ));
 }
+
+// แจ้งเตือนการออกใบแจ้งหนี้ (มัดจำ/ยอดคงเหลือ) ขอบเขต 1.3.6.2, Activity Diagram 3-4/3-5 "แจ้งเตือนลูกค้าผ่าน LINE OA"
+export async function notifyInvoiceIssued(invoiceId: number) {
+  const r = await pool.query(
+    `select i.invoice_id, i.type, i.amount, i.due_date, i.flowaccount_serial, c.line_user_id
+     from invoice i join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
+     where i.invoice_id = $1`,
+    [invoiceId],
+  );
+  const invoice = r.rows[0];
+  if (!invoice) return;
+
+  const label = invoice.type === "deposit" ? "ค่ามัดจำ" : "ยอดคงเหลือ";
+  await notify(invoice.line_user_id, flexCard(
+    `ใบแจ้งหนี้${label} ${baht(invoice.amount)} บาท`,
+    `ใบแจ้งหนี้${label}`,
+    [
+      ["เลขที่", invoice.flowaccount_serial],
+      ["ยอดชำระ", `${baht(invoice.amount)} บาท`],
+      ["ครบกำหนด", new Date(invoice.due_date).toLocaleDateString("th-TH", { dateStyle: "medium" })],
+    ],
+    { label: "ชำระเงิน", url: liffUrl(`payments/${invoice.invoice_id}`) },
+  ));
+}
+
+// แจ้งเตือนการออกใบเสร็จรับเงิน ขอบเขต 1.3.6.2, Activity Diagram 3-4/3-5 "ออกใบเสร็จรับเงิน"
+export async function notifyReceiptIssued(receiptId: number) {
+  const r = await pool.query(
+    `select r.flowaccount_serial, p.amount, i.type, c.line_user_id
+     from receipt r join payment p using (payment_id) join invoice i using (invoice_id)
+       join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
+     where r.receipt_id = $1`,
+    [receiptId],
+  );
+  const receipt = r.rows[0];
+  if (!receipt) return;
+
+  const label = receipt.type === "deposit" ? "ค่ามัดจำ" : "ยอดคงเหลือ";
+  await notify(receipt.line_user_id, flexCard(
+    `ออกใบเสร็จ${label}แล้ว`,
+    "ออกใบเสร็จรับเงินแล้ว",
+    [
+      ["เลขที่", receipt.flowaccount_serial],
+      ["รายการ", label],
+      ["ยอดเงิน", `${baht(receipt.amount)} บาท`],
+    ],
+    { label: "ดูใบเสร็จ", url: liffUrl("documents") },
+  ));
+}
 //ใบกำกับภาษีแจ้งเฉพาะคนที่ขอ (note details-> ขอ)

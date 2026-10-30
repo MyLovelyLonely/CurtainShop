@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
 import { amountFields, contactFields, FA_DOC_TYPE, faDoc, r2, today } from "@/lib/documents";
+import { notifyInvoiceIssued } from "@/lib/line";
 
 const DEFAULT_DUE_DAYS = 7;
 
@@ -89,6 +90,7 @@ export async function POST(req: NextRequest) {
     );
 
     await client.query("commit");
+    await notifyInvoiceIssued(invoice.invoice_id); // แจ้งลูกค้าให้ชำระเงิน
     return NextResponse.json({ invoice: updated.rows[0] }, { status: 201 });
   } catch (e) {
     await client.query("rollback").catch(() => {});
