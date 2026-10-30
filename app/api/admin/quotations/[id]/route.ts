@@ -1,7 +1,8 @@
 // GET /api/admin/quotations/{quotation_id}   ดูใบเสนอราคา: ข้อมูลในฐานข้อมูล + เอกสารจาก FlowAccount
 // PUT /api/admin/quotations/{quotation_id}   แก้ไขใบเสนอราคา เมื่อลูกค้าแจ้งว่าข้อมูลไม่ถูกต้อง (Use Case 15 Alternate Flow)
 //   body: { items: [{ quotation_item_id, width, height, quantity }], project_name? }
-//   แก้ได้เฉพาะก่อนลูกค้ายืนยัน และยังไม่ออกใบแจ้งหนี้ (Activity Diagram 3-4)
+//   แก้ได้เฉพาะเมื่อลูกค้าแจ้งแก้ไขมาแล้ว (details.change_request) ก่อนลูกค้ายืนยัน และยังไม่ออกใบแจ้งหนี้ (Activity Diagram 3-4)
+//   แก้เสร็จ = ล้าง change_request ลูกค้าต้องตรวจสอบและยืนยันใหม่
 //   เพราะ FlowAccount แก้ได้เฉพาะเอกสารสถานะ "รออนุมัติ" และลูกค้ายืนยันยอดไปแล้ว
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
@@ -50,6 +51,7 @@ export async function PUT(req: Request, { params }: Params) {
     if (!quotation) return NextResponse.json({ error: "ไม่พบใบเสนอราคา" }, { status: 404 });
     if (quotation.confirmed_at) return NextResponse.json({ error: "ลูกค้ายืนยันใบเสนอราคาแล้ว แก้ไขไม่ได้" }, { status: 409 });
     if (quotation.has_invoice) return NextResponse.json({ error: "ออกใบแจ้งหนี้แล้ว แก้ไขใบเสนอราคาไม่ได้" }, { status: 409 });
+    if (!quotation.details.change_request) return NextResponse.json({ error: "ลูกค้ายังไม่ได้แจ้งแก้ไข แก้ไขไม่ได้" }, { status: 409 });
     if (!quotation.flowaccount_record_id) return NextResponse.json({ error: "ใบเสนอราคายังไม่มีใน FlowAccount" }, { status: 400 });
 
     // รายการเดิม + ราคาปัจจุบันของสินค้า (ราคาต่อหน่วยดึงใหม่จากสินค้า ไม่รับจากฟอร์ม)
@@ -71,6 +73,7 @@ export async function PUT(req: Request, { params }: Params) {
       ...quotation.details,
       project_name: body.project_name !== undefined ? body.project_name || null : quotation.details.project_name,
       revised_at: new Date().toISOString(), // แก้ไขล่าสุด ให้ลูกค้ารู้ว่าเป็นฉบับแก้ไข
+      change_request: null, // แก้ตามที่ลูกค้าแจ้งแล้ว
     };
 
     await client.query("begin");

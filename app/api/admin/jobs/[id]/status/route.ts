@@ -5,6 +5,7 @@
 //   ย้อนสถานะต้องส่ง confirm: true (Alternate Flow)
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
+import { notifyJobStatus } from "@/lib/line";
 
 const ORDER = ["pending", "in_progress", "completed", "closed"];
 const ADMIN_STATUSES = ["in_progress", "completed"];
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       [status, id],
     );
 
-    // TODO: แจ้งเตือนลูกค้าผ่าน LINE OA (Use Case 21 ข้อ 5) เมื่อเชื่อม Messaging API
+    await notifyJobStatus(Number(id)); // แจ้งเตือนลูกค้าผ่าน LINE OA โดยอัตโนมัติ (Use Case 21 ข้อ 5)
     return NextResponse.json({ job: u.rows[0] });
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });

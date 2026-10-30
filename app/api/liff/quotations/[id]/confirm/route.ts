@@ -19,6 +19,7 @@ export async function POST(req: Request, { params }: Params) {
     const quotation = await customerQuotation(c.customer_id, Number(id));
     if (!quotation) return NextResponse.json({ error: "ไม่พบใบเสนอราคา" }, { status: 404 });
     if (quotation.confirmed_at) return NextResponse.json({ error: "ยืนยันใบเสนอราคานี้แล้ว" }, { status: 409 });
+    if (quotation.change_request) return NextResponse.json({ error: "แจ้งแก้ไขไว้แล้ว รอร้านส่งใบเสนอราคาฉบับแก้ไข" }, { status: 409 });
 
     if (quotation.record_id && !quotation.has_invoice) {
       const fa = await flowAccount("POST", `/quotations/${quotation.record_id}/status/approved`);

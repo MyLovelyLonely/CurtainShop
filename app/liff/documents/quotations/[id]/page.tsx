@@ -1,7 +1,7 @@
 "use client";
 // ตรวจสอบและยืนยันใบเสนอราคา (Activity Diagram 3-4, ขอบเขต 1.3.3.3)
 //   ข้อมูลถูกต้อง = กดยืนยัน -> ร้านออกใบแจ้งหนี้มัดจำต่อ
-//   ข้อมูลไม่ถูกต้อง = แจ้งร้านทางแชท LINE ให้แก้ไข (Use Case 15 Alternate Flow)
+//   ข้อมูลไม่ถูกต้อง = กดแจ้งแก้ไข ร้านจึงแก้ไขใบเสนอราคาได้ (Use Case 15 Alternate Flow)
 import { use, useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
@@ -10,7 +10,7 @@ import { DocButton } from "@/components/liff/DocButton";
 import { PageTitle, Panel, Tag } from "@/components/liff/ui";
 import { lineArea, lineTotal } from "@/lib/pricing";
 
-type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; deposit_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number };
+type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; deposit_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number; change_request: { note: string; requested_at: string } | null };
 type Item = { quotation_item_id: number; name: string; price_unit: string; width: string | null; height: string | null; quantity: number; unit_price: string };
 
 export default function QuotationDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -20,6 +20,18 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [reporting, setReporting] = useState(false);
+  const [note, setNote] = useState("");
+
+  async function requestChange() {
+    setBusy(true); setMsg(null);
+    try {
+      await api(`/api/liff/quotations/${id}/request-change`, { method: "POST", body: JSON.stringify({ note }) });
+      setReporting(false);
+      reload();
+    } catch (e) { setMsg((e as Error).message); }
+    setBusy(false);
+  }
 
   async function confirm() {
     setBusy(true); setMsg(null);
@@ -99,7 +111,16 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
 
       <DocButton docType="quotations" recordId={q.record_id} label="ดูใบเสนอราคา (PDF)" />
 
-      {!q.confirmed_at && (
+      {/* แจ้งแก้ไขแล้ว รอร้านแก้ = ยังยืนยันไม่ได้ */}
+      {!q.confirmed_at && q.change_request && (
+        <Panel className="space-y-1 border-2 border-amber-300 bg-amber-50 text-base text-amber-900">
+          <p className="text-lg font-semibold">แจ้งแก้ไขแล้ว รอร้านแก้ไข</p>
+          <p>“{q.change_request.note}”</p>
+          <p className="text-sm">ร้านจะส่งใบเสนอราคาฉบับแก้ไขให้ตรวจสอบอีกครั้ง</p>
+        </Panel>
+      )}
+
+      {!q.confirmed_at && !q.change_request && (
         <section className="space-y-3 pt-1">
           {msg && <Panel className="text-red-700 text-base">{msg}</Panel>}
           {!asking ? (
@@ -120,9 +141,27 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
               </div>
             </Panel>
           )}
-          <p className="text-center text-base text-muted-foreground">
-            ข้อมูลไม่ถูกต้อง? แจ้งร้านทางแชท LINE ร้านจะแก้ไขและส่งใบใหม่ให้ตรวจสอบอีกครั้ง
-          </p>
+          {!reporting ? (
+            <button onClick={() => setReporting(true)}
+              className="w-full border-2 border-border rounded-xl py-3 text-lg font-semibold">
+              ข้อมูลไม่ถูกต้อง แจ้งแก้ไข
+            </button>
+          ) : (
+            <Panel className="space-y-3 border-2 border-amber-300">
+              <p className="text-lg font-semibold">ต้องแก้ไขอะไร?</p>
+              <textarea value={note} onChange={(e) => setNote(e.target.value)} rows={3}
+                placeholder="เช่น ห้องนอนกว้าง 2.2 เมตร ไม่ใช่ 2 เมตร"
+                className="w-full border-2 border-border rounded-xl p-3 text-base" />
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => setReporting(false)} disabled={busy}
+                  className="border-2 border-border rounded-xl py-3 text-lg font-semibold">ยกเลิก</button>
+                <button onClick={requestChange} disabled={busy || !note.trim()}
+                  className="bg-primary text-primary-foreground rounded-xl py-3 text-lg font-semibold disabled:opacity-50">
+                  {busy ? "กำลังส่ง..." : "ส่งให้ร้าน"}
+                </button>
+              </div>
+            </Panel>
+          )}
         </section>
       )}
     </>

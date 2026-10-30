@@ -41,8 +41,9 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
   const total = Number(quotation.total_amount);
   const deposit = Number(quotation.deposit_amount);
   const contractRow = contract.rows[0];
-  // แก้ไขได้ก่อนลูกค้ายืนยันและก่อนออกใบแจ้งหนี้ (Use Case 15 Alternate Flow)
-  const editable = !quotation.confirmed_at && !invoices.rows.length;
+  // แก้ไขได้เฉพาะเมื่อลูกค้าแจ้งแก้ไขมา ก่อนลูกค้ายืนยันและก่อนออกใบแจ้งหนี้ (Use Case 15 Alternate Flow)
+  const waiting = !quotation.confirmed_at && !invoices.rows.length;
+  const changeRequest = waiting ? quotation.details.change_request : null;
 
   // สถานะแยกตามตารางในฐานข้อมูล ไม่รวมเป็นเส้นเดียว:
   //   หัวหน้า = ใบเสนอราคา (confirmed_at), การ์ดใบแจ้งหนี้/การชำระ = payment.status, การ์ดสถานะงาน = job.status
@@ -62,10 +63,17 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
       </PageHeader>
 
       {/* ลูกค้าแจ้งว่าข้อมูลไม่ถูกต้อง -> แก้ไข แล้วให้ลูกค้าตรวจสอบอีกครั้ง (Activity Diagram 3-4) */}
-      {editable && (
+      {changeRequest ? (
         <div className="flex flex-wrap items-center justify-between gap-3 bg-amber-50 border-2 border-amber-200 rounded-xl px-5 py-4">
-          <p className="text-base text-amber-900">รอลูกค้าตรวจสอบและยืนยันผ่าน LINE · ถ้าลูกค้าแจ้งว่าข้อมูลไม่ถูกต้อง แก้ไขได้ก่อนลูกค้ายืนยัน</p>
+          <div className="text-base text-amber-900">
+            <p className="font-semibold">ลูกค้าแจ้งแก้ไข {thDate(changeRequest.requested_at, true)}</p>
+            <p>“{changeRequest.note}”</p>
+          </div>
           <ButtonLink href={`/admin/quotations/${quotation.quotation_id}/edit`} variant="outline">แก้ไขใบเสนอราคา</ButtonLink>
+        </div>
+      ) : waiting && (
+        <div className="bg-amber-50 border-2 border-amber-200 rounded-xl px-5 py-4 text-base text-amber-900">
+          รอลูกค้าตรวจสอบและยืนยันผ่าน LINE · แก้ไขได้เมื่อลูกค้าแจ้งว่าข้อมูลไม่ถูกต้องเท่านั้น
         </div>
       )}
 
@@ -181,7 +189,7 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
               <td>
                 {paidFor(i.invoice_id) ? <Badge color="emerald" size="lg">ชำระแล้ว</Badge> : (
                   // ยังไม่มีระบบ login: ผู้บันทึกรับเงิน = แอดมินที่ทำใบเสนอราคา
-                  <CashPaymentForm invoiceId={i.invoice_id} amount={Number(i.amount)} adminId={quotation.admin_id} />
+                  <CashPaymentForm invoiceId={i.invoice_id} amount={Number(i.amount)} />
                 )}
               </td>
             </tr>

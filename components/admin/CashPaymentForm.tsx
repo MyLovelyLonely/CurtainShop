@@ -1,10 +1,11 @@
 "use client";
 // ฟอร์มบันทึกรับเงินสด (Use Case 9 A2): แอดมินนับเงินแล้วกรอกยอดที่ได้รับ ยอดไม่ตรง = ระบบไม่บันทึก
+// ผู้บันทึก = แอดมินที่เข้าสู่ระบบ (API ดึงเอง ไม่ส่งจากหน้าเว็บ)
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { baht } from "@/components/admin/ui";
 
-export function CashPaymentForm({ invoiceId, amount, adminId }: { invoiceId: number; amount: number; adminId: number }) {
+export function CashPaymentForm({ invoiceId, amount }: { invoiceId: number; amount: number }) {
   const router = useRouter();
   const [received, setReceived] = useState(String(amount));
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export function CashPaymentForm({ invoiceId, amount, adminId }: { invoiceId: num
     const res = await fetch("/api/admin/payments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invoice_id: invoiceId, amount: Number(received), admin_id: adminId }),
+      body: JSON.stringify({ invoice_id: invoiceId, amount: Number(received) }),
     });
     const data = await res.json().catch(() => ({}));
     setLoading(false);

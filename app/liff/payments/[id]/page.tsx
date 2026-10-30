@@ -18,7 +18,7 @@ type Step = "choose" | "qr" | "expired" | "cash" | "paid";
 export default function PayInvoice({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const api = useApi();
-  const { data, error } = useLiffData<{ invoice: Invoice; mock: boolean }>(`/api/liff/invoices/${id}`);
+  const { data, error } = useLiffData<{ invoice: Invoice }>(`/api/liff/invoices/${id}`);
   const [step, setStep] = useState<Step>("choose");
   const [qr, setQr] = useState<Qr | null>(null);
   const [busy, setBusy] = useState(false);
@@ -70,14 +70,6 @@ export default function PayInvoice({ params }: { params: Promise<{ id: string }>
     return () => clearInterval(t);
   }, [step, api, id]);
 
-  async function mockPay() {
-    if (!qr) return;
-    setBusy(true);
-    await api(`/api/liff/payments/${qr.payment_id}/mock-pay`, { method: "POST" }).catch((e: Error) => setMsg(e.message));
-    await poll();
-    setBusy(false);
-  }
-
   if (error) return <><PageTitle title="ชำระเงิน" back="/liff/payments" /><Panel className="text-red-700 text-base">{error}</Panel></>;
   if (!invoice) return <Panel className="text-center text-muted-foreground">กำลังโหลด...</Panel>;
 
@@ -108,7 +100,7 @@ export default function PayInvoice({ params }: { params: Promise<{ id: string }>
       {step === "qr" && qr && (
         <Panel className="space-y-4 text-center">
           <p className="text-lg font-semibold">สแกน QR เพื่อชำระเงิน</p>
-          {/* eslint-disable-next-line @next/next/no-img-element -- รูป QR จาก Stripe / data URI ไม่ต้อง optimize */}
+          {/* eslint-disable-next-line @next/next/no-img-element -- รูป QR จาก Stripe ไม่ต้อง optimize */}
           {qr.qr_image && <img src={qr.qr_image} alt="QR พร้อมเพย์" className="w-64 h-64 mx-auto rounded-xl border border-border" />}
           {qr.expires_at && <Countdown until={qr.expires_at} onEnd={poll} />}
           <p className="text-base text-muted-foreground">
@@ -116,12 +108,6 @@ export default function PayInvoice({ params }: { params: Promise<{ id: string }>
             ชำระแล้วหน้านี้จะเปลี่ยนให้อัตโนมัติ
           </p>
           <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><RefreshCw size={14} className="animate-spin" /> กำลังรอการชำระเงิน</p>
-          {data?.mock && (
-            <button onClick={mockPay} disabled={busy}
-              className="w-full border-2 border-dashed border-primary text-primary rounded-xl py-3 text-base font-semibold disabled:opacity-50">
-              (ทดสอบ) จำลองว่าสแกนจ่ายแล้ว
-            </button>
-          )}
           <button onClick={() => setStep("choose")} className="text-base text-muted-foreground underline">เปลี่ยนช่องทางการชำระ</button>
         </Panel>
       )}

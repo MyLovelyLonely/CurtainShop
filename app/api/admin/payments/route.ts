@@ -1,17 +1,22 @@
 // POST /api/admin/payments   แอดมินบันทึกรับชำระเงินสด (Use Case 9 Alternate Flow A2)
-// body: { invoice_id, amount, admin_id }
+// body: { invoice_id, amount }
+//   ผู้บันทึกรับเงิน = แอดมินที่เข้าสู่ระบบ (lib/admin-auth.ts) ไม่รับจากหน้าเว็บ
 //   ยอดต้องตรงกับใบแจ้งหนี้ ไม่ครบ = ไม่บันทึก สถานะไม่เปลี่ยน (A2.2.1)
 //   บันทึกผลด้วย markPaid() ตัวเดียวกับ QR (lib/payments.ts)
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { r2 } from "@/lib/documents";
 import { markPaid } from "@/lib/payments";
+import { notifyJobStatus } from "@/lib/line";
+import { currentAdmin } from "@/lib/admin-auth";
 
 export async function POST(req: NextRequest) {
-  const { invoice_id, amount, admin_id } = await req.json();
-  if (!invoice_id || amount === undefined || !admin_id) {
-    return NextResponse.json({ error: "ต้องส่ง invoice_id, amount และ admin_id" }, { status: 400 });
+  const { invoice_id, amount } = await req.json();
+  if (!invoice_id || amount === undefined) {
+    return NextResponse.json({ error: "ต้องส่ง invoice_id และ amount" }, { status: 400 });
   }
+  const admin = await currentAdmin();
+  if (!admin) return NextResponse.json({ error: "ไม่พบบัญชีแอดมินที่เข้าสู่ระบบ" }, { status: 401 });
 
   const client = await pool.connect();
   try {
@@ -34,12 +39,13 @@ export async function POST(req: NextRequest) {
     const p = await client.query(
       `insert into payment (invoice_id, admin_id, amount, status, pay_method)
        values ($1, $2, $3, 'pending', 'cash') returning payment_id`,
-      [invoice_id, admin_id, invoice.amount],
+      [invoice_id, admin.admin_id, invoice.amount],
     );
     // paid + ยกเลิก QR ที่ค้าง + มัดจำ = สร้างงาน "รอดำเนินการ"
     const result = await markPaid(client, p.rows[0].payment_id);
 
     await client.query("commit");
+    if (result?.job) await notifyJobStatus(result.job.job_id); // มัดจำแล้ว = งาน "รอดำเนินการ"
     return NextResponse.json(result, { status: 201 });
   } catch (e) {
     await client.query("rollback").catch(() => {});

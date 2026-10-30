@@ -2,6 +2,7 @@
 import { notFound } from "next/navigation";
 import { pool } from "@/lib/db";
 import { Card, PageHeader } from "@/components/admin/ui";
+import { currentAdmin } from "@/lib/admin-auth";
 import { QuotationForm } from "./QuotationForm";
 
 export default async function NewQuotation({ searchParams }: { searchParams: Promise<{ estimate_id?: string }> }) {
@@ -16,7 +17,7 @@ export default async function NewQuotation({ searchParams }: { searchParams: Pro
   const estimate = est.rows[0];
   if (!estimate) notFound();
 
-  const [items, admins] = await Promise.all([
+  const [items, admin] = await Promise.all([
     // quantity = จำนวนหน้าต่างต่อห้อง ราคาต่อหน่วยดึงจากสินค้า (แอดมินแก้ไม่ได้)
     pool.query(
       `select i.item_id, i.width::float, i.height::float, i.quantity,
@@ -25,7 +26,7 @@ export default async function NewQuotation({ searchParams }: { searchParams: Pro
        where i.estimate_id = $1 order by i.item_id`,
       [estimate_id],
     ),
-    pool.query(`select admin_id, full_name from admin order by admin_id`),
+    currentAdmin(), // ผู้จัดทำ = แอดมินที่เข้าสู่ระบบ
   ]);
 
   return (
@@ -44,7 +45,8 @@ export default async function NewQuotation({ searchParams }: { searchParams: Pro
         mode={{ kind: "create", estimateId: estimate.estimate_id }}
         initialItems={items.rows}
         roomCount={Number(estimate.room_count) || 1}
-        admins={admins.rows}
+        adminName={admin?.full_name}
+        wantTaxInvoice={Boolean(estimate.customer_details?.tax_id)}
       />
     </>
   );

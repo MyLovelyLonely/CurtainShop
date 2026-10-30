@@ -1,6 +1,6 @@
 // แก้ไขใบเสนอราคา (Use Case 15 Alternate Flow, Activity Diagram 3-4)
 //   ลูกค้าแจ้งว่าข้อมูลไม่ถูกต้อง -> แอดมินแก้ขนาด / จำนวนหน้าต่าง -> ส่งให้ลูกค้าตรวจสอบอีกครั้ง
-//   แก้ได้เฉพาะก่อนลูกค้ายืนยันและก่อนออกใบแจ้งหนี้
+//   แก้ได้เฉพาะเมื่อลูกค้าแจ้งแก้ไขมาแล้ว ก่อนลูกค้ายืนยันและก่อนออกใบแจ้งหนี้
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { pool } from "@/lib/db";
@@ -16,7 +16,10 @@ export default async function EditQuotation({ params }: { params: Promise<{ id: 
   if (!quotation) notFound();
 
   const title = `แก้ไขใบเสนอราคา ${quotation.flowaccount_serial ?? `#${quotation.quotation_id}`}`;
-  const locked = quotation.confirmed_at ? "ลูกค้ายืนยันใบเสนอราคานี้แล้ว" : quotation.has_invoice ? "ออกใบแจ้งหนี้จากใบเสนอราคานี้แล้ว" : null;
+  const locked = quotation.confirmed_at ? "ลูกค้ายืนยันใบเสนอราคานี้แล้ว"
+    : quotation.has_invoice ? "ออกใบแจ้งหนี้จากใบเสนอราคานี้แล้ว"
+    : !quotation.details.change_request ? "ลูกค้ายังไม่ได้แจ้งแก้ไข"
+    : null;
   if (locked) {
     return (
       <>
@@ -43,6 +46,9 @@ export default async function EditQuotation({ params }: { params: Promise<{ id: 
   return (
     <>
       <PageHeader title={title} sub={`ลูกค้า ${quotation.details.customer.name} · แก้ไขแล้วลูกค้าต้องตรวจสอบและยืนยันอีกครั้ง`} />
+      <div className="bg-amber-50 border-2 border-amber-200 rounded-xl px-5 py-4 text-base text-amber-900">
+        ลูกค้าแจ้งแก้ไข: “{quotation.details.change_request.note}”
+      </div>
       <QuotationForm
         mode={{ kind: "edit", quotationId: quotation.quotation_id, projectName: quotation.details.project_name ?? "" }}
         initialItems={items.rows}

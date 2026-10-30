@@ -59,6 +59,7 @@ const QUOTATION_SQL = `
   select q.quotation_id, q.flowaccount_serial as serial, q.flowaccount_record_id as record_id, q.total_amount,
          q.deposit_amount, q.created_at, q.confirmed_at, q.details->>'project_name' as project_name,
          coalesce((q.details->>'room_count')::int, 1) as room_count,
+         q.details->'change_request' as change_request,
          exists (select 1 from invoice i where i.quotation_id = q.quotation_id) as has_invoice
   from quotation q join price_estimate e using (estimate_id)
   where e.customer_id = $1`;

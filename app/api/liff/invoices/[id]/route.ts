@@ -2,7 +2,6 @@
 import { NextResponse } from "next/server";
 import { currentCustomer, unauthorized } from "@/lib/liff-auth";
 import { customerInvoice } from "@/lib/customer-data";
-import { isStripeMock } from "@/lib/stripe";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -13,7 +12,7 @@ export async function GET(req: Request, { params }: Params) {
   try {
     const invoice = await customerInvoice(c.customer_id, Number(id));
     if (!invoice) return NextResponse.json({ error: "ไม่พบรายการที่ต้องชำระ" }, { status: 404 });
-    return NextResponse.json({ invoice, mock: isStripeMock() });
+    return NextResponse.json({ invoice });
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }

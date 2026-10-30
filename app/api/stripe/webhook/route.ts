@@ -5,6 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { markPaid } from "@/lib/payments";
+import { notifyJobStatus } from "@/lib/line";
 import { verifyWebhook } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
@@ -22,12 +23,14 @@ export async function POST(req: NextRequest) {
   const client = await pool.connect();
   try {
     await client.query("begin");
+    let result = null;
     if (event.type === "payment_intent.succeeded") {
-      await markPaid(client, paymentId);
+      result = await markPaid(client, paymentId);
     } else if (["payment_intent.payment_failed", "payment_intent.canceled"].includes(event.type)) {
       await client.query(`update payment set status = 'expired' where payment_id = $1 and status = 'pending'`, [paymentId]);
     }
     await client.query("commit");
+    if (result?.job) await notifyJobStatus(result.job.job_id); // มัดจำแล้ว = งาน "รอดำเนินการ"
     return NextResponse.json({ received: true });
   } catch (e) {
     await client.query("rollback").catch(() => {});

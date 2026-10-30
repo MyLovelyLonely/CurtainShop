@@ -20,15 +20,14 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 
 type Mode = { kind: "create"; estimateId: number } | { kind: "edit"; quotationId: number; projectName: string };
 
-export function QuotationForm({ mode, initialItems, roomCount, admins = [] }: {
-  mode: Mode; initialItems: Item[]; roomCount: number; admins?: { admin_id: number; full_name: string }[];
+// ผู้จัดทำ (แอดมินที่เข้าสู่ระบบ) และการขอใบกำกับภาษี (ลูกค้าแจ้งเอง) แสดงอย่างเดียว แก้ในฟอร์มไม่ได้
+export function QuotationForm({ mode, initialItems, roomCount, adminName, wantTaxInvoice }: {
+  mode: Mode; initialItems: Item[]; roomCount: number; adminName?: string; wantTaxInvoice?: boolean;
 }) {
   const router = useRouter();
   const editing = mode.kind === "edit";
   const [items, setItems] = useState<Item[]>(initialItems);
-  const [adminId, setAdminId] = useState(admins[0]?.admin_id ?? 0);
   const [projectName, setProjectName] = useState(editing ? mode.projectName : "");
-  const [wantTaxInvoice, setWantTaxInvoice] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // ทุกห้องใช้รูปแบบเดียวกัน: ยอดรวม = (รวมทุกสินค้าต่อห้อง) x จำนวนห้อง (สูตรเดียวกับ API)
@@ -52,10 +51,8 @@ export function QuotationForm({ mode, initialItems, roomCount, admins = [] }: {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             estimate_id: mode.estimateId,
-            admin_id: adminId,
             items: sizes,
             project_name: projectName || undefined,
-            want_tax_invoice: wantTaxInvoice,
           }),
         })
       : await fetch(`/api/admin/quotations/${mode.quotationId}`, {
@@ -141,20 +138,19 @@ export function QuotationForm({ mode, initialItems, roomCount, admins = [] }: {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Card title="ข้อมูลเอกสาร" size="lg">
           <div className="px-5 pb-5 space-y-4 text-base">
-            {!editing && <label className="block">
+            {!editing && <div>
               <span className="font-medium">ผู้จัดทำ</span>
-              <select className={`${input} font-sans`} value={adminId} onChange={(e) => setAdminId(Number(e.target.value))}>
-                {admins.map((a) => <option key={a.admin_id} value={a.admin_id}>{a.full_name}</option>)}
-              </select>
-            </label>}
+              <p className="text-lg">{adminName ?? "-"}</p>
+            </div>}
             <label className="block">
               <span className="font-medium">ชื่อโปรเจค / สถานที่ติดตั้ง (ไม่บังคับ)</span>
               <input className={`${input} font-sans`} value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="เช่น บ้านคุณสมชาย ห้องนอน" />
             </label>
-            {!editing && <label className="flex items-center gap-3 cursor-pointer">
-              <input type="checkbox" className="w-6 h-6 accent-primary" checked={wantTaxInvoice} onChange={(e) => setWantTaxInvoice(e.target.checked)} />
-              <span className="text-lg">ลูกค้าขอใบกำกับภาษี</span>
-            </label>}
+            {!editing && <div>
+              <span className="font-medium">ใบกำกับภาษี</span>
+              <p className="text-lg">{wantTaxInvoice ? "ลูกค้าขอใบกำกับภาษี" : "ลูกค้าไม่ได้ขอ"}</p>
+              <p className="text-sm text-muted-foreground">ลูกค้าแจ้งเองโดยกรอกเลขผู้เสียภาษีในหน้าข้อมูลของฉันบน LINE</p>
+            </div>}
           </div>
         </Card>
 

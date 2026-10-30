@@ -1,20 +1,24 @@
 // POST /api/admin/quotations   สร้างใบเสนอราคา: บันทึกลงฐานข้อมูล + สร้างใน FlowAccount
-// body: { estimate_id, admin_id, items?, project_name?, want_tax_invoice? }
+// body: { estimate_id, items?, project_name? }
 //   items = [{ item_id, width, height, quantity }] ขนาดหน้างานจริงต่อรายการในใบประเมิน (Use Case 12)
 //     แอดมินแก้ได้แค่ กว้าง / สูง / จำนวนหน้าต่างต่อห้อง ไม่ส่ง = ใช้ค่าจากใบประเมินราคา
 //   สินค้า ราคาต่อหน่วย (base_price) จำนวนห้อง (room_count) และมัดจำ 50% ระบบกำหนดเอง แก้ไม่ได้ (lib/quotation.ts)
+//   ผู้จัดทำ = แอดมินที่เข้าสู่ระบบ (lib/admin-auth.ts) ไม่รับจากหน้าเว็บ
+//   ขอใบกำกับภาษี = ลูกค้ากรอกเลขผู้เสียภาษีเองในหน้าข้อมูลของฉัน (LIFF) แอดมินติ๊กแทนไม่ได้
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
 import { faDoc } from "@/lib/documents";
 import { faQuotationBody, priceItems, type SizeEdit } from "@/lib/quotation";
+import { notifyQuotationCreated } from "@/lib/line";
+import { currentAdmin } from "@/lib/admin-auth";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { estimate_id, admin_id } = body;
-  if (!estimate_id || !admin_id) {
-    return NextResponse.json({ error: "ต้องส่ง estimate_id และ admin_id" }, { status: 400 });
-  }
+  const { estimate_id } = body;
+  if (!estimate_id) return NextResponse.json({ error: "ต้องส่ง estimate_id" }, { status: 400 });
+  const admin = await currentAdmin();
+  if (!admin) return NextResponse.json({ error: "ไม่พบบัญชีแอดมินที่เข้าสู่ระบบ" }, { status: 401 });
 
   const client = await pool.connect();
   try {
@@ -48,7 +52,7 @@ export async function POST(req: NextRequest) {
     const details = {
       project_name: body.project_name ?? null,
       room_count: roomCount, // quotation_item เก็บยอดต่อ 1 ห้อง ยอดรวม = รวมต่อห้อง x room_count
-      want_tax_invoice: body.want_tax_invoice === true, // ลูกค้าขอใบกำกับภาษี (ส่งให้ลูกค้าเฉพาะคนที่ขอ)
+      want_tax_invoice: Boolean(customer.details?.tax_id), // ลูกค้ากรอกเลขผู้เสียภาษี = ขอใบกำกับภาษี (ส่งให้เฉพาะคนที่ขอ)
       customer: snapshot, // สำเนาข้อมูลลูกค้า ณ วันออกเอกสาร
     };
 
@@ -57,7 +61,7 @@ export async function POST(req: NextRequest) {
     const q = await client.query(
       `insert into quotation (estimate_id, admin_id, total_amount, deposit_amount, details)
        values ($1, $2, $3, $4, $5) returning *`,
-      [estimate_id, admin_id, priced.grandTotal, priced.depositAmount, details],
+      [estimate_id, admin.admin_id, priced.grandTotal, priced.depositAmount, details],
     );
     const quotation = q.rows[0];
 
@@ -86,6 +90,7 @@ export async function POST(req: NextRequest) {
     );
 
     await client.query("commit");
+    await notifyQuotationCreated(quotation.quotation_id); // แจ้งลูกค้าทาง LINE OA (Activity Diagram 3-4)
     return NextResponse.json({ quotation: updated.rows[0] }, { status: 201 });
   } catch (e) {
     await client.query("rollback").catch(() => {});

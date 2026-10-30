@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
 import { amountFields, contactFields, FA_DOC_TYPE, faDoc, today } from "@/lib/documents";
+import { notifyJobStatus } from "@/lib/line";
 
 export async function POST(req: NextRequest) {
   const { payment_id } = await req.json();
@@ -108,14 +109,17 @@ export async function POST(req: NextRequest) {
     );
 
     // ออกใบเสร็จยอดคงเหลือแล้ว ระบบเปลี่ยนสถานะเป็น "ปิดงาน" (Activity Diagram 3-5, ขอบเขต 1.3.5.1)
+    let closedJobId: number | null = null;
     if (payment.invoice_type === "balance") {
-      await client.query(
-        `update job set status = 'closed' where quotation_id = (select quotation_id from invoice where invoice_id = $1)`,
+      const j = await client.query(
+        `update job set status = 'closed' where quotation_id = (select quotation_id from invoice where invoice_id = $1) returning job_id`,
         [payment.invoice_id],
       );
+      closedJobId = j.rows[0]?.job_id ?? null;
     }
 
     await client.query("commit");
+    if (closedJobId) await notifyJobStatus(closedJobId); // แจ้งลูกค้าว่า "ปิดงาน"
     return NextResponse.json({ tax_invoice: tax.rows[0], receipt: receipt.rows[0] }, { status: 201 });
   } catch (e) {
     await client.query("rollback").catch(() => {});
