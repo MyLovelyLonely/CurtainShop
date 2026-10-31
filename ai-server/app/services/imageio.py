@@ -33,7 +33,11 @@ def from_bytes(data: bytes, max_side: int) -> Image.Image:
     return img
 
 
-def to_b64_jpeg(img: Image.Image, quality: int = 90) -> str:
+def to_jpeg(img: Image.Image, quality: int = 90) -> bytes:
     buf = io.BytesIO()
     img.save(buf, format="JPEG", quality=quality)
-    return base64.b64encode(buf.getvalue()).decode()
+    return buf.getvalue()
+
+
+def to_b64_jpeg(img: Image.Image, quality: int = 90) -> str:
+    return base64.b64encode(to_jpeg(img, quality)).decode()

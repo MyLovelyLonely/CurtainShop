@@ -1,7 +1,7 @@
 // จำลองผ้าม่าน: รูปห้องของลูกค้า + ลายผ้าของสินค้าในฐานข้อมูล → ai-server → เก็บรูปทั้งก่อน/หลังไว้ใน R2
 
 import { HttpError } from "@/lib/api";
-import { detectWindows, renderCurtain } from "@/lib/ai-client";
+import { detectWindows, previewCurtain, renderCurtain, type RenderBody } from "@/lib/ai-client";
 import { isR2Url, putR2 } from "@/lib/r2";
 import { getProduct } from "@/services/catalog.service";
 import {
@@ -72,8 +72,8 @@ function parseRegions(v: unknown): Region[] {
   });
 }
 
-/** จำลองม่าน 1 แบบ แล้วเก็บรูปผลลัพธ์ไว้ใน R2 */
-export async function renderSimulation(body: Partial<RenderInput>): Promise<RenderResult> {
+/** ตรวจค่าที่หน้าเว็บส่งมา + ดึงลายผ้า/การกรองแสงจากสินค้าจริง → ข้อมูลที่ส่งให้ ai-server */
+async function renderBody(body: Partial<RenderInput>, recent = false): Promise<RenderBody> {
   const style = body.style as CurtainStyle;
   if (!(style in CURTAIN_STYLES)) throw new HttpError(400, "รูปแบบม่านไม่ถูกต้อง");
   if (typeof body.photo_url !== "string" || !isR2Url(body.photo_url))
@@ -82,11 +82,11 @@ export async function renderSimulation(body: Partial<RenderInput>): Promise<Rend
   if (!Number.isInteger(productId) || productId <= 0) throw new HttpError(400, "กรุณาเลือกสินค้า");
 
   // ลายผ้าและค่าการกรองแสงมาจากสินค้าจริงในฐานข้อมูล
-  const product = await getProduct(productId, true);
+  const product = await (recent ? recentProduct(productId) : getProduct(productId, true));
   const swatch = product.details.images[0] ?? product.image_url;
   if (!swatch) throw new HttpError(400, "สินค้านี้ยังไม่มีรูปลายผ้า จึงจำลองไม่ได้");
 
-  const res = await renderCurtain({
+  return {
     image_url: body.photo_url,
     swatch_url: swatch,
     style,
@@ -100,7 +100,12 @@ export async function renderSimulation(body: Partial<RenderInput>): Promise<Rend
     pattern_scale: clamp(body.pattern_scale, 0.5, 2, 1),
     light_filter: product.details.light_filter,
     repeat_cm: product.details.repeat_cm,
-  });
+  };
+}
+
+/** จำลองม่าน 1 แบบ แล้วเก็บรูปผลลัพธ์ไว้ใน R2 */
+export async function renderSimulation(body: Partial<RenderInput>): Promise<RenderResult> {
+  const res = await renderCurtain(await renderBody(body));
   if (!res.ok) throw new HttpError(502, `สร้างภาพจำลองไม่สำเร็จ กรุณาลองใหม่อีกครั้ง (${res.error})`);
 
   const data = res.data as Omit<RenderResult, "result_url"> & { image: string };
@@ -110,4 +115,22 @@ export async function renderSimulation(body: Partial<RenderInput>): Promise<Rend
     "image/jpeg",
   );
   return { result_url, refined: data.refined, mask_source: data.mask_source, note: data.note };
+}
+
+/** ภาพร่างสำหรับดูตัวอย่างสดระหว่างลูกค้าปรับค่า (ไม่เกลาด้วย AI ไม่เก็บลง R2) → JPEG */
+export async function previewSimulation(body: Partial<RenderInput>, signal: AbortSignal): Promise<Response> {
+  const res = await previewCurtain(await renderBody(body, true), signal);
+  if (!res.ok) throw new HttpError(502, `แสดงตัวอย่างไม่สำเร็จ (${res.error})`);
+  return new Response(res.data, { headers: { "Content-Type": "image/jpeg", "Cache-Control": "no-store" } });
+}
+
+// ตัวอย่างสดขอถี่ (ทุกครั้งที่ลาก) จึงจำสินค้าไว้สั้น ๆ ไม่ต้องถามฐานข้อมูลทุกครั้ง
+const products = new Map<number, { at: number; product: ReturnType<typeof getProduct> }>();
+function recentProduct(id: number): ReturnType<typeof getProduct> {
+  const hit = products.get(id);
+  if (hit && Date.now() - hit.at < 60_000) return hit.product;
+  const product = getProduct(id, true);
+  products.set(id, { at: Date.now(), product });
+  product.catch(() => products.delete(id));
+  return product;
 }

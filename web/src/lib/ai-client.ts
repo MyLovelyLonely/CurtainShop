@@ -93,6 +93,27 @@ export const renderCurtain = (body: {
   repeat_cm: number | null;
 }) => aiPost("/ai/simulate/render", body, 5 * 60_000);
 
+export type RenderBody = Parameters<typeof renderCurtain>[0];
+
+/** ภาพร่างสำหรับดูตัวอย่างสด (ไม่เกลาด้วย AI) → JPEG; signal = ยกเลิกเมื่อลูกค้าปรับค่าใหม่แล้ว */
+export async function previewCurtain(
+  body: RenderBody,
+  signal: AbortSignal,
+): Promise<{ ok: true; data: ArrayBuffer } | { ok: false; error: string }> {
+  try {
+    const res = await fetch(`${AI_URL}/ai/simulate/preview`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.any([signal, AbortSignal.timeout(30_000)]),
+    });
+    if (!res.ok) return { ok: false, error: `AI server ตอบ ${res.status}` };
+    return { ok: true, data: await res.arrayBuffer() };
+  } catch (e) {
+    return { ok: false, error: networkError(e) };
+  }
+}
+
 export type SearchHit = { product_id: number; score: number; via: string[] };
 
 /** ค้นด้วยข้อความ: BGE-M3 + BM25 + คำค้นเชิงโครงสร้าง + OpenCLIP → RRF (ครั้งแรกต้องโหลดโมเดล จึงเผื่อเวลา) */

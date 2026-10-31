@@ -61,6 +61,9 @@ export default function SimulateStudio() {
   const input = photo && product && { photo_url: photo.photo_url, product_id: product.product_id, style, regions, ...opts };
   const key = JSON.stringify(input);
   const result = rendered?.key === key ? rendered.result : null;
+  // ตัวอย่างสดระหว่างแก้ไข (ค่าของแถบที่กำลังลากยังไม่บันทึก จึงรวม live เข้าไปด้วย)
+  const [live, setLive] = useState<Partial<RenderOptions> | null>(null);
+  const preview = usePreview(input && !result ? { ...input, ...live } : null, photo?.photo_url);
   const setResult = (r: RenderResult | null) => setRendered(r && { key, result: r });
 
   const choose = (p: ProductView) => {
@@ -158,6 +161,7 @@ export default function SimulateStudio() {
                 onChange={setRegions}
                 onSelect={setActive}
                 showFloor={usesFloor(style, opts)}
+                preview={preview}
               />
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
                 {regions.map((_, i) => (
@@ -209,7 +213,7 @@ export default function SimulateStudio() {
       {photo && (
         <section className="space-y-4 px-4 pt-4">
           <StylePicker value={style} onChange={setStyle} />
-          <StyleOptions style={style} opts={opts} onChange={setOpts} />
+          <StyleOptions style={style} opts={opts} onChange={setOpts} onLive={setLive} />
           {result && (
             <p className="rounded-lg bg-stone-100 px-3 py-2 text-xs leading-relaxed text-stone-500">
               ภาพจำลองช่วยในการเลือกผ้าเบื้องต้นเท่านั้น สีและลายจริงอาจต่างไปตามแสง ช่างจะนำผ้าตัวอย่างไปให้ดูในวันสำรวจหน้างาน
@@ -358,6 +362,47 @@ function ChangePhoto({
   );
 }
 
+type Preview = { url: string | null; loading: boolean };
+
+/** ภาพร่างสดจาก ai-server: รอให้หยุดลากสั้น ๆ แล้วค่อยขอ ยกเลิกคำขอเก่าทันทีที่มีค่าใหม่ ภาพเดิมค้างไว้ระหว่างรอ
+ * ภาพของรูปห้องอื่นไม่แสดง (ตอนเพิ่งเปลี่ยนรูป) */
+function usePreview(input: object | null, photoUrl: string | undefined): Preview {
+  const body = input ? JSON.stringify(input) : "";
+  const [state, setState] = useState<{ url: string | null; photo?: string; loading: boolean }>({
+    url: null,
+    loading: false,
+  });
+  useEffect(() => {
+    if (!body) return;
+    const ctrl = new AbortController();
+    const t = setTimeout(async () => {
+      setState((s) => ({ ...s, loading: true }));
+      try {
+        const res = await fetch("/api/simulate/preview", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+          signal: ctrl.signal,
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        const url = URL.createObjectURL(await res.blob());
+        setState((s) => {
+          if (s.url) URL.revokeObjectURL(s.url);
+          return { url, photo: photoUrl, loading: false };
+        });
+      } catch {
+        // ยกเลิกเพราะมีค่าใหม่ = คำขอใหม่กำลังมา; ai-server ใช้ไม่ได้ = ไม่มีตัวอย่าง แต่ยังกดสร้างภาพได้
+        if (!ctrl.signal.aborted) setState((s) => ({ ...s, loading: false }));
+      }
+    }, 120);
+    return () => {
+      clearTimeout(t);
+      ctrl.abort();
+    };
+  }, [body, photoUrl]);
+  return { url: state.photo === photoUrl ? state.url : null, loading: state.loading };
+}
+
 type Drag = { region: number; handle: number | "floor" | "rail" | null; x: number; y: number; start: Region };
 
 /**
@@ -371,8 +416,9 @@ function RegionEditor(props: {
   onChange: (r: Region[]) => void;
   onSelect: (i: number) => void;
   showFloor: boolean;
+  preview: Preview;
 }) {
-  const { photo, regions, active, onChange, onSelect, showFloor } = props;
+  const { photo, regions, active, onChange, onSelect, showFloor, preview } = props;
   const ref = useRef<HTMLDivElement>(null);
   const drag = useRef<Drag | null>(null);
 
@@ -433,12 +479,22 @@ function RegionEditor(props: {
         className="pointer-events-none h-auto w-full"
         priority
       />
+      {preview.url && (
+        // ภาพจาก blob URL (ได้มาจาก fetch) next/image ใช้ไม่ได้
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={preview.url} alt="ตัวอย่างผ้าม่าน" className="pointer-events-none absolute inset-0 size-full" />
+      )}
+      {preview.url && (
+        <span className="pointer-events-none absolute left-2 top-2 rounded-full bg-black/55 px-2 py-0.5 text-[11px] text-white">
+          {preview.loading ? "กำลังอัปเดตตัวอย่าง…" : "ตัวอย่าง · ยังไม่เกลาด้วย AI"}
+        </span>
+      )}
       <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 size-full">
         {/* หรี่นอกกรอบ */}
         <path
           d={["M0 0H100V100H0Z", ...regions.map(({ quad }) => "M" + pts(quad).join("L") + "Z")].join(" ")}
           fillRule="evenodd"
-          fill="rgba(0,0,0,0.35)"
+          fill={preview.url ? "rgba(0,0,0,0.12)" : "rgba(0,0,0,0.35)"}
           className="pointer-events-none"
         />
         {regions.map(({ quad: q, rail: [rx, ry] }, i) => {
@@ -672,12 +728,16 @@ function StyleOptions({
   style,
   opts,
   onChange,
+  onLive,
 }: {
   style: CurtainStyle;
   opts: RenderOptions;
   onChange: (o: RenderOptions) => void;
+  /** ค่าระหว่างลากแถบ (null = ปล่อยแล้ว) สำหรับภาพตัวอย่างสด */
+  onLive: (patch: Partial<RenderOptions> | null) => void;
 }) {
   const set = (patch: Partial<RenderOptions>) => onChange({ ...opts, ...patch });
+  const live = (k: keyof RenderOptions) => (v: number | null) => onLive(v === null ? null : { [k]: v });
   const draped = style === "pleated" || style === "louis";
   const resized = (Object.keys(SIZE_DEFAULTS) as (keyof typeof SIZE_DEFAULTS)[]).some(
     (k) => opts[k] !== SIZE_DEFAULTS[k],
@@ -691,6 +751,7 @@ function StyleOptions({
             value={opts.open_ratio}
             min={0}
             onChange={(v) => set({ open_ratio: v })}
+            onLive={live("open_ratio")}
             left="ปิดสนิท"
             right="เปิดสุด"
           />
@@ -709,6 +770,7 @@ function StyleOptions({
           value={opts.drop}
           min={0.2}
           onChange={(v) => set({ drop: v })}
+          onLive={live("drop")}
           left="ม้วนขึ้น"
           right="ปิดทั้งบาน"
         />
@@ -728,6 +790,7 @@ function StyleOptions({
         min={0.5}
         max={2}
         onChange={(v) => set({ width_scale: v })}
+        onLive={live("width_scale")}
         left="แคบ"
         right="กว้าง"
       />
@@ -738,6 +801,7 @@ function StyleOptions({
         // ยาวถึงพื้นแล้วยืดต่อไม่ได้ ส่วนแบบถึงขอบหน้าต่าง/ม่านม้วน ยืดลงไปได้ถึงพื้น
         max={draped && opts.length === "floor" ? 1 : 1.5}
         onChange={(v) => set({ height_scale: v })}
+        onLive={live("height_scale")}
         left="สั้น"
         right="ยาว"
       />
@@ -748,6 +812,7 @@ function StyleOptions({
           min={0.5}
           max={2}
           onChange={(v) => set({ fold_scale: v })}
+          onLive={live("fold_scale")}
           left="ลอนเล็ก ถี่"
           right="ลอนใหญ่ ห่าง"
         />
@@ -758,6 +823,7 @@ function StyleOptions({
         min={0.5}
         max={2}
         onChange={(v) => set({ pattern_scale: v })}
+        onLive={live("pattern_scale")}
         left="ลายเล็ก"
         right="ลายใหญ่"
       />
@@ -794,6 +860,8 @@ function Slider(props: {
   /** ค่าเริ่มต้น 1 (= 100%) */
   max?: number;
   onChange: (v: number) => void;
+  /** ค่าระหว่างลาก (null = ปล่อยแล้ว) */
+  onLive?: (v: number | null) => void;
   left: string;
   right: string;
 }) {
@@ -803,6 +871,7 @@ function Slider(props: {
   const v = Math.min(max, dragging ?? props.value);
   const commit = () => {
     if (dragging !== null) props.onChange(dragging);
+    props.onLive?.(null);
     setDragging(null);
   };
   return (
@@ -817,7 +886,10 @@ function Slider(props: {
         max={max}
         step={0.05}
         value={v}
-        onChange={(e) => setDragging(Number(e.target.value))}
+        onChange={(e) => {
+          setDragging(Number(e.target.value));
+          props.onLive?.(Number(e.target.value));
+        }}
         onPointerUp={commit}
         onKeyUp={commit}
         className="w-full accent-brand"

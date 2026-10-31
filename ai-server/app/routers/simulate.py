@@ -1,8 +1,10 @@
 """จำลองผ้าม่าน"""
+import functools
+import threading
 from typing import Annotated, Literal
 
 import numpy as np
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
 from pydantic import BaseModel, Field, model_validator
 
 from app.config import SIM_MAX_SIDE
@@ -61,24 +63,10 @@ def render(req: RenderRequest):
     swatch = curtain_render.fabric_region(swatch)
 
     W, H = room.size
-    quads = [[(x * W, y * H) for x, y in r.quad] for r in req.regions]
-    floors = [(r.floor[0] * W, r.floor[1] * H) if r.floor else None for r in req.regions]
-    rails = [(r.rail[0] * W, r.rail[1] * H) if r.rail else None for r in req.regions]
+    quads, floors, rails, opts = _scene(req, W, H)
     # SAM2 ตัดขอบหน้าต่างทีละจุด แล้วรวมเป็น mask เดียว
     masks = [m for q in quads if (m := yolo_sam.segment_window(room, curtain_render.quad_bbox(q))) is not None]
     window_mask = np.logical_or.reduce(masks) if masks else None
-
-    opts = curtain_render.Options(
-        open_ratio=req.open_ratio,
-        length=req.length,
-        drop=req.drop,
-        light_filter=req.light_filter,
-        repeat_cm=req.repeat_cm,
-        width_scale=req.width_scale,
-        height_scale=req.height_scale,
-        fold_scale=req.fold_scale,
-        pattern_scale=req.pattern_scale,
-    )
     draft = curtain_render.render(room, swatch, req.style, quads, opts, window_mask, floors, rails)
 
     refined, note = (None, "ไม่ได้ขอให้เกลาด้วย AI")
@@ -93,3 +81,53 @@ def render(req: RenderRequest):
         "mask_source": "sam2" if window_mask is not None else "box",
         "note": note,
     }
+
+
+def _scene(req: RenderRequest, W: int, H: int):
+    """พิกัดสัดส่วน 0–1 → พิกเซลของรูปขนาด W×H + ตัวเลือกการวาด"""
+    quads = [[(x * W, y * H) for x, y in r.quad] for r in req.regions]
+    floors = [(r.floor[0] * W, r.floor[1] * H) if r.floor else None for r in req.regions]
+    rails = [(r.rail[0] * W, r.rail[1] * H) if r.rail else None for r in req.regions]
+    opts = curtain_render.Options(
+        open_ratio=req.open_ratio,
+        length=req.length,
+        drop=req.drop,
+        light_filter=req.light_filter,
+        repeat_cm=req.repeat_cm,
+        width_scale=req.width_scale,
+        height_scale=req.height_scale,
+        fold_scale=req.fold_scale,
+        pattern_scale=req.pattern_scale,
+    )
+    return quads, floors, rails, opts
+
+
+# ---------- ตัวอย่างสด: ลูกค้าลากกรอบ/เลื่อนแถบปรับค่า → ภาพร่างเล็ก ๆ ภายในเสี้ยววินาที ----------
+
+PREVIEW_SIDE = 800  # พอสำหรับจอมือถือ (วาด 0.1–0.35 วินาที เทียบกับ 0.4–1.3 วินาทีที่ 1600px)
+# วาดพร้อมกันได้เท่านี้ ที่เหลือรอคิว — ลูกค้าหลายคนลากพร้อมกันจะได้ไม่แย่ง CPU จนช้าทุกคน
+_preview_slots = threading.BoundedSemaphore(4)
+
+
+# รูปห้อง/ลายผ้าเดิมถูกขอซ้ำทุกครั้งที่ลาก → เก็บที่โหลดแล้วไว้ (URL ใน R2 ไม่เปลี่ยนเนื้อหา)
+@functools.lru_cache(maxsize=16)
+def _room_small(url: str):
+    return imageio.load_url(url, PREVIEW_SIDE)
+
+
+@functools.lru_cache(maxsize=32)
+def _fabric(url: str):
+    return curtain_render.fabric_region(imageio.load_url(url, 1024))
+
+
+@router.post("/preview")
+def preview(req: RenderRequest):
+    """ภาพร่างสำหรับดูตัวอย่างระหว่างปรับ: รูปเล็ก ไม่ตัดขอบหน้าต่างด้วย SAM2 ไม่เกลาด้วย AI → JPEG"""
+    try:
+        room, swatch = _room_small(req.image_url), _fabric(req.swatch_url)
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from e
+    quads, floors, rails, opts = _scene(req, *room.size)
+    with _preview_slots:
+        draft = curtain_render.render(room, swatch, req.style, quads, opts, None, floors, rails)
+    return Response(imageio.to_jpeg(draft.image, 82), media_type="image/jpeg")
