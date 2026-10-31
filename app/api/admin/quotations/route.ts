@@ -4,11 +4,11 @@
 //     แอดมินแก้ได้แค่ กว้าง / สูง / จำนวนหน้าต่างต่อห้อง ไม่ส่ง = ใช้ค่าจากใบประเมินราคา
 //   สินค้า ราคาต่อหน่วย (base_price) จำนวนห้อง (room_count) และมัดจำ 50% ระบบกำหนดเอง แก้ไม่ได้ (lib/quotation.ts)
 //   ผู้จัดทำ = แอดมินที่เข้าสู่ระบบ (lib/admin-auth.ts) ไม่รับจากหน้าเว็บ
-//   ขอใบกำกับภาษี = ลูกค้ากรอกเลขผู้เสียภาษีเองในหน้าข้อมูลของฉัน (LIFF) แอดมินติ๊กแทนไม่ได้
+//   ขอใบกำกับภาษี = ลูกค้าติ๊กเองในฟอร์มใบประเมินราคา (LIFF) แอดมินติ๊กแทนไม่ได้
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
-import { faDoc } from "@/lib/documents";
+import { buyerSnapshot, faDoc } from "@/lib/documents";
 import { faQuotationBody, priceItems, type SizeEdit } from "@/lib/quotation";
 import { notifyQuotationCreated } from "@/lib/line";
 import { currentAdmin } from "@/lib/admin-auth";
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
   try {
     // ลูกค้าและจำนวนห้องของใบประเมินราคา
     const customerRes = await client.query(
-      `select c.*, e.room_count from price_estimate e join customer c using (customer_id) where e.estimate_id = $1`,
+      `select c.*, e.room_count, e.details as estimate_details from price_estimate e join customer c using (customer_id) where e.estimate_id = $1`,
       [estimate_id],
     );
     const customer = customerRes.rows[0];
@@ -46,13 +46,13 @@ export async function POST(req: NextRequest) {
     const priced = priceItems(est.rows, edits, roomCount);
     if (priced.error !== null) return NextResponse.json({ error: priced.error }, { status: 400 });
 
-    // ชื่อบนเอกสารใช้ชื่อ-นามสกุลจริง (contactName เป็นฟิลด์บังคับของ FlowAccount)
-    if (!customer.full_name) return NextResponse.json({ error: "ลูกค้ายังไม่มีชื่อ-นามสกุล (full_name)" }, { status: 400 });
-    const snapshot = { name: customer.full_name, phone: customer.phone, address: customer.address, ...customer.details };
+    // ลูกค้าบนเอกสาร = ที่กรอกในใบประเมินราคา (price_estimate.details.billing) contactName เป็นฟิลด์บังคับของ FlowAccount
+    const snapshot = buyerSnapshot(customer, customer.estimate_details);
+    if (!snapshot.name) return NextResponse.json({ error: "ลูกค้ายังไม่มีชื่อบนเอกสาร (ชื่อ-นามสกุล หรือชื่อบริษัท)" }, { status: 400 });
     const details = {
       project_name: body.project_name ?? null,
       room_count: roomCount, // quotation_item เก็บยอดต่อ 1 ห้อง ยอดรวม = รวมต่อห้อง x room_count
-      want_tax_invoice: Boolean(customer.details?.tax_id), // ลูกค้ากรอกเลขผู้เสียภาษี = ขอใบกำกับภาษี (ส่งให้เฉพาะคนที่ขอ)
+      want_tax_invoice: Boolean(snapshot.want_tax_invoice), // ลูกค้าติ๊ก "ขอใบกำกับภาษี" ในใบประเมินราคา
       customer: snapshot, // สำเนาข้อมูลลูกค้า ณ วันออกเอกสาร
     };
 

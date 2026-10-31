@@ -2,12 +2,12 @@
 // body: { invoice_id, amount }
 //   ผู้บันทึกรับเงิน = แอดมินที่เข้าสู่ระบบ (lib/admin-auth.ts) ไม่รับจากหน้าเว็บ
 //   ยอดต้องตรงกับใบแจ้งหนี้ ไม่ครบ = ไม่บันทึก สถานะไม่เปลี่ยน (A2.2.1)
-//   บันทึกผลด้วย markPaid() ตัวเดียวกับ QR (lib/payments.ts)
+//   บันทึกผลด้วย markPaid() ตัวเดียวกับ QR (lib/payments.ts) แล้วแจ้งลูกค้าทาง LINE (ข้อ 6)
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { r2 } from "@/lib/documents";
 import { markPaid } from "@/lib/payments";
-import { notifyJobStatus } from "@/lib/line";
+import { notifyCashReceived, notifyJobStatus } from "@/lib/line";
 import { currentAdmin } from "@/lib/admin-auth";
 
 export async function POST(req: NextRequest) {
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
     const result = await markPaid(client, p.rows[0].payment_id);
 
     await client.query("commit");
+    if (result) await notifyCashReceived(result.payment.payment_id); // แจ้งลูกค้าว่าร้านได้รับเงินสดแล้ว
     if (result?.job) await notifyJobStatus(result.job.job_id); // มัดจำแล้ว = งาน "รอดำเนินการ"
     return NextResponse.json(result, { status: 201 });
   } catch (e) {

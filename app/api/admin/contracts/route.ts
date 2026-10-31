@@ -1,37 +1,36 @@
-// POST /api/admin/contracts   สร้างใบสัญญาซื้อขายจากใบเสนอราคา (Use Case 15 ข้อ 3, Activity Diagram 3-4)
-// body: { quotation_id }
-//   สร้างได้หลังลูกค้ายืนยันใบเสนอราคา ใบเสนอราคา 1 ใบมีสัญญาได้ 1 ฉบับ (ER: Quotation 1 - 0..1 Contract)
-//   ระบบสร้างสัญญาจากข้อมูลในระบบ file_url = หน้าใบสัญญาที่พิมพ์ / บันทึกเป็น PDF ได้
-//   ข้อมูลไม่เปลี่ยนแล้วหลังลูกค้ายืนยัน (ใบเสนอราคาถูกล็อก) เอกสารจึงเหมือนเดิมทุกครั้งที่เปิด
+// POST /api/admin/contracts   แอดมินส่งใบสัญญาซื้อขาย (PDF ที่ร้านเซ็นแล้ว) ให้ลูกค้า (Use Case 15 ข้อ 3, Activity Diagram 3-4)
+// body: multipart/form-data { quotation_id, file (PDF) }
+//   ส่งได้หลังลูกค้ายืนยันใบเสนอราคา ใบเสนอราคา 1 ใบมีสัญญาได้ 1 ฉบับ (ER: Quotation 1 - 0..1 Contract)
+//   ไฟล์เก็บใน R2 แล้วบันทึก contract.file_url จากนั้นแจ้งลูกค้าทาง LINE
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
+import { uploadFile } from "@/lib/r2";
+import { notifyContractSent } from "@/lib/line";
+import { PDF_ONLY, readUpload } from "@/lib/contract";
 
 export async function POST(req: NextRequest) {
-  const { quotation_id } = await req.json().catch(() => ({}));
-  if (!quotation_id) return NextResponse.json({ error: "ต้องส่ง quotation_id" }, { status: 400 });
+  const form = await req.formData().catch(() => null);
+  const quotationId = Number(form?.get("quotation_id"));
+  if (!form || !quotationId) return NextResponse.json({ error: "ต้องส่ง quotation_id" }, { status: 400 });
 
-  const client = await pool.connect();
+  const file = await readUpload(form, "file", PDF_ONLY);
+  if ("error" in file) return NextResponse.json({ error: file.error }, { status: 400 });
+
   try {
-    const q = await client.query(`select confirmed_at from quotation where quotation_id = $1`, [quotation_id]);
+    const q = await pool.query(`select confirmed_at from quotation where quotation_id = $1`, [quotationId]);
     if (!q.rows[0]) return NextResponse.json({ error: "ไม่พบใบเสนอราคา" }, { status: 404 });
     if (!q.rows[0].confirmed_at) return NextResponse.json({ error: "ลูกค้ายังไม่ยืนยันใบเสนอราคา" }, { status: 400 });
 
-    const exists = await client.query(`select contract_id from contract where quotation_id = $1`, [quotation_id]);
+    const exists = await pool.query(`select contract_id from contract where quotation_id = $1`, [quotationId]);
     if (exists.rowCount) return NextResponse.json({ error: "ใบเสนอราคานี้มีใบสัญญาแล้ว" }, { status: 409 });
 
-    await client.query("begin");
-    const ins = await client.query(
-      `insert into contract (quotation_id, file_url) values ($1, '') returning contract_id`, [quotation_id]);
-    const id = ins.rows[0].contract_id;
-    const r = await client.query(
-      `update contract set file_url = $1 where contract_id = $2 returning *`, [`/admin/contracts/${id}`, id]);
-    await client.query("commit");
-    // TODO: แจ้งลูกค้าทาง LINE OA ให้ดาวน์โหลดสัญญาไปเซ็น
+    const url = await uploadFile(`contracts/q${quotationId}/shop-${Date.now()}.pdf`, file.body, file.contentType);
+    const r = await pool.query(
+      `insert into contract (quotation_id, file_url) values ($1, $2) returning *`, [quotationId, url]);
+
+    await notifyContractSent(r.rows[0].contract_id);
     return NextResponse.json({ contract: r.rows[0] }, { status: 201 });
   } catch (e) {
-    await client.query("rollback").catch(() => {});
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
-  } finally {
-    client.release();
   }
 }

@@ -4,6 +4,7 @@
 //   2. ลูกค้ายืนยันใบเสนอราคา      quotation.confirmed_at มีค่า แต่ยังไม่ออกใบแจ้งหนี้
 //   3. ลูกค้าแจ้งแก้ไขใบเสนอราคา   quotation.details.change_request มีค่า
 //   4. ลูกค้าชำระเงิน              payment.status = 'paid' แต่ยังไม่ออกใบเสร็จ
+//   5. ลูกค้าส่งใบสัญญาที่เซ็นแล้ว   contract.signed_file_url มีค่า แต่ signed_at ว่าง (ไม่มีคอลัมน์เวลาส่ง ใช้ created_at)
 // แอดมินจัดการงานเสร็จ = สถานะเปลี่ยน = แจ้งเตือนหายเอง
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
@@ -35,6 +36,12 @@ export async function GET() {
       from payment p
       where p.status = 'paid'
         and not exists (select 1 from receipt r where r.payment_id = p.payment_id)
+
+      union all
+      select 'ลูกค้าส่งใบสัญญาที่เซ็นแล้ว ' || coalesce(q.flowaccount_serial, '#' || q.quotation_id) || ' · รอตรวจสอบ',
+             '/admin/contracts/' || ct.contract_id, ct.created_at
+      from contract ct join quotation q using (quotation_id)
+      where ct.signed_file_url is not null and ct.signed_at is null
 
       order by at desc`);
     return NextResponse.json({ notifications: r.rows });

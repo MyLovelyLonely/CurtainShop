@@ -28,7 +28,9 @@ export async function customerInvoice(customerId: number, invoiceId: number) {
 export async function customerPaymentHistory(customerId: number) {
   const r = await pool.query(
     `select p.payment_id, p.amount, p.pay_method, p.paid_at, i.type, i.flowaccount_serial as inv_serial,
-            q.flowaccount_serial as qt_serial, r.flowaccount_serial as receipt_serial, t.flowaccount_serial as tax_serial,
+            q.flowaccount_serial as qt_serial, r.flowaccount_serial as receipt_serial,
+            case when coalesce(q.details->>'want_tax_invoice', q.details->'customer'->>'want_tax_invoice') = 'true'
+                 then t.flowaccount_serial end as tax_serial,
             r.flowaccount_record_id as receipt_record_id, t.flowaccount_record_id as tax_record_id
      from payment p
      join invoice i using (invoice_id)
@@ -60,6 +62,7 @@ const QUOTATION_SQL = `
          q.deposit_amount, q.created_at, q.confirmed_at, q.details->>'project_name' as project_name,
          coalesce((q.details->>'room_count')::int, 1) as room_count,
          q.details->'change_request' as change_request,
+         q.details->'customer' as buyer, -- ข้อมูลผู้ซื้อที่คัดลอกไว้ตอนออกใบเสนอราคา (lib/documents.ts buyerSnapshot)
          exists (select 1 from invoice i where i.quotation_id = q.quotation_id) as has_invoice
   from quotation q join price_estimate e using (estimate_id)
   where e.customer_id = $1`;
@@ -79,7 +82,9 @@ export async function customerDocuments(customerId: number) {
               p.amount, i.type, q.flowaccount_serial as qt_serial
        from tax_invoice t join payment p using (payment_id) join invoice i using (invoice_id)
        join quotation q using (quotation_id) join price_estimate e using (estimate_id)
-       where e.customer_id = $1 order by t.created_at desc`, [customerId]),
+       where e.customer_id = $1
+         and coalesce(q.details->>'want_tax_invoice', q.details->'customer'->>'want_tax_invoice') = 'true'
+       order by t.created_at desc`, [customerId]),
     pool.query(
       `select r.receipt_id, r.flowaccount_serial as serial, r.flowaccount_record_id as record_id, r.created_at,
               p.amount, p.pay_method, i.type, q.flowaccount_serial as qt_serial
@@ -87,7 +92,8 @@ export async function customerDocuments(customerId: number) {
        join quotation q using (quotation_id) join price_estimate e using (estimate_id)
        where e.customer_id = $1 order by r.created_at desc`, [customerId]),
     pool.query(
-      `select c.contract_id, c.created_at, c.file_url, c.signed_file_url, c.signed_at, q.flowaccount_serial as qt_serial
+      `select c.contract_id, c.created_at, c.file_url, c.signed_file_url, c.signed_at, q.flowaccount_serial as qt_serial,
+              q.details->'contract_reject' as reject
        from contract c join quotation q using (quotation_id) join price_estimate e using (estimate_id)
        where e.customer_id = $1 order by c.created_at desc`, [customerId]),
   ]);
@@ -105,7 +111,8 @@ const OWNER_SQL: Record<string, string> = {
                     where i.flowaccount_record_id = $2 and e.customer_id = $1`,
   "tax-invoices": `select 1 from tax_invoice t join payment p using (payment_id) join invoice i using (invoice_id)
                    join quotation q using (quotation_id) join price_estimate e using (estimate_id)
-                   where t.flowaccount_record_id = $2 and e.customer_id = $1`,
+                   where t.flowaccount_record_id = $2 and e.customer_id = $1
+                     and coalesce(q.details->>'want_tax_invoice', q.details->'customer'->>'want_tax_invoice') = 'true'`,
   receipts: `select 1 from receipt r join payment p using (payment_id) join invoice i using (invoice_id)
              join quotation q using (quotation_id) join price_estimate e using (estimate_id)
              where r.flowaccount_record_id = $2 and e.customer_id = $1`,

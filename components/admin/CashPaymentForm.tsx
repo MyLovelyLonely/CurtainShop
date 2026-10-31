@@ -7,7 +7,7 @@ import { baht } from "@/components/admin/ui";
 
 export function CashPaymentForm({ invoiceId, amount }: { invoiceId: number; amount: number }) {
   const router = useRouter();
-  const [received, setReceived] = useState(String(amount));
+  const [received, setReceived] = useState(""); // ว่างไว้ ให้แอดมินนับเงินแล้วกรอกเอง ไม่ใช่กดผ่าน
   const [loading, setLoading] = useState(false);
 
   async function save() {
@@ -26,7 +26,7 @@ export function CashPaymentForm({ invoiceId, amount }: { invoiceId: number; amou
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <input type="number" inputMode="decimal" step="0.01" min="0" value={received} onChange={(e) => setReceived(e.target.value)}
+      <input type="number" inputMode="decimal" step="0.01" min="0" value={received} placeholder={String(amount)} onChange={(e) => setReceived(e.target.value)}
         className="w-40 h-11 border-2 border-border rounded-xl px-3 text-base font-mono bg-white focus:outline-none focus:border-primary" />
       <button onClick={save} disabled={loading || received === ""}
         className="h-11 px-4 rounded-xl text-base font-semibold bg-emerald-600 text-white hover:opacity-90 disabled:opacity-50">

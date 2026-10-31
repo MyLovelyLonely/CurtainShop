@@ -34,7 +34,7 @@ export function DocButton({ docType, recordId, label = "ดูเอกสาร
   return (
     <div>
       <button onClick={open} disabled={busy}
-        className="w-full flex items-center justify-center gap-2 border-2 border-primary text-primary rounded-xl py-2.5 text-base font-semibold disabled:opacity-50">
+        className="w-full flex items-center justify-center gap-2 bg-card border-2 border-primary/60 text-primary shadow-sm rounded-xl py-2.5 text-base font-semibold active:bg-primary/10 disabled:opacity-50">
         <FileText size={18} /> {busy ? "กำลังเปิด..." : label}
       </button>
       {error && <p className="text-sm text-red-700 mt-1.5 text-center">{error}</p>}

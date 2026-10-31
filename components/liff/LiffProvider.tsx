@@ -18,6 +18,12 @@ export function LiffProvider({ children }: { children: React.ReactNode }) {
     import("@line/liff").then(async ({ default: liff }) => {
       await liff.init({ liffId: LIFF_ID });
       if (!liff.isLoggedIn()) return liff.login(); // เปิดนอกแอป LINE = ไปหน้า login ของ LINE
+      // LIFF คืน ID token ที่แคชไว้แม้หมดอายุแล้ว (อายุ ~1 ชม.) = LINE verify ไม่ผ่าน ต้อง login ใหม่ให้ได้ token ใหม่
+      const exp = liff.getDecodedIDToken()?.exp;
+      if (!exp || exp * 1000 < Date.now() + 60_000) {
+        liff.logout();
+        return liff.login({ redirectUri: location.href });
+      }
       setToken(liff.getIDToken());
       setReady(true);
     }).catch(() => setError(true));
@@ -26,7 +32,11 @@ export function LiffProvider({ children }: { children: React.ReactNode }) {
   const api: Api = useCallback(async (path, init) => {
     const res = await fetch(path, {
       ...init,
-      headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}), ...init?.headers },
+      headers: {
+        ...(init?.body instanceof FormData ? {} : { "Content-Type": "application/json" }), // FormData: เบราว์เซอร์ใส่ boundary เอง
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...init?.headers,
+      },
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error ?? "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง");

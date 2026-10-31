@@ -1,23 +1,22 @@
-// รายการใบเสนอราคา แสดงเป็นการ์ดตัวใหญ่ อ่านง่าย แยกแท็บตามสถานะ
+// รายการใบเสนอราคา แสดงเป็นการ์ดตัวใหญ่ อ่านง่าย แยกตามการยืนยันของลูกค้า
 import { CalendarDays, ChevronRight, Plus, UserRound } from "lucide-react";
 import { pool } from "@/lib/db";
-import { Badge, baht, ButtonLink, EmptyState, JOB_STATUS, PageHeader, StatusBadge, Tabs, thDate } from "@/components/admin/ui";
+import { Badge, baht, ButtonLink, EmptyState, PageHeader, Tabs, thDate } from "@/components/admin/ui";
 
-const TABS = ["all", "waiting", "active", "closed"] as const;
+const TABS = ["all", "waiting", "confirmed"] as const;
 
 export default async function Quotations({ searchParams }: { searchParams: Promise<{ tab?: string }> }) {
   const { tab: tabParam } = await searchParams;
   const tab = TABS.find((t) => t === tabParam) ?? "all";
 
   const { rows } = await pool.query(`
-    select q.*, q.details->'customer'->>'name' as customer, a.full_name as admin_name, j.status as job_status
-    from quotation q join admin a using (admin_id) left join job j using (quotation_id)
+    select q.*, q.details->'customer'->>'name' as customer, a.full_name as admin_name
+    from quotation q join admin a using (admin_id)
     order by q.created_at desc`);
 
-  const waiting = rows.filter((q) => !q.confirmed_at && !q.job_status);
-  const closed = rows.filter((q) => q.job_status === "closed");
-  const active = rows.filter((q) => !waiting.includes(q) && !closed.includes(q));
-  const list = { all: rows, waiting, active, closed }[tab];
+  const waiting = rows.filter((q) => !q.confirmed_at);
+  const confirmed = rows.filter((q) => q.confirmed_at);
+  const list = { all: rows, waiting, confirmed }[tab];
   const total = rows.reduce((s, q) => s + Number(q.total_amount), 0);
 
   return (
@@ -32,8 +31,7 @@ export default async function Quotations({ searchParams }: { searchParams: Promi
         tabs={[
           { key: "all", label: "ทั้งหมด", count: rows.length },
           { key: "waiting", label: "รอลูกค้ายืนยัน", count: waiting.length },
-          { key: "active", label: "กำลังดำเนินการ", count: active.length },
-          { key: "closed", label: "ปิดงานแล้ว", count: closed.length },
+          { key: "confirmed", label: "ลูกค้ายืนยันแล้ว", count: confirmed.length },
         ]}
       />
 
@@ -57,8 +55,7 @@ export default async function Quotations({ searchParams }: { searchParams: Promi
 
             {/* สถานะ */}
             <div className="flex flex-col gap-2 items-start min-w-40">
-              {q.job_status ? <StatusBadge map={JOB_STATUS} status={q.job_status} size="lg" />
-                : q.confirmed_at ? <Badge color="emerald" size="lg">ลูกค้ายืนยันแล้ว</Badge>
+              {q.confirmed_at ? <Badge color="emerald" size="lg">ลูกค้ายืนยันแล้ว</Badge>
                 : <Badge color="amber" size="lg">รอลูกค้ายืนยัน</Badge>}
               {q.details?.want_tax_invoice && <Badge color="purple" size="lg">ขอใบกำกับภาษี</Badge>}
             </div>

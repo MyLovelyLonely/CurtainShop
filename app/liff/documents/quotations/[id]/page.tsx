@@ -3,15 +3,16 @@
 //   ข้อมูลถูกต้อง = กดยืนยัน -> ร้านออกใบแจ้งหนี้มัดจำต่อ
 //   ข้อมูลไม่ถูกต้อง = กดแจ้งแก้ไข ร้านจึงแก้ไขใบเสนอราคาได้ (Use Case 15 Alternate Flow)
 import { use, useState } from "react";
-import { CheckCircle2, Download } from "lucide-react";
+import { CheckCircle2, Download, PencilLine } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
 import { useApi, useLiffData } from "@/components/liff/LiffProvider";
 import { DocButton } from "@/components/liff/DocButton";
 import { PageTitle, Panel, Tag } from "@/components/liff/ui";
+import { BuyerGrid, type Buyer } from "@/components/liff/BuyerInfo";
 import { lineArea, lineTotal } from "@/lib/pricing";
 import { OFFICIAL_DOC_UNAVAILABLE_MESSAGE } from "@/lib/confirm-rules";
 
-type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; deposit_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number; change_request: { note: string; requested_at: string } | null };
+type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; deposit_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number; change_request: { note: string; requested_at: string } | null; buyer: Buyer | null };
 type Item = { quotation_item_id: number; name: string; price_unit: string; width: string | null; height: string | null; quantity: number; unit_price: string };
 
 export default function QuotationDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -78,6 +79,14 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
         </Panel>
       )}
 
+      {/* ผู้ซื้อบนเอกสาร: ชุดเดียวกับที่ลูกค้ากรอกในใบประเมินราคา (แสดงด้วย BuyerGrid ตัวเดียวกัน) */}
+      {q.buyer && (
+        <Panel className="space-y-3">
+          <p className="text-lg font-semibold">ข้อมูลลูกค้า</p>
+          <BuyerGrid buyer={q.buyer} />
+        </Panel>
+      )}
+
       {/* รายการสินค้า (ราคาต่อ 1 ห้อง) */}
       <section className="space-y-3">
         <div className="flex items-baseline justify-between">
@@ -124,7 +133,7 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
       <div className="grid grid-cols-2 gap-3">
         {/* บันทึกเป็นรูปภาพ ยังไม่ได้ทำ: แสดงปุ่มไว้ก่อน กดแล้วยังไม่มีผล */}
         <button type="button"
-          className="w-full flex items-center justify-center gap-2 border-2 border-border rounded-xl py-2.5 text-base font-semibold">
+          className="w-full flex items-center justify-center gap-2 bg-card border-2 border-primary/60 text-primary shadow-sm rounded-xl py-2.5 text-base font-semibold active:bg-primary/10">
           <Download size={18} /> บันทึกรูป
         </button>
         <DocButton docType="quotations" recordId={q.record_id} label="ดู PDF" onError={setPdfError} />
@@ -166,8 +175,8 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
           )}
           {!reporting ? (
             <button onClick={() => setReporting(true)}
-              className="w-full border-2 border-border rounded-xl py-3 text-lg font-semibold">
-              ข้อมูลไม่ถูกต้อง แจ้งแก้ไข
+              className="w-full flex items-center justify-center gap-2 text-muted-foreground rounded-xl py-3 text-base font-medium underline underline-offset-4 active:bg-muted">
+              <PencilLine size={18} /> ข้อมูลไม่ถูกต้อง แจ้งแก้ไข
             </button>
           ) : (
             <Panel className="space-y-3 border-2 border-amber-300">

@@ -1,7 +1,7 @@
 "use client";
 // หน้าหลักลูกค้า: ทักทาย + ทางลัดไปเมนูต่าง ๆ + แจ้งยอดที่ต้องชำระ
 import Link from "next/link";
-import { BookOpen, ChevronRight, ClipboardList, FileText, Wallet } from "lucide-react";
+import { BookOpen, ChevronRight, CircleHelp, ClipboardList, FileText, Wallet } from "lucide-react";
 import { baht } from "@/components/admin/ui";
 import { useLiffData } from "@/components/liff/LiffProvider";
 import { Panel } from "@/components/liff/ui";
@@ -18,7 +18,7 @@ export default function LiffHome() {
     <>
       <div>
         <p className="text-base text-muted-foreground">สวัสดีค่ะ</p>
-        <h1 className="text-2xl font-bold">คุณ{me.data?.customer.full_name ?? me.data?.customer.display_name ?? "..."}</h1>
+        <h1 className="text-2xl font-bold">คุณ{" "}{ me.data?.customer.display_name ?? "..."}</h1>
       </div>
 
       {toPay.length > 0 && (
@@ -37,6 +37,7 @@ export default function LiffHome() {
           { href: "/liff/documents", icon: FileText, title: "เอกสารของฉัน", sub: "ใบเสนอราคา ใบแจ้งหนี้ ใบเสร็จ" },
           { href: "/liff/jobs", icon: ClipboardList, title: "สถานะงาน", sub: "ติดตามขั้นตอนการติดตั้ง" },
           { href: "/liff/payments", icon: Wallet, title: "ชำระเงิน", sub: "ชำระด้วย QR พร้อมเพย์ หรือเงินสด" },
+          { href: "/liff/qna", icon: CircleHelp, title: "คำถามที่พบบ่อย", sub: "ค้นหาคำตอบเกี่ยวกับบริการของเรา" },
         ].map(({ href, icon: Icon, title, sub }) => (
           <Link key={href} href={href}>
             <Panel className="flex items-center gap-4">

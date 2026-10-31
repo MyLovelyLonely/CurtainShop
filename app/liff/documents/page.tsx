@@ -1,19 +1,19 @@
 "use client";
 // เอกสารของฉัน แยกตามประเภท (Use Case 8, ขอบเขต 1.3.3.3)
 //   ใบเสนอราคา: ตรวจสอบ + ยืนยัน, ใบแจ้งหนี้: ไปชำระเงิน, ใบกำกับภาษี / ใบเสร็จ: ดูเอกสาร
-//   ใบสัญญาซื้อขาย: ยังไม่เปิดให้ส่งไฟล์ (หน้าเปล่าไว้ก่อน)
+//   ใบสัญญาซื้อขาย: เปิดอ่าน + ส่งไฟล์ที่เซ็นแล้วกลับ (components/liff/ContractCard.tsx)
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronRight } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
 import { useLiffData } from "@/components/liff/LiffProvider";
 import { DocButton } from "@/components/liff/DocButton";
+import { ContractCard, type Contract } from "@/components/liff/ContractCard";
 import { Empty, invoiceLabel, PageTitle, Panel, Tag } from "@/components/liff/ui";
 
 type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number };
 type Invoice = { invoice_id: number; type: string; amount: string; due_date: string; flowaccount_serial: string | null; qt_serial: string | null; is_paid: boolean; flowaccount_record_id?: string | null };
 type Paper = { serial: string | null; record_id: string | null; created_at: string; amount: string; type: string; qt_serial: string | null };
-type Contract = { contract_id: number; created_at: string; signed_file_url: string | null; signed_at: string | null; qt_serial: string | null };
 type Docs = { quotations: Quotation[]; invoices: Invoice[]; tax_invoices: (Paper & { tax_invoice_id: number })[]; receipts: (Paper & { receipt_id: number })[]; contracts: Contract[] };
 
 const TABS = [
@@ -25,7 +25,7 @@ const TABS = [
 ] as const;
 
 export default function LiffDocuments() {
-  const { data, error } = useLiffData<Docs>("/api/liff/documents");
+  const { data, error, reload } = useLiffData<Docs>("/api/liff/documents");
   const params = useSearchParams();
   const router = useRouter();
   const path = usePathname();
@@ -111,7 +111,7 @@ export default function LiffDocuments() {
 
       {data && tab === "tax" && (
         <PaperList rows={data.tax_invoices} docType="tax-invoices" title="ใบกำกับภาษี"
-          empty="ยังไม่มีใบกำกับภาษี ร้านจะออกให้หลังได้รับชำระเงิน" />
+          empty="ใบกำกับภาษีจะแสดงที่นี่เมื่อคุณแจ้งขอและร้านออกเอกสารให้แล้ว" />
       )}
 
       {data && tab === "receipts" && (
@@ -121,26 +121,8 @@ export default function LiffDocuments() {
 
       {data && tab === "contracts" && (
         <section className="space-y-3">
-          <Panel className="space-y-3 text-base">
-            <p className="text-lg font-semibold">ใบสัญญาซื้อขาย</p>
-            <ol className="space-y-2 list-decimal pl-5 text-muted-foreground">
-              <li>ร้านส่งใบสัญญาให้ตรวจสอบที่หน้านี้</li>
-              <li>ดาวน์โหลด เซ็นชื่อ แล้วถ่ายรูปหรือสแกน</li>
-              <li>ส่งไฟล์ที่เซ็นแล้วกลับมาที่หน้านี้ ร้านจะตรวจสอบอีกครั้ง</li>
-            </ol>
-            <p className="text-sm text-muted-foreground bg-muted rounded-xl px-3 py-2">การส่งไฟล์สัญญากำลังพัฒนา</p>
-          </Panel>
-          {data.contracts.map((c) => (
-            <Panel key={c.contract_id} className="flex justify-between items-center gap-2">
-              <div>
-                <p className="text-base font-semibold">สัญญาของใบเสนอราคา {c.qt_serial ?? "-"}</p>
-                <p className="text-sm text-muted-foreground">{thDate(c.created_at)}</p>
-              </div>
-              {c.signed_at ? <Tag tone="emerald">ร้านตรวจสอบแล้ว</Tag>
-                : c.signed_file_url ? <Tag tone="blue">รอร้านตรวจสอบ</Tag>
-                : <Tag tone="amber">รอเซ็น</Tag>}
-            </Panel>
-          ))}
+          {!data.contracts.length && <Empty>ร้านจะส่งใบสัญญาให้เซ็นที่นี่หลังคุณยืนยันใบเสนอราคา</Empty>}
+          {data.contracts.map((c) => <ContractCard key={c.contract_id} c={c} onChange={reload} />)}
         </section>
       )}
     </>

@@ -1,14 +1,11 @@
-// รายละเอียดใบเสนอราคา + เอกสารที่ต่อจากใบนี้ (ใบแจ้งหนี้ -> การชำระเงิน -> ใบกำกับภาษี/ใบเสร็จ)
+// รายละเอียดใบเสนอราคา
 // ตัวหนังสือใหญ่ อ่านง่าย
 import { notFound } from "next/navigation";
 import { MapPin, Phone } from "lucide-react";
 import { pool } from "@/lib/db";
 import { lineArea, lineTotal } from "@/lib/pricing";
-import { ActionButton } from "@/components/admin/ActionButton";
-import { CashPaymentForm } from "@/components/admin/CashPaymentForm";
 import { DocLinks } from "@/components/admin/DocLinks";
-import { Badge, baht, ButtonLink, Card, JOB_STATUS, PageHeader, PAYMENT_STATUS, StatusBadge, Table, thDate } from "@/components/admin/ui";
-import { contractNo } from "@/lib/shop";
+import { Badge, baht, ButtonLink, Card, PageHeader, Table, thDate } from "@/components/admin/ui";
 
 export default async function QuotationDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -17,36 +14,23 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
   const quotation = q.rows[0];
   if (!quotation) notFound();
 
-  const [items, invoices, payments, job, contract] = await Promise.all([
+  const [items, invoices] = await Promise.all([
     pool.query(`select qi.*, p.name, p.price_unit from quotation_item qi join product p using (product_id)
                 where quotation_id = $1 order by quotation_item_id`, [id]),
-    pool.query(`select * from invoice where quotation_id = $1 order by invoice_id`, [id]),
-    pool.query(`select p.*, r.receipt_id, r.flowaccount_serial as receipt_serial, r.flowaccount_record_id as receipt_record_id,
-                       t.tax_invoice_id, t.flowaccount_serial as tax_serial, t.flowaccount_record_id as tax_record_id
-                from payment p join invoice i using (invoice_id)
-                left join receipt r using (payment_id) left join tax_invoice t using (payment_id)
-                where i.quotation_id = $1 order by p.payment_id`, [id]),
-    pool.query(`select * from job where quotation_id = $1`, [id]),
-    pool.query(`select * from contract where quotation_id = $1`, [id]),
+    pool.query(`select invoice_id from invoice where quotation_id = $1 limit 1`, [id]),
   ]);
 
   const c = quotation.details.customer;
-  const inv = (type: string) => invoices.rows.find((i) => i.type === type);
-  const paidFor = (invoiceId: number) => payments.rows.some((p) => p.invoice_id === invoiceId && p.status === "paid");
   // รายการเก็บเป็นยอดต่อ 1 ห้อง ยอดก่อน VAT = รวมต่อห้อง x จำนวนห้อง
   const roomSubTotal = items.rows.reduce((s, i) => s + lineTotal(i, i.price_unit), 0);
-  const jobRow = job.rows[0];
   const rooms = Number(quotation.details.room_count) || 1; // ใบเก่าที่ยังไม่มี room_count = 1 ห้อง
   const subTotal = Math.round(roomSubTotal * rooms * 100) / 100;
   const total = Number(quotation.total_amount);
   const deposit = Number(quotation.deposit_amount);
-  const contractRow = contract.rows[0];
   // แก้ไขได้เฉพาะเมื่อลูกค้าแจ้งแก้ไขมา ก่อนลูกค้ายืนยันและก่อนออกใบแจ้งหนี้ (Use Case 15 Alternate Flow)
   const waiting = !quotation.confirmed_at && !invoices.rows.length;
   const changeRequest = waiting ? quotation.details.change_request : null;
 
-  // สถานะแยกตามตารางในฐานข้อมูล ไม่รวมเป็นเส้นเดียว:
-  //   หัวหน้า = ใบเสนอราคา (confirmed_at), การ์ดใบแจ้งหนี้/การชำระ = payment.status, การ์ดสถานะงาน = job.status
   return (
     <>
       <PageHeader title={`ใบเสนอราคา ${quotation.flowaccount_serial ?? `#${quotation.quotation_id}`}`}
@@ -134,105 +118,6 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
         </div>
       </div>
 
-      <Card title="สถานะงาน" size="lg">
-        <div className="px-5 pb-5 flex flex-wrap items-center gap-4 text-base">
-          {jobRow ? (
-            <>
-              <StatusBadge map={JOB_STATUS} status={jobRow.status} size="lg" />
-              <span className="text-muted-foreground">
-                {jobRow.started_at && `เริ่ม ${thDate(jobRow.started_at, true)}`}
-                {jobRow.completed_at && ` · เสร็จ ${thDate(jobRow.completed_at, true)}`}
-              </span>
-              <div className="ml-auto flex gap-3">
-                {jobRow.status === "pending" && (
-                  <ActionButton size="lg" url={`/api/admin/jobs/${jobRow.job_id}/status`} body={{ status: "in_progress" }} label="ช่างเข้าดำเนินงานแล้ว" />
-                )}
-                {jobRow.status === "in_progress" && (
-                  <ActionButton size="lg" url={`/api/admin/jobs/${jobRow.job_id}/status`} body={{ status: "completed" }} label="งานเสร็จและตรวจรับแล้ว" />
-                )}
-              </div>
-            </>
-          ) : (
-            <span className="text-muted-foreground">ระบบจะสร้างงาน “รอดำเนินการ” ให้อัตโนมัติเมื่อลูกค้าชำระมัดจำ</span>
-          )}
-        </div>
-      </Card>
-
-      {/* ใบสัญญาซื้อขาย (Use Case 15 ข้อ 3) ออกหลังลูกค้ายืนยัน พร้อมกับใบแจ้งหนี้มัดจำ (Activity Diagram 3-4) */}
-      <Card title="ใบสัญญาซื้อขาย" size="lg">
-        <div className="px-5 pb-5 flex flex-wrap items-center gap-4 text-base">
-          {contractRow ? (
-            <>
-              <span className="font-mono">{contractNo(contractRow)}</span>
-              {contractRow.signed_at ? <Badge color="emerald" size="lg">ตรวจสอบสัญญาที่เซ็นแล้ว</Badge>
-                : contractRow.signed_file_url ? <Badge color="blue" size="lg">รอตรวจสอบไฟล์ที่ลูกค้าส่งมา</Badge>
-                : <Badge color="amber" size="lg">รอลูกค้าเซ็น</Badge>}
-              <span className="text-muted-foreground">สร้างเมื่อ {thDate(contractRow.created_at, true)}</span>
-              <div className="ml-auto"><ButtonLink href={contractRow.file_url}>ดู / พิมพ์ใบสัญญา</ButtonLink></div>
-            </>
-          ) : quotation.confirmed_at ? (
-            <ActionButton size="lg" url="/api/admin/contracts" body={{ quotation_id: quotation.quotation_id }} label="สร้างใบสัญญาซื้อขาย" />
-          ) : (
-            <span className="text-muted-foreground">สร้างได้หลังลูกค้ายืนยันใบเสนอราคา</span>
-          )}
-        </div>
-      </Card>
-
-      <Card title="ใบแจ้งหนี้" size="lg">
-        <Table size="lg" headers={["เลขที่", "ประเภท", "ยอด", "ครบกำหนด", "การชำระ"]} empty={!invoices.rows.length}>
-          {invoices.rows.map((i) => (
-            <tr key={i.invoice_id}>
-              <td><DocLinks docType="billing-notes" recordId={i.flowaccount_record_id} serial={i.flowaccount_serial ?? `#${i.invoice_id}`} size="lg" /></td>
-              <td>{i.type === "deposit" ? "มัดจำ" : "ยอดคงเหลือ"}</td>
-              <td className="font-mono font-semibold">{baht(i.amount)}</td>
-              <td>{thDate(i.due_date)}</td>
-              <td>
-                {paidFor(i.invoice_id) ? <Badge color="emerald" size="lg">ชำระแล้ว</Badge> : (
-                  // ยังไม่มีระบบ login: ผู้บันทึกรับเงิน = แอดมินที่ทำใบเสนอราคา
-                  <CashPaymentForm invoiceId={i.invoice_id} amount={Number(i.amount)} />
-                )}
-              </td>
-            </tr>
-          ))}
-        </Table>
-        {!inv("deposit") && !quotation.confirmed_at && (
-          <p className="px-5 pb-4 text-base text-muted-foreground">ใบแจ้งหนี้มัดจำออกได้หลังลูกค้ายืนยันใบเสนอราคา</p>
-        )}
-        {inv("deposit") && !inv("balance") && !["completed", "closed"].includes(jobRow?.status) && (
-          <p className="px-5 pb-4 text-base text-muted-foreground">ใบแจ้งหนี้ยอดคงเหลือออกได้หลังเปลี่ยนสถานะงานเป็น “ดำเนินการเสร็จสิ้น”</p>
-        )}
-        {((!inv("deposit") && quotation.confirmed_at) || (!inv("balance") && ["completed", "closed"].includes(jobRow?.status))) && (
-          <div className="flex flex-wrap gap-3 p-5 border-t border-border">
-            {!inv("deposit") && (
-              <ActionButton size="lg" url="/api/admin/invoices" body={{ quotation_id: quotation.quotation_id, type: "deposit" }}
-                label={`ออกใบแจ้งหนี้มัดจำ (${baht(deposit)})`} />
-            )}
-            {inv("deposit") && !inv("balance") && ["completed", "closed"].includes(jobRow?.status) && (
-              <ActionButton size="lg" variant="outline" url="/api/admin/invoices" body={{ quotation_id: quotation.quotation_id, type: "balance" }}
-                label={`ออกใบแจ้งหนี้ยอดคงเหลือ (${baht(total - deposit)})`} />
-            )}
-          </div>
-        )}
-      </Card>
-
-      <Card title="การชำระเงินและใบเสร็จ" size="lg">
-        <Table size="lg" headers={["ยอด", "วิธีชำระ", "สถานะ", "วันที่ชำระ", "ใบกำกับภาษี", "ใบเสร็จ"]} empty={!payments.rows.length}>
-          {payments.rows.map((p) => (
-            <tr key={p.payment_id}>
-              <td className="font-mono font-semibold">{baht(p.amount)}</td>
-              <td>{p.pay_method === "cash" ? "เงินสด" : "QR Code"}</td>
-              <td><StatusBadge map={PAYMENT_STATUS} status={p.status} size="lg" /></td>
-              <td>{thDate(p.paid_at, true)}</td>
-              <td><DocLinks docType="tax-invoices" recordId={p.tax_record_id} serial={p.tax_serial} size="lg" /></td>
-              <td>
-                {p.receipt_serial ? <DocLinks docType="receipts" recordId={p.receipt_record_id} serial={p.receipt_serial} size="lg" />
-                  : p.status === "paid" ? <ActionButton size="lg" url="/api/admin/receipts" body={{ payment_id: p.payment_id }} label="ออกใบเสร็จ / ใบกำกับภาษี" />
-                  : "-"}
-              </td>
-            </tr>
-          ))}
-        </Table>
-      </Card>
     </>
   );
 }

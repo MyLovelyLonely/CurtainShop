@@ -7,6 +7,10 @@ const globalForPg = globalThis as unknown as { pgPool?: pg.Pool }
 function createPool() {
   const pool = new Pool({
     ssl: { rejectUnauthorized: false },
+    // Session poolers have a shared client cap; queue local queries instead of opening
+    // the default 10 connections per application worker.
+    max: 3,
+    connectionTimeoutMillis: 10_000,
     // เปิด connection ใหม่ไป Supabase ใช้ ~0.5 วิ เลยถือ connection ที่ว่างไว้ 1 นาที (ค่าเดิม 10 วิ)
     // นานกว่านี้ Supabase/เครือข่ายตัดสายเงียบ ๆ แล้วได้ ECONNRESET ตอนหยิบมาใช้
     idleTimeoutMillis: 60 * 1000,

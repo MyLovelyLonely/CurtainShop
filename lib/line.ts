@@ -87,6 +87,7 @@ async function notify(lineUserId: string | null, message: object) {
   }
 }
 
+
 // แจ้งเตือนการสร้างใบเสนอราคา (มีใบเสนอราคาเข้า) Activity Diagram 3-4 "แจ้งเตือนลูกค้าผ่าน LINE OA"
 export async function notifyQuotationCreated(quotationId: number) {
   const r = await pool.query(
@@ -162,6 +163,83 @@ export async function notifyInvoiceIssued(invoiceId: number) {
       ["ครบกำหนด", new Date(invoice.due_date).toLocaleDateString("th-TH", { dateStyle: "medium" })],
     ],
     { label: "ชำระเงิน", url: liffUrl(`payments/${invoice.invoice_id}`) },
+  ));
+}
+
+// ใบสัญญาซื้อขาย (Use Case 15 ข้อ 3) สถานะดูจากคอลัมน์ใน Data Dictionary ตารางที่ 3-34
+const CONTRACT_SQL = `
+  select ct.contract_id, ct.quotation_id, q.flowaccount_serial as qt_serial, c.line_user_id
+  from contract ct join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
+  where ct.contract_id = $1`;
+
+// ร้านส่งใบสัญญาให้ลูกค้าเซ็น (แจ้งแยกจากใบแจ้งหนี้)
+export async function notifyContractSent(contractId: number) {
+  const r = await pool.query(CONTRACT_SQL, [contractId]);
+  const ct = r.rows[0];
+  if (!ct) return;
+  await notify(ct.line_user_id, flexCard(
+    "ร้านส่งใบสัญญาซื้อขายให้เซ็น",
+    "ใบสัญญาซื้อขาย",
+    [
+      ["ใบเสนอราคา", ct.qt_serial ?? `#${ct.quotation_id}`],
+      ["ขั้นตอน", "เปิดอ่าน เซ็นชื่อ แล้วส่งไฟล์กลับในหน้าเอกสาร"],
+    ],
+    { label: "เปิดใบสัญญา", url: liffUrl("documents?type=contracts") },
+  ));
+}
+
+// แอดมินตรวจแล้วไม่ถูกต้อง ให้ลูกค้าแก้แล้วส่งใหม่
+export async function notifyContractRejected(contractId: number, note: string) {
+  const r = await pool.query(CONTRACT_SQL, [contractId]);
+  const ct = r.rows[0];
+  if (!ct) return;
+  await notify(ct.line_user_id, flexCard(
+    "กรุณาแก้ไขใบสัญญาและส่งใหม่",
+    "ใบสัญญาต้องแก้ไข",
+    [
+      ["ใบเสนอราคา", ct.qt_serial ?? `#${ct.quotation_id}`],
+      ["สิ่งที่ต้องแก้", note],
+    ],
+    { label: "ส่งใบสัญญาใหม่", url: liffUrl("documents?type=contracts") },
+  ));
+}
+
+// แอดมินยืนยันใบสัญญาที่ลูกค้าเซ็นแล้ว
+export async function notifyContractConfirmed(contractId: number) {
+  const r = await pool.query(CONTRACT_SQL, [contractId]);
+  const ct = r.rows[0];
+  if (!ct) return;
+  await notify(ct.line_user_id, flexCard(
+    "ร้านยืนยันใบสัญญาเรียบร้อยแล้ว",
+    "ยืนยันใบสัญญาแล้ว",
+    [["ใบเสนอราคา", ct.qt_serial ?? `#${ct.quotation_id}`]],
+    { label: "ดูเอกสาร", url: liffUrl("documents?type=contracts") },
+  ));
+}
+
+// แจ้งเตือนแอดมินบันทึกรับเงินสดแล้ว Use Case 9 A2.2 -> ข้อ 6 "ระบบบันทึกผลการชำระเงินและแจ้งเตือนสถานะ"
+export async function notifyCashReceived(paymentId: number) {
+  const r = await pool.query(
+    `select p.amount, p.paid_at, i.type, i.invoice_id, i.flowaccount_serial, c.line_user_id
+     from payment p join invoice i using (invoice_id)
+       join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
+     where p.payment_id = $1`,
+    [paymentId],
+  );
+  const p = r.rows[0];
+  if (!p) return;
+
+  const label = p.type === "deposit" ? "ค่ามัดจำ" : "ยอดคงเหลือ";
+  await notify(p.line_user_id, flexCard(
+    `ร้านได้รับเงินสด${label} ${baht(p.amount)} บาทแล้ว`,
+    "ได้รับชำระเงินสดแล้ว",
+    [
+      ["ใบแจ้งหนี้", p.flowaccount_serial ?? `#${p.invoice_id}`],
+      ["รายการ", label],
+      ["ยอดเงิน", `${baht(p.amount)} บาท`],
+      ["เวลา", new Date(p.paid_at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Bangkok" })],
+    ],
+    { label: "ดูประวัติการชำระเงิน", url: liffUrl("payments") },
   ));
 }
 

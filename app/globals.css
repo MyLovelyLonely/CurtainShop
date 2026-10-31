@@ -11,6 +11,7 @@
   --muted: #ede8e1;
   --muted-foreground: #7a6a58;
   --border: #a0825033;
+  --admin-auth-background: #241b12;
 }
 
 @theme inline {
@@ -23,6 +24,7 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
+  --color-admin-auth-background: var(--admin-auth-background);
   --font-sans: var(--font-thai);
   --font-serif: var(--font-display);
   --font-mono: var(--font-mono-dm);

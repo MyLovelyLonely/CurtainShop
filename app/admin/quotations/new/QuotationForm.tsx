@@ -146,10 +146,10 @@ export function QuotationForm({ mode, initialItems, roomCount, adminName, wantTa
               <span className="font-medium">ชื่อโปรเจค / สถานที่ติดตั้ง (ไม่บังคับ)</span>
               <input className={`${input} font-sans`} value={projectName} onChange={(e) => setProjectName(e.target.value)} placeholder="เช่น บ้านคุณสมชาย ห้องนอน" />
             </label>
-            {!editing && <div>
+            {/* แสดงเฉพาะเมื่อลูกค้าติ๊ก "ขอใบกำกับภาษี" ในใบประเมินราคา */}
+            {!editing && wantTaxInvoice && <div>
               <span className="font-medium">ใบกำกับภาษี</span>
-              <p className="text-lg">{wantTaxInvoice ? "ลูกค้าขอใบกำกับภาษี" : "ลูกค้าไม่ได้ขอ"}</p>
-              <p className="text-sm text-muted-foreground">ลูกค้าแจ้งเองโดยกรอกเลขผู้เสียภาษีในหน้าข้อมูลของฉันบน LINE</p>
+              <p className="text-lg">ลูกค้าขอใบกำกับภาษี</p>
             </div>}
           </div>
         </Card>

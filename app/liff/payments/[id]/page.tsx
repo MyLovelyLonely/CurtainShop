@@ -9,7 +9,7 @@ import Link from "next/link";
 import { Banknote, CheckCircle2, Clock, QrCode, RefreshCw } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
 import { useApi, useLiffData } from "@/components/liff/LiffProvider";
-import { invoiceLabel, PageTitle, Panel } from "@/components/liff/ui";
+import { invoiceLabel, PageTitle, Panel, StepBar } from "@/components/liff/ui";
 
 type Invoice = { invoice_id: number; type: string; amount: string; due_date: string; flowaccount_serial: string | null; qt_serial: string | null; total_amount: string; is_paid: boolean; pending_payment_id: number | null };
 type Qr = { payment_id: number; status: string; qr_image?: string; expires_at?: string; amount: number };
@@ -128,10 +128,14 @@ export default function PayInvoice({ params }: { params: Promise<{ id: string }>
         <Panel className="space-y-4 text-center">
           <Banknote size={48} className="mx-auto text-emerald-600" />
           <p className="text-xl font-semibold">ชำระด้วยเงินสด</p>
-          <p className="text-base text-muted-foreground">
-            กรุณาชำระ <b className="text-foreground">{baht(invoice.amount)}</b> กับเจ้าหน้าที่ของร้าน<br />
-            เมื่อเจ้าหน้าที่บันทึกรับเงินแล้ว สถานะจะเปลี่ยนเป็น “ชำระแล้ว” และร้านจะแจ้งทาง LINE
-          </p>
+          {/* แสดงขั้นตอน A2 ให้ลูกค้ารู้ว่าต้องรออะไร (ยังเป็น UI อย่างเดียว ขั้นที่ 1 = ตอนนี้) */}
+          <StepBar steps={["ชำระเงินสดที่ร้าน", "เจ้าหน้าที่ตรวจและบันทึก", "แจ้งผลทาง LINE"]} current={0} />
+          <ol className="text-base text-left space-y-2 list-decimal pl-5 text-muted-foreground">
+            <li>ชำระ <b className="text-foreground">{baht(invoice.amount)}</b> กับเจ้าหน้าที่ของร้าน แจ้งเลขใบแจ้งหนี้ {invoice.flowaccount_serial ?? `#${invoice.invoice_id}`}</li>
+            <li>เจ้าหน้าที่นับเงินและบันทึกรับชำระ ถ้ายอดไม่ครบจะยังไม่บันทึก ชำระเพิ่มได้</li>
+            <li>บันทึกแล้วคุณจะได้รับ LINE แจ้งว่าร้านได้รับเงินแล้ว และหน้านี้จะเปลี่ยนเป็น “ชำระแล้ว” เอง</li>
+          </ol>
+          <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground"><RefreshCw size={14} className="animate-spin" /> รอเจ้าหน้าที่บันทึกรับเงิน</p>
           <button onClick={() => setStep("choose")} className="text-base text-muted-foreground underline">เปลี่ยนช่องทางการชำระ</button>
         </Panel>
       )}

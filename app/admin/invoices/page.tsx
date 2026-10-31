@@ -1,7 +1,10 @@
 // ออกบิล / ใบเสร็จ: ใบแจ้งหนี้ทั้งหมด + การชำระที่ paid แล้วแต่ยังไม่ออกใบเสร็จ
+//   รับชำระเงินสด (Use Case 9 A2.2): ลูกค้าจ่ายที่หน้าร้าน แอดมินนับเงิน กรอกยอดแล้วยืนยัน
+//   ยอดตรง = บันทึก paid + แจ้งลูกค้าทาง LINE, ยอดไม่ครบ = ไม่บันทึก สถานะไม่เปลี่ยน (A2.2.1)
 import Link from "next/link";
 import { pool } from "@/lib/db";
 import { ActionButton } from "@/components/admin/ActionButton";
+import { CashPaymentForm } from "@/components/admin/CashPaymentForm";
 import { DocLinks } from "@/components/admin/DocLinks";
 import { Badge, baht, Card, PageHeader, PAYMENT_STATUS, StatusBadge, Table, thDate } from "@/components/admin/ui";
 
@@ -21,6 +24,7 @@ export default async function Invoices() {
   ]);
 
   const paid = invoices.rows.filter((i) => i.pay_status === "paid");
+  const unpaid = invoices.rows.filter((i) => i.pay_status !== "paid");
   const sum = (rows: { amount: string }[]) => rows.reduce((s, r) => s + Number(r.amount), 0);
 
   return (
@@ -37,6 +41,24 @@ export default async function Invoices() {
           <p className="text-amber-800 text-xl font-bold font-mono">{baht(sum(invoices.rows) - sum(paid))}</p>
         </div>
       </div>
+
+      <Card title={`รับชำระเงินสด (${unpaid.length})`}>
+        <p className="px-4 pb-2 text-sm text-muted-foreground">
+          นับเงินที่ลูกค้าจ่ายหน้าร้าน กรอกยอดที่ได้รับแล้วกดบันทึก ยอดไม่ตรงระบบจะไม่บันทึก · บันทึกแล้วลูกค้าได้รับแจ้งทาง LINE
+        </p>
+        <Table headers={["ลูกค้า", "ใบแจ้งหนี้", "ประเภท", "ยอดที่ต้องชำระ", "ครบกำหนด", "ยอดที่ได้รับ"]} empty={!unpaid.length}>
+          {unpaid.map((i) => (
+            <tr key={i.invoice_id}>
+              <td>{i.customer}</td>
+              <td><DocLinks docType="billing-notes" recordId={i.flowaccount_record_id} serial={i.flowaccount_serial ?? `#${i.invoice_id}`} /></td>
+              <td>{i.type === "deposit" ? "มัดจำ" : "ยอดคงเหลือ"}</td>
+              <td className="font-mono font-semibold">{baht(i.amount)}</td>
+              <td className="text-muted-foreground">{thDate(i.due_date)}</td>
+              <td><CashPaymentForm invoiceId={i.invoice_id} amount={Number(i.amount)} /></td>
+            </tr>
+          ))}
+        </Table>
+      </Card>
 
       <Card title={`รอออกใบเสร็จ / ใบกำกับภาษี (${waiting.rows.length})`}>
         <Table headers={["ลูกค้า", "ใบแจ้งหนี้", "ยอดที่ชำระ", "วิธีชำระ", "วันที่ชำระ", ""]} empty={!waiting.rows.length}>
