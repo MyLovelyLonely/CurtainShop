@@ -56,7 +56,7 @@ export function StatCard({ label, value, sub, icon: Icon, color }: {
   );
 }
 
-const BADGE_COLORS = {
+export const BADGE_COLORS = {
   amber: "bg-amber-50 text-amber-700 border-amber-200",
   blue: "bg-blue-50 text-blue-700 border-blue-200",
   emerald: "bg-emerald-50 text-emerald-700 border-emerald-200",

@@ -3,12 +3,13 @@
 //   ข้อมูลถูกต้อง = กดยืนยัน -> ร้านออกใบแจ้งหนี้มัดจำต่อ
 //   ข้อมูลไม่ถูกต้อง = กดแจ้งแก้ไข ร้านจึงแก้ไขใบเสนอราคาได้ (Use Case 15 Alternate Flow)
 import { use, useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Download } from "lucide-react";
 import { baht, thDate } from "@/components/admin/ui";
 import { useApi, useLiffData } from "@/components/liff/LiffProvider";
 import { DocButton } from "@/components/liff/DocButton";
 import { PageTitle, Panel, Tag } from "@/components/liff/ui";
 import { lineArea, lineTotal } from "@/lib/pricing";
+import { OFFICIAL_DOC_UNAVAILABLE_MESSAGE } from "@/lib/confirm-rules";
 
 type Quotation = { quotation_id: number; serial: string | null; record_id: string | null; total_amount: string; deposit_amount: string; created_at: string; confirmed_at: string | null; project_name: string | null; room_count: number; change_request: { note: string; requested_at: string } | null };
 type Item = { quotation_item_id: number; name: string; price_unit: string; width: string | null; height: string | null; quantity: number; unit_price: string };
@@ -16,12 +17,14 @@ type Item = { quotation_item_id: number; name: string; price_unit: string; width
 export default function QuotationDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const api = useApi();
-  const { data, error, reload } = useLiffData<{ quotation: Quotation; items: Item[] }>(`/api/liff/quotations/${id}`);
+  // official_doc_available มาจาก API: สวิตช์ใน lib/confirm-rules.ts ปิดอยู่ = true เสมอ
+  const { data, error, reload } = useLiffData<{ quotation: Quotation; items: Item[]; official_doc_available: boolean }>(`/api/liff/quotations/${id}`);
   const [asking, setAsking] = useState(false);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [reporting, setReporting] = useState(false);
   const [note, setNote] = useState("");
+  const [pdfError, setPdfError] = useState(""); // เปิด PDF จาก FlowAccount ไม่ได้ (เช่น FlowAccount ล่ม 502/503)
 
   async function requestChange() {
     setBusy(true); setMsg(null);
@@ -53,6 +56,8 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
   const subTotal = Math.round(roomSubTotal * rooms * 100) / 100;
   const total = Number(q.total_amount);
   const deposit = Number(q.deposit_amount);
+  // ล็อกปุ่มยืนยันเมื่อเปิดเอกสารฉบับทางการไม่ได้ทั้งลิงก์และ PDF (เปิดใช้ด้วยสวิตช์ใน lib/confirm-rules.ts)
+  const confirmLocked = !data.official_doc_available;
 
   return (
     <>
@@ -109,7 +114,21 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
         <Row label="คงเหลือ (ชำระหลังติดตั้ง)" value={baht(total - deposit)} />
       </Panel>
 
-      <DocButton docType="quotations" recordId={q.record_id} label="ดูใบเสนอราคา (PDF)" />
+      {/* PDF เปิดไม่ได้ = บอกให้ชัดว่าที่เห็นในหน้านี้คือข้อมูลสรุปจากระบบร้าน ยังยืนยันได้ตามปกติ */}
+      {pdfError && (
+        <Panel className="space-y-1 border-2 border-amber-300 bg-amber-50 text-base text-amber-900">
+          <p className="font-semibold">เอกสารฉบับทางการ (PDF) ยังเปิดไม่ได้ในขณะนี้ นี่คือข้อมูลสรุป</p>
+          <p className="text-sm">รายการและยอดเงินด้านบนตรงกับใบเสนอราคาฉบับทางการ กรุณาลองเปิด PDF อีกครั้งภายหลัง</p>
+        </Panel>
+      )}
+      <div className="grid grid-cols-2 gap-3">
+        {/* บันทึกเป็นรูปภาพ ยังไม่ได้ทำ: แสดงปุ่มไว้ก่อน กดแล้วยังไม่มีผล */}
+        <button type="button"
+          className="w-full flex items-center justify-center gap-2 border-2 border-border rounded-xl py-2.5 text-base font-semibold">
+          <Download size={18} /> บันทึกรูป
+        </button>
+        <DocButton docType="quotations" recordId={q.record_id} label="ดู PDF" onError={setPdfError} />
+      </div>
 
       {/* แจ้งแก้ไขแล้ว รอร้านแก้ = ยังยืนยันไม่ได้ */}
       {!q.confirmed_at && q.change_request && (
@@ -123,11 +142,15 @@ export default function QuotationDetail({ params }: { params: Promise<{ id: stri
       {!q.confirmed_at && !q.change_request && (
         <section className="space-y-3 pt-1">
           {msg && <Panel className="text-red-700 text-base">{msg}</Panel>}
-          {!asking ? (
-            <button onClick={() => setAsking(true)}
-              className="w-full bg-primary text-primary-foreground rounded-xl py-4 text-lg font-semibold">
-              ยืนยันใบเสนอราคา
-            </button>
+          {/* ล็อกอยู่ = ปุ่มกดไม่ได้ + บอกเหตุผลใต้ปุ่ม ลูกค้ายังกด "แจ้งแก้ไข" ด้านล่างได้ตามปกติ */}
+          {!asking || confirmLocked ? (
+            <div className="space-y-1.5">
+              <button onClick={() => setAsking(true)} disabled={confirmLocked}
+                className="w-full bg-primary text-primary-foreground rounded-xl py-4 text-lg font-semibold disabled:opacity-50">
+                ยืนยันใบเสนอราคา
+              </button>
+              {confirmLocked && <p className="text-sm text-red-700 text-center">{OFFICIAL_DOC_UNAVAILABLE_MESSAGE}</p>}
+            </div>
           ) : (
             <Panel className="space-y-3 border-2 border-primary">
               <p className="text-lg font-semibold text-center">ยืนยันใบเสนอราคานี้ ยอด {baht(total)} ?</p>

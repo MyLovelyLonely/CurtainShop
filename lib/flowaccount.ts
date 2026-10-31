@@ -69,3 +69,19 @@ export async function exportPdf(docType: DocType, recordId: number): Promise<Buf
   });
   return status === 200 && data?.status && typeof data.data === "string" ? Buffer.from(data.data, "base64") : null;
 }
+
+// เปิดเอกสารฉบับทางการให้ลูกค้าดู (LIFF): ใช้ลิงก์หน้าแชร์ก่อน ไม่ได้ค่อย export PDF
+//   ลิงก์ก่อน เพราะเป็น URL ปกติ เปิดบนมือถือได้แน่นอน และหน้าแชร์มีปุ่มพิมพ์ / ดาวน์โหลด PDF ให้ลูกค้าเอง
+//   ส่วน PDF ต้องเปิดเป็นไฟล์ในเครื่อง (blob) ซึ่งเบราว์เซอร์ในแอป LINE บางเครื่องเปิดไม่ได้
+//   { link } = ลิงก์หน้าแชร์ (หน้านั้นอาจโหลดเนื้อหาไม่ขึ้นถ้า FlowAccount ล่ม), { pdf } = ไฟล์ PDF, null = ไม่ได้ทั้งสองทาง
+export async function officialDoc(docType: DocType, recordId: number): Promise<{ link: string } | { pdf: Buffer } | null> {
+  const link = await shareLink(docType, recordId);
+  if (link) return { link };
+  const pdf = await exportPdf(docType, recordId);
+  return pdf ? { pdf } : null;
+}
+
+// เอกสารฉบับทางการพร้อมให้ลูกค้ายืนยันไหม (lib/confirm-rules.ts) = export PDF ได้จริง ไม่นับลิงก์หน้าแชร์
+export async function officialPdfAvailable(docType: DocType, recordId: number): Promise<boolean> {
+  return (await exportPdf(docType, recordId)) !== null;
+}
