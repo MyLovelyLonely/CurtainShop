@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { MapPin, Phone } from "lucide-react";
 import { pool } from "@/lib/db";
 import { lineArea, lineTotal } from "@/lib/pricing";
+import { ActionButton } from "@/components/admin/ActionButton";
 import { DocLinks } from "@/components/admin/DocLinks";
 import { Badge, baht, ButtonLink, Card, PageHeader, Table, thDate } from "@/components/admin/ui";
 
@@ -14,11 +15,16 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
   const quotation = q.rows[0];
   if (!quotation) notFound();
 
-  const [items, invoices] = await Promise.all([
+  const [items, invoices, job] = await Promise.all([
     pool.query(`select qi.*, p.name, p.price_unit from quotation_item qi join product p using (product_id)
                 where quotation_id = $1 order by quotation_item_id`, [id]),
-    pool.query(`select invoice_id from invoice where quotation_id = $1 limit 1`, [id]),
+    pool.query(`select type from invoice where quotation_id = $1`, [id]),
+    pool.query(`select status from job where quotation_id = $1`, [id]),
   ]);
+  const hasInvoice = (type: string) => invoices.rows.some((i) => i.type === type);
+  // ออกใบแจ้งหนี้: มัดจำหลังลูกค้ายืนยัน (Activity Diagram 3-4), คงเหลือหลังงานเสร็จสิ้น (Activity Diagram 3-5)
+  const canDeposit = !!quotation.confirmed_at && !hasInvoice("deposit");
+  const canBalance = hasInvoice("deposit") && !hasInvoice("balance") && ["completed", "closed"].includes(job.rows[0]?.status);
 
   const c = quotation.details.customer;
   // รายการเก็บเป็นยอดต่อ 1 ห้อง ยอดก่อน VAT = รวมต่อห้อง x จำนวนห้อง
@@ -58,6 +64,17 @@ export default async function QuotationDetail({ params }: { params: Promise<{ id
       ) : waiting && (
         <div className="bg-amber-50 border-2 border-amber-200 rounded-xl px-5 py-4 text-base text-amber-900">
           รอลูกค้าตรวจสอบและยืนยันผ่าน LINE · แก้ไขได้เมื่อลูกค้าแจ้งว่าข้อมูลไม่ถูกต้องเท่านั้น
+        </div>
+      )}
+
+      {(canDeposit || canBalance) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 bg-primary/5 border-2 border-primary/30 rounded-xl px-5 py-4">
+          <p className="text-base text-foreground font-semibold">
+            {canDeposit ? `ลูกค้ายืนยันแล้ว · ออกใบแจ้งหนี้มัดจำ ${baht(deposit)}` : `งานเสร็จสิ้นแล้ว · ออกใบแจ้งหนี้ยอดคงเหลือ ${baht(total - deposit)}`}
+          </p>
+          <ActionButton url="/api/admin/invoices" size="lg"
+            body={{ quotation_id: quotation.quotation_id, type: canDeposit ? "deposit" : "balance" }}
+            label={canDeposit ? "ออกใบแจ้งหนี้มัดจำ" : "ออกใบแจ้งหนี้ยอดคงเหลือ"} />
         </div>
       )}
 
