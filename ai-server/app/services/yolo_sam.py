@@ -57,6 +57,15 @@ def _get(kind: str):
         return model
 
 
+def warm():
+    """โหลด YOLOE + SAM2 และรันรอบแรก (เริ่ม CUDA) ไว้ก่อน — ลูกค้าคนแรกที่อัปรูปจะได้ไม่ต้องรอ ~7 วินาที"""
+    try:
+        detect_windows(Image.new("RGB", (640, 480), "white"))
+        _get("sam")
+    except Exception:  # noqa: BLE001 — โหลดไม่ได้ตอนนี้ ค่อยลองใหม่ตอนมีคนใช้จริง
+        log.exception("โหลดโมเดลตรวจหน้าต่างล่วงหน้าไม่สำเร็จ")
+
+
 def detect_windows(img: Image.Image, limit: int = 5) -> tuple[list[dict], str]:
     """คืน ([{box: [x1,y1,x2,y2] สัดส่วน 0–1, score}], "yolo" | "unavailable") เรียงจากมั่นใจมากไปน้อย"""
     model = _get("yolo")

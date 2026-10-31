@@ -20,7 +20,7 @@ import {
 const MAX_BYTES = 10 * 1024 * 1024;
 const PHOTO_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" };
 
-/** อัปโหลดรูปห้องไป R2 แล้วให้ YOLOv11 หากรอบหน้าต่างเบื้องต้น */
+/** อัปโหลดรูปห้องไป R2 และให้ YOLOv11 หากรอบหน้าต่างเบื้องต้น (ทำพร้อมกัน) */
 export async function uploadRoomPhoto(form: FormData): Promise<SimulatePhoto> {
   const file = form.get("photo");
   if (!(file instanceof File) || !file.size) throw new HttpError(400, "กรุณาเลือกรูปห้อง");
@@ -28,15 +28,21 @@ export async function uploadRoomPhoto(form: FormData): Promise<SimulatePhoto> {
   if (!ext) throw new HttpError(400, "รองรับเฉพาะรูป JPG, PNG หรือ WEBP");
   if (file.size > MAX_BYTES) throw new HttpError(400, "รูปใหญ่เกิน 10MB");
 
-  const photo_url = await putR2(
-    `simulations/rooms/${crypto.randomUUID()}.${ext}`,
-    new Uint8Array(await file.arrayBuffer()),
-    file.type,
-  );
-  const res = await detectWindows(photo_url);
-  if (!res.ok) throw new HttpError(502, `ตรวจหาหน้าต่างไม่สำเร็จ (${res.error})`);
-  const data = res.data as Omit<SimulatePhoto, "photo_url">;
-  return { photo_url, ...data };
+  const [photo_url, res] = await Promise.all([
+    putR2(`simulations/rooms/${crypto.randomUUID()}.${ext}`, new Uint8Array(await file.arrayBuffer()), file.type),
+    detectWindows(file),
+  ]);
+  if (res.ok) return { photo_url, ...(res.data as Omit<SimulatePhoto, "photo_url">) };
+
+  // หาหน้าต่างอัตโนมัติไม่ได้ (เช่น ai-server ไม่ได้เปิด) → ยังแสดงรูปให้ลากกรอบเองได้ ขนาดรูปใช้ค่าที่หน้าเว็บส่งมา
+  console.error("ตรวจหาหน้าต่างไม่สำเร็จ:", res.error);
+  return {
+    photo_url,
+    width: clamp(form.get("width"), 1, 10_000, 1200),
+    height: clamp(form.get("height"), 1, 10_000, 900),
+    windows: [],
+    detector: "unavailable",
+  };
 }
 
 const clamp = (v: unknown, min: number, max: number, fallback: number) => {
@@ -88,6 +94,10 @@ export async function renderSimulation(body: Partial<RenderInput>): Promise<Rend
     open_ratio: clamp(body.open_ratio, 0, 1, 0.35),
     length: body.length === "sill" ? "sill" : "floor",
     drop: clamp(body.drop, 0.05, 1, 0.7),
+    width_scale: clamp(body.width_scale, 0.5, 2, 1),
+    height_scale: clamp(body.height_scale, 0.5, 1.5, 1),
+    fold_scale: clamp(body.fold_scale, 0.5, 2, 1),
+    pattern_scale: clamp(body.pattern_scale, 0.5, 2, 1),
     light_filter: product.details.light_filter,
     repeat_cm: product.details.repeat_cm,
   });

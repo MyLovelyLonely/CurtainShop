@@ -1,0 +1,9 @@
+{
+  "name": "curtain-shop",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "node scripts/dev.mjs web",
+    "dev:ai": "node scripts/dev.mjs ai"
+  }
+}

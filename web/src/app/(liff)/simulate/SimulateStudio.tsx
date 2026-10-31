@@ -6,11 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { LoadMore, usePaged } from "@/components/LoadMore";
 import { api } from "@/lib/fetcher";
+import { shrinkImage } from "@/lib/shrink-image";
 import { LIGHT_FILTERS, canOptimize, formatPrice, type ProductView } from "@/types/catalog";
 import {
   CURTAIN_STYLES,
   DEFAULT_OPTIONS,
+  SIZE_DEFAULTS,
   MAX_REGIONS,
   boxToQuad,
   toRegion,
@@ -29,23 +32,6 @@ const newRegion = (n: number): Region => {
   const o = (n % 4) * 0.05;
   return toRegion(boxToQuad([0.3 + o, 0.2 + o, 0.65 + o, 0.62 + o]));
 };
-
-/** ย่อรูปก่อนอัปโหลด (และหมุนตาม EXIF ไปในตัว) ให้ส่งเร็วบนมือถือ */
-async function shrink(file: File, max = 2000): Promise<Blob> {
-  try {
-    const bmp = await createImageBitmap(file);
-    const s = Math.min(1, max / Math.max(bmp.width, bmp.height));
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(bmp.width * s);
-    canvas.height = Math.round(bmp.height * s);
-    canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
-    return await new Promise((res, rej) =>
-      canvas.toBlob((b) => (b ? res(b) : rej(new Error())), "image/jpeg", 0.88),
-    );
-  } catch {
-    return file;
-  }
-}
 
 export default function SimulateStudio() {
   const router = useRouter();
@@ -89,7 +75,12 @@ export default function SimulateStudio() {
     setUploading(true);
     try {
       const form = new FormData();
-      form.set("photo", await shrink(file), "room.jpg");
+      const { blob, width, height } = await shrinkImage(file);
+      form.set("photo", blob, "room.jpg");
+      if (width && height) {
+        form.set("width", String(width));
+        form.set("height", String(height));
+      }
       const p = await api<SimulatePhoto>("/api/simulate/photo", { method: "POST", body: form });
       setPhoto(p);
       // ทุกหน้าต่างที่ YOLO มั่นใจพอ (อย่างน้อยครึ่งหนึ่งของอันที่มั่นใจที่สุด) เป็นจุดตั้งต้น ลูกค้าลบ/เพิ่มเองได้
@@ -139,77 +130,80 @@ export default function SimulateStudio() {
       </section>
 
       <section className="px-4 pt-4">
-        {!photo ? (
-          <PhotoPicker uploading={uploading} onFile={upload} />
-        ) : result ? (
-          <Compare before={photo} after={result} />
-        ) : (
-          <>
-            <RegionEditor
-              photo={photo}
-              regions={regions}
-              active={active}
-              onChange={setRegions}
-              onSelect={setActive}
-              showFloor={usesFloor(style, opts)}
-            />
-            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-              {regions.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActive(i)}
-                  className={`rounded-full border px-2.5 py-1 ${
-                    i === active ? "border-brand bg-brand-soft text-brand" : "border-stone-300 bg-white text-stone-600"
-                  }`}
-                >
-                  จุด {i + 1}
-                </button>
-              ))}
-              <button
-                onClick={() => {
-                  setRegions([...regions, newRegion(regions.length)]);
-                  setActive(regions.length);
-                }}
-                disabled={regions.length >= MAX_REGIONS}
-                className="rounded-full border border-dashed border-stone-400 px-2.5 py-1 text-stone-600 disabled:opacity-40"
-              >
-                + เพิ่มจุด
-              </button>
-              <button
-                onClick={() => {
-                  setRegions(regions.filter((_, i) => i !== active));
-                  setActive(Math.max(0, active - 1));
-                }}
-                disabled={regions.length <= 1}
-                className="px-1 text-red-600 disabled:opacity-40"
-              >
-                ลบจุด {active + 1}
-              </button>
-            </div>
-            <p className="mt-1.5 text-xs text-stone-500">
-              {photo.windows.length ? "" : "ไม่พบหน้าต่างอัตโนมัติ — "}
-              ลากมุมทั้ง 4 ให้ตรงกับขอบหน้าต่าง (หน้าต่างที่ถ่ายเอียงก็ลากมุมเอียงตามได้) ลากตรงกลางกรอบเพื่อย้าย
-              {" · ลากจุด “ราง” ไปวางที่ความสูงที่จะติดราง"}
-              {usesFloor(style, opts) && " · ลากจุด “พื้น” ไปวางตรงแนวที่พื้นชนผนังใต้หน้าต่าง ม่านจะยาวลงมาถึงตรงนั้น"}
-            </p>
-          </>
-        )}
         {photo && (
-          <label className="mt-3 inline-block cursor-pointer text-sm text-brand">
-            เปลี่ยนรูปห้อง
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
+          <div className="mb-2 flex items-center justify-between">
+            <span className="text-sm font-medium">รูปห้อง</span>
+            <ChangePhoto
+              uploading={uploading}
               disabled={uploading || rendering}
-              onChange={(e) => {
+              onFile={(f) => {
                 setResult(null);
-                upload(e.target.files?.[0]);
-                e.target.value = "";
+                upload(f);
               }}
             />
-          </label>
+          </div>
         )}
+        {/* ระหว่างอัปรูปใหม่ หรี่รูปเดิมไว้ให้รู้ว่ากำลังเปลี่ยน */}
+        <div className={photo && uploading ? "pointer-events-none animate-pulse opacity-50" : ""}>
+          {!photo ? (
+            <PhotoPicker uploading={uploading} onFile={upload} />
+          ) : result ? (
+            <Compare before={photo} after={result} />
+          ) : (
+            <>
+              <RegionEditor
+                photo={photo}
+                regions={regions}
+                active={active}
+                onChange={setRegions}
+                onSelect={setActive}
+                showFloor={usesFloor(style, opts)}
+              />
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                {regions.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setActive(i)}
+                    className={`rounded-full border px-2.5 py-1 ${
+                      i === active
+                        ? "border-brand bg-brand-soft text-brand"
+                        : "border-stone-300 bg-white text-stone-600"
+                    }`}
+                  >
+                    จุด {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => {
+                    setRegions([...regions, newRegion(regions.length)]);
+                    setActive(regions.length);
+                  }}
+                  disabled={regions.length >= MAX_REGIONS}
+                  className="rounded-full border border-dashed border-stone-400 px-2.5 py-1 text-stone-600 disabled:opacity-40"
+                >
+                  + เพิ่มจุด
+                </button>
+                <button
+                  onClick={() => {
+                    setRegions(regions.filter((_, i) => i !== active));
+                    setActive(Math.max(0, active - 1));
+                  }}
+                  disabled={regions.length <= 1}
+                  className="px-1 text-red-600 disabled:opacity-40"
+                >
+                  ลบจุด {active + 1}
+                </button>
+              </div>
+              <p className="mt-1.5 text-xs text-stone-500">
+                {photo.windows.length ? "" : "ไม่พบหน้าต่างอัตโนมัติ — "}
+                ลากมุมทั้ง 4 ให้ตรงกับขอบหน้าต่าง (หน้าต่างที่ถ่ายเอียงก็ลากมุมเอียงตามได้) ลากตรงกลางกรอบเพื่อย้าย
+                {" · ลากจุด “ราง” ไปวางที่ความสูงที่จะติดราง"}
+                {usesFloor(style, opts) &&
+                  " · ลากจุด “พื้น” ไปวางตรงแนวที่พื้นชนผนังใต้หน้าต่าง ม่านจะยาวลงมาถึงตรงนั้น"}
+              </p>
+            </>
+          )}
+        </div>
       </section>
 
       {photo && (
@@ -320,6 +314,41 @@ function PhotoPicker({ uploading, onFile }: { uploading: boolean; onFile: (f: Fi
         accept="image/*"
         className="hidden"
         disabled={uploading}
+        onChange={(e) => {
+          onFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+    </label>
+  );
+}
+
+/** ปุ่มเปลี่ยนรูปห้อง (ถ่ายใหม่/เลือกรูปอื่น) — กรอบหน้าต่างจะหาใหม่จากรูปใหม่ */
+function ChangePhoto({
+  uploading,
+  disabled,
+  onFile,
+}: {
+  uploading: boolean;
+  disabled: boolean;
+  onFile: (f: File | undefined) => void;
+}) {
+  return (
+    <label
+      className={`inline-flex items-center gap-1.5 rounded-full border border-stone-300 bg-white px-3 py-1.5 text-sm text-stone-700 ${
+        disabled ? "pointer-events-none opacity-50" : "cursor-pointer"
+      }`}
+    >
+      <svg viewBox="0 0 24 24" className="size-4" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <path d="M4 8h3l2-2.5h6L17 8h3v11H4z" strokeLinejoin="round" />
+        <circle cx="12" cy="13" r="3.5" />
+      </svg>
+      {uploading ? "กำลังอัปโหลด…" : "เปลี่ยนรูป"}
+      <input
+        type="file"
+        accept="image/*"
+        className="hidden"
+        disabled={disabled}
         onChange={(e) => {
           onFile(e.target.files?.[0]);
           e.target.value = "";
@@ -649,36 +678,90 @@ function StyleOptions({
   onChange: (o: RenderOptions) => void;
 }) {
   const set = (patch: Partial<RenderOptions>) => onChange({ ...opts, ...patch });
-  if (style === "pleated" || style === "louis")
-    return (
-      <div className="space-y-3">
-        <Slider
-          label="รูดม่านเปิด"
-          value={opts.open_ratio}
-          min={0}
-          onChange={(v) => set({ open_ratio: v })}
-          left="ปิดสนิท"
-          right="เปิดสุด"
-        />
-        <Segmented
-          value={opts.length}
-          onChange={(length) => set({ length })}
-          items={[
-            ["floor", "ยาวถึงพื้น"],
-            ["sill", "ถึงขอบหน้าต่าง"],
-          ]}
-        />
-      </div>
-    );
+  const draped = style === "pleated" || style === "louis";
+  const resized = (Object.keys(SIZE_DEFAULTS) as (keyof typeof SIZE_DEFAULTS)[]).some(
+    (k) => opts[k] !== SIZE_DEFAULTS[k],
+  );
   return (
-    <Slider
-      label="ความยาวที่ลงมา"
-      value={opts.drop}
-      min={0.2}
-      onChange={(v) => set({ drop: v })}
-      left="ม้วนขึ้น"
-      right="ปิดทั้งบาน"
-    />
+    <div className="space-y-3">
+      {draped ? (
+        <>
+          <Slider
+            label="รูดม่านเปิด"
+            value={opts.open_ratio}
+            min={0}
+            onChange={(v) => set({ open_ratio: v })}
+            left="ปิดสนิท"
+            right="เปิดสุด"
+          />
+          <Segmented
+            value={opts.length}
+            onChange={(length) => set({ length })}
+            items={[
+              ["floor", "ยาวถึงพื้น"],
+              ["sill", "ถึงขอบหน้าต่าง"],
+            ]}
+          />
+        </>
+      ) : (
+        <Slider
+          label="ความยาวที่ลงมา"
+          value={opts.drop}
+          min={0.2}
+          onChange={(v) => set({ drop: v })}
+          left="ม้วนขึ้น"
+          right="ปิดทั้งบาน"
+        />
+      )}
+
+      <div className="flex items-center justify-between pt-1">
+        <span className="text-sm font-semibold">ปรับขนาด</span>
+        {resized && (
+          <button onClick={() => set(SIZE_DEFAULTS)} className="text-xs text-brand">
+            คืนค่าเดิม
+          </button>
+        )}
+      </div>
+      <Slider
+        label="ความกว้างผ้า"
+        value={opts.width_scale}
+        min={0.5}
+        max={2}
+        onChange={(v) => set({ width_scale: v })}
+        left="แคบ"
+        right="กว้าง"
+      />
+      <Slider
+        label="ความยาวผ้า"
+        value={opts.height_scale}
+        min={0.5}
+        // ยาวถึงพื้นแล้วยืดต่อไม่ได้ ส่วนแบบถึงขอบหน้าต่าง/ม่านม้วน ยืดลงไปได้ถึงพื้น
+        max={draped && opts.length === "floor" ? 1 : 1.5}
+        onChange={(v) => set({ height_scale: v })}
+        left="สั้น"
+        right="ยาว"
+      />
+      {draped && (
+        <Slider
+          label="ขนาดลอนผ้า"
+          value={opts.fold_scale}
+          min={0.5}
+          max={2}
+          onChange={(v) => set({ fold_scale: v })}
+          left="ลอนเล็ก ถี่"
+          right="ลอนใหญ่ ห่าง"
+        />
+      )}
+      <Slider
+        label="ขนาดลาย"
+        value={opts.pattern_scale}
+        min={0.5}
+        max={2}
+        onChange={(v) => set({ pattern_scale: v })}
+        left="ลายเล็ก"
+        right="ลายใหญ่"
+      />
+    </div>
   );
 }
 
@@ -708,13 +791,16 @@ function Slider(props: {
   label: string;
   value: number;
   min: number;
+  /** ค่าเริ่มต้น 1 (= 100%) */
+  max?: number;
   onChange: (v: number) => void;
   left: string;
   right: string;
 }) {
   // เลื่อนแล้วค่อยส่งค่าตอนปล่อย จะได้ไม่ล้างผลจำลองระหว่างลาก
   const [dragging, setDragging] = useState<number | null>(null);
-  const v = dragging ?? props.value;
+  const max = props.max ?? 1;
+  const v = Math.min(max, dragging ?? props.value);
   const commit = () => {
     if (dragging !== null) props.onChange(dragging);
     setDragging(null);
@@ -728,7 +814,7 @@ function Slider(props: {
       <input
         type="range"
         min={props.min}
-        max={1}
+        max={max}
         step={0.05}
         value={v}
         onChange={(e) => setDragging(Number(e.target.value))}
@@ -764,6 +850,7 @@ function ProductPicker({ onPick, onClose }: { onPick: (p: ProductView) => void; 
         return words.every((w) => hay.includes(w));
       });
   }, [products, q]);
+  const [visible, showMore] = usePaged(q);
 
   return (
     <div className="fixed inset-0 z-20 flex flex-col justify-end bg-black/40" onClick={onClose}>
@@ -797,7 +884,7 @@ function ProductPicker({ onPick, onClose }: { onPick: (p: ProductView) => void; 
           {!products && !error && <p className="py-8 text-center text-sm text-stone-400">กำลังโหลด…</p>}
           {products && !shown.length && <p className="py-8 text-center text-sm text-stone-400">ไม่พบผ้าที่ค้นหา</p>}
           <div className="grid grid-cols-3 gap-2">
-            {shown.map((p) => (
+            {shown.slice(0, visible).map((p) => (
               <button key={p.product_id} onClick={() => onPick(p)} className="card overflow-hidden text-left">
                 <div className="relative aspect-square bg-stone-100">
                   <Image src={p.image_url!} alt={p.name} fill unoptimized={!canOptimize(p.image_url!)} sizes="150px" className="object-cover" />
@@ -806,6 +893,7 @@ function ProductPicker({ onPick, onClose }: { onPick: (p: ProductView) => void; 
               </button>
             ))}
           </div>
+          <LoadMore remaining={shown.length - visible} onMore={showMore} />
         </div>
       </div>
     </div>

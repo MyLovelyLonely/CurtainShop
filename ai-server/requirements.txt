@@ -26,4 +26,3 @@ numpy
 # ค้นหาสินค้า (BGE-M3 + OpenCLIP + pgvector)
 sentence-transformers
 open_clip_torch
-psycopg[binary]

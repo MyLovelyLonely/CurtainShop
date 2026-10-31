@@ -111,5 +111,6 @@ export const formatPrice = (n: number) =>
  * (เช่น URL ในข้อมูลตั้งต้น) จะ throw ทั้งหน้า → ใส่ unoptimized={!canOptimize(src)} ให้แสดงรูปตรง ๆ แทน
  */
 export const canOptimize = (src: string) =>
+  src.startsWith("/") ||
   /^https:\/\/[^/]+\.supabase\.co\/storage\/v1\/object\/public\//.test(src) ||
   /^https:\/\/[^/]+\.r2\.dev\//.test(src);

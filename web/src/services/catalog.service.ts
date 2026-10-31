@@ -1,10 +1,9 @@
 // แคตตาล็อก + สินค้า: ตรวจข้อมูล, บันทึก, อัปโหลดไฟล์, สั่งสร้าง embedding
 
 import { HttpError, check } from "@/lib/api";
-import { db } from "@/lib/db";
+import { chunks, db, fetchAll } from "@/lib/db";
 import { removeFiles, uploadFile } from "@/lib/storage";
 import { ingestCatalog, reembedProducts } from "@/lib/ai-client";
-import { TEST_CATALOG, TEST_PRODUCTS, findTestProduct } from "@/services/test-products";
 import type { Catalog, Category, Product } from "@/types/db";
 import {
   LIGHT_FILTERS,
@@ -117,9 +116,12 @@ async function assertCodesUnique(codes: string[], exceptProductId?: number) {
     if (seen.has(c)) throw new HttpError(409, `รหัสสินค้า ${c} ซ้ำกันในรายการ`);
     seen.add(c);
   }
-  let q = db().from("product").select("product_id, code:details->>code").in("details->>code", codes);
-  if (exceptProductId) q = q.neq("product_id", exceptProductId);
-  const dup = check(await q) as { code: string }[];
+  const dup: { code: string }[] = [];
+  for (const part of chunks(codes)) {
+    let q = db().from("product").select("product_id, code:details->>code").in("details->>code", part);
+    if (exceptProductId) q = q.neq("product_id", exceptProductId);
+    dup.push(...(check(await q) as { code: string }[]));
+  }
   if (dup.length) throw new HttpError(409, `รหัสสินค้ามีอยู่แล้วในระบบ: ${dup.map((d) => d.code).join(", ")}`);
 }
 
@@ -152,14 +154,6 @@ export async function listCategories(): Promise<Category[]> {
 }
 
 export async function listCatalogs(opts: { categoryId?: number; visibleOnly: boolean }): Promise<CatalogView[]> {
-  const catalogs = await listDbCatalogs(opts);
-  // ชั่วคราวช่วงทดสอบจำลอง: แคตตาล็อกของสินค้าทดสอบ (ฝั่งลูกค้าเท่านั้น)
-  if (opts.visibleOnly && (!opts.categoryId || opts.categoryId === TEST_CATALOG.category_id))
-    catalogs.push({ ...TEST_CATALOG, category: null, product_count: TEST_PRODUCTS.length });
-  return catalogs;
-}
-
-async function listDbCatalogs(opts: { categoryId?: number; visibleOnly: boolean }): Promise<CatalogView[]> {
   let q = db().from("catalog").select("*").order("catalog_id", { ascending: false });
   if (opts.categoryId) q = q.eq("category_id", opts.categoryId);
   if (opts.visibleOnly) q = q.eq("is_visible", true);
@@ -168,11 +162,14 @@ async function listDbCatalogs(opts: { categoryId?: number; visibleOnly: boolean 
 
   const [categories, products] = await Promise.all([
     listCategories(),
-    db()
-      .from("product")
-      .select("catalog_id")
-      .in("catalog_id", catalogs.map((c) => c.catalog_id))
-      .then((r) => check(r) as { catalog_id: number }[]),
+    fetchAll<{ catalog_id: number }>((from, to) =>
+      db()
+        .from("product")
+        .select("catalog_id")
+        .in("catalog_id", catalogs.map((c) => c.catalog_id))
+        .order("product_id")
+        .range(from, to),
+    ),
   ]);
   return catalogs.map((c) => ({
     ...c,
@@ -192,25 +189,9 @@ export async function listProducts(opts: {
   categoryId?: number;
   visibleOnly: boolean;
 }): Promise<ProductView[]> {
-  // ชั่วคราวช่วงทดสอบจำลอง: ต่อท้ายด้วยสินค้าทดสอบที่ไม่อยู่ใน DB (ฝั่งลูกค้าเท่านั้น)
-  const test =
-    opts.visibleOnly &&
-    (!opts.catalogId || opts.catalogId === TEST_CATALOG.catalog_id) &&
-    (!opts.categoryId || opts.categoryId === TEST_CATALOG.category_id)
-      ? TEST_PRODUCTS
-      : [];
-  if (opts.catalogId === TEST_CATALOG.catalog_id) return test;
-  return [...(await listDbProducts(opts)), ...test];
-}
-
-async function listDbProducts(opts: {
-  catalogId?: number;
-  categoryId?: number;
-  visibleOnly: boolean;
-}): Promise<ProductView[]> {
   let catalogIds: number[] | undefined;
   if (opts.visibleOnly || opts.categoryId) {
-    catalogIds = (await listDbCatalogs({ categoryId: opts.categoryId, visibleOnly: opts.visibleOnly })).map(
+    catalogIds = (await listCatalogs({ categoryId: opts.categoryId, visibleOnly: opts.visibleOnly })).map(
       (c) => c.catalog_id,
     );
     if (opts.catalogId) catalogIds = catalogIds.filter((id) => id === opts.catalogId);
@@ -218,14 +199,15 @@ async function listDbProducts(opts: {
   } else if (opts.catalogId) {
     catalogIds = [opts.catalogId];
   }
-  let q = db().from("product").select("*").order("product_id");
-  if (catalogIds) q = q.in("catalog_id", catalogIds);
-  return (check(await q) as Product[]).map(toProductView);
+  const rows = await fetchAll<Product>((from, to) => {
+    let q = db().from("product").select("*").order("product_id");
+    if (catalogIds) q = q.in("catalog_id", catalogIds);
+    return q.range(from, to);
+  });
+  return rows.map(toProductView);
 }
 
 export async function getProduct(id: number, visibleOnly: boolean): Promise<ProductView & { catalog: Catalog }> {
-  const test = visibleOnly ? findTestProduct(id) : undefined;
-  if (test) return { ...test, catalog: TEST_CATALOG };
   const p: Product | null = check(await db().from("product").select("*").eq("product_id", id).maybeSingle());
   if (!p) throw new HttpError(404, "ไม่พบสินค้า");
   const catalog = await getCatalog(p.catalog_id);
@@ -288,7 +270,8 @@ export async function createCatalog(form: FormData) {
         details: { ...p.details, images: urls },
       });
     }
-    const created: Product[] = rows.length ? check(await db().from("product").insert(rows).select()) : [];
+    const created: Product[] = [];
+    for (const part of chunks(rows, 500)) created.push(...(check(await db().from("product").insert(part).select()) as Product[]));
 
     // สินค้ากรอกเองแล้ว → สร้างแค่ embedding / มีแต่ไฟล์ → ให้ AI อ่านไฟล์สร้างสินค้า
     const ai: AiStatus = created.length
@@ -315,20 +298,23 @@ export async function updateCatalog(id: number, body: Partial<CatalogInput>) {
   // ชื่อ/คำอธิบายแคตตาล็อกมีผลกับข้อความที่ใช้ค้นหา → สร้าง embedding ใหม่
   let ai: AiStatus = "skipped";
   if (next.name !== current.name || next.description !== current.description) {
-    const ids = (check(await db().from("product").select("product_id").eq("catalog_id", id)) as Product[]).map(
-      (p) => p.product_id,
-    );
+    const ids = (
+      await fetchAll<{ product_id: number }>((from, to) =>
+        db().from("product").select("product_id").eq("catalog_id", id).order("product_id").range(from, to),
+      )
+    ).map((p) => p.product_id);
     if (ids.length) ai = aiStatus(await reembedProducts(ids));
   }
   return { catalog, ai };
 }
 
 async function deleteProductsWhere(column: "catalog_id" | "product_id", id: number) {
-  const products: Product[] = check(await db().from("product").select("*").eq(column, id));
-  const ids = products.map((p) => p.product_id);
-  if (ids.length) {
-    check(await db().from("vector_embedding").delete().in("product_id", ids));
-    check(await db().from("product").delete().in("product_id", ids));
+  const products = await fetchAll<Product>((from, to) =>
+    db().from("product").select("*").eq(column, id).order("product_id").range(from, to),
+  );
+  for (const part of chunks(products.map((p) => p.product_id))) {
+    check(await db().from("vector_embedding").delete().in("product_id", part));
+    check(await db().from("product").delete().in("product_id", part));
   }
   return products.flatMap((p) => toProductView(p).details.images);
 }

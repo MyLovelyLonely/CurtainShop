@@ -2,6 +2,15 @@
 
 const AI_URL = process.env.AI_SERVER_URL ?? "http://localhost:8000";
 
+/** fetch ล้มเพราะต่อ ai-server ไม่ได้ (เช่น ยังไม่ได้เปิด) → ข้อความที่อ่านเข้าใจ แทน "fetch failed" */
+// (fetch ฝั่งเซิร์ฟเวอร์ของ Next อาจโยน TypeError จากอีก realm → instanceof ใช้ไม่ได้ จึงดูที่ name)
+const networkError = (e: unknown) =>
+  e instanceof Error && e.name === "TypeError"
+    ? `ติดต่อ AI server ที่ ${AI_URL} ไม่ได้ (เปิด ai-server หรือยัง?)`
+    : e instanceof Error
+      ? e.message
+      : "ติดต่อ AI server ไม่ได้";
+
 export type AiResult = { ok: true; data: unknown } | { ok: false; error: string };
 
 export async function aiPost(path: string, body: unknown, timeoutMs = 15_000): Promise<AiResult> {
@@ -19,7 +28,7 @@ export async function aiPost(path: string, body: unknown, timeoutMs = 15_000): P
     }
     return { ok: true, data: await res.json() };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "ติดต่อ AI server ไม่ได้" };
+    return { ok: false, error: networkError(e) };
   }
 }
 
@@ -40,7 +49,7 @@ export async function extractCatalog(file: File): Promise<AiResult> {
     if (!res.ok) return { ok: false, error: `AI server ตอบ ${res.status}: ${await res.text()}` };
     return { ok: true, data: await res.json() };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "ติดต่อ AI server ไม่ได้" };
+    return { ok: false, error: networkError(e) };
   }
 }
 
@@ -48,8 +57,24 @@ export async function extractCatalog(file: File): Promise<AiResult> {
 export const reembedProducts = (productIds: number[]) =>
   aiPost("/ai/catalog/reembed", { product_ids: productIds });
 
-/** YOLOv11 หากรอบหน้าต่างในรูปห้อง (ครั้งแรกต้องโหลดโมเดล จึงเผื่อเวลา) */
-export const detectWindows = (imageUrl: string) => aiPost("/ai/window/detect", { image_url: imageUrl }, 120_000);
+/** ส่งไฟล์ (multipart field "file") ให้ ai-server */
+async function aiPostFile(path: string, file: Blob, name: string, timeoutMs: number): Promise<AiResult> {
+  const form = new FormData();
+  form.set("file", file, name);
+  try {
+    const res = await fetch(`${AI_URL}${path}`, { method: "POST", body: form, signal: AbortSignal.timeout(timeoutMs) });
+    if (!res.ok) {
+      const detail = await res.json().then((b) => b?.detail, () => null);
+      return { ok: false, error: `AI server ตอบ ${res.status}${typeof detail === "string" ? `: ${detail}` : ""}` };
+    }
+    return { ok: true, data: await res.json() };
+  } catch (e) {
+    return { ok: false, error: networkError(e) };
+  }
+}
+
+/** YOLOv11 หากรอบหน้าต่างในรูปห้อง — ส่งไฟล์ตรง ๆ จะได้ทำพร้อมกับอัปขึ้น R2 (เผื่อเวลาตอนโหลดโมเดลครั้งแรก) */
+export const detectWindows = (photo: Blob) => aiPostFile("/ai/window/detect-file", photo, "room.jpg", 120_000);
 
 /** SAM2 + วาดม่านจากลายผ้า + Stable Diffusion/IP-Adapter → รูป JPEG base64 */
 export const renderCurtain = (body: {
@@ -60,6 +85,18 @@ export const renderCurtain = (body: {
   open_ratio: number;
   length: string;
   drop: number;
+  width_scale: number;
+  height_scale: number;
+  fold_scale: number;
+  pattern_scale: number;
   light_filter: string | null;
   repeat_cm: number | null;
 }) => aiPost("/ai/simulate/render", body, 5 * 60_000);
+
+export type SearchHit = { product_id: number; score: number; via: string[] };
+
+/** ค้นด้วยข้อความ: BGE-M3 + BM25 + คำค้นเชิงโครงสร้าง + OpenCLIP → RRF (ครั้งแรกต้องโหลดโมเดล จึงเผื่อเวลา) */
+export const searchText = (q: string) => aiPost("/ai/search/text", { q, limit: 500 }, 120_000);
+
+/** ค้นด้วยรูปอ้างอิง: OpenCLIP */
+export const searchImage = (image: Blob) => aiPostFile("/ai/search/image", image, "query.jpg", 120_000);

@@ -17,10 +17,15 @@ def load_url(url: str, max_side: int) -> Image.Image:
     res = httpx.get(url, timeout=30)
     if res.status_code != 200:
         raise ValueError(f"โหลดรูปไม่ได้ ({res.status_code})")
-    if len(res.content) > MAX_BYTES:
+    return from_bytes(res.content, max_side)
+
+
+def from_bytes(data: bytes, max_side: int) -> Image.Image:
+    """ไบต์ของไฟล์รูป → RGB (หมุนตาม EXIF) ย่อให้ด้านยาวไม่เกิน max_side; ValueError ถ้าไม่ใช่รูป"""
+    if len(data) > MAX_BYTES:
         raise ValueError("รูปใหญ่เกิน 20MB")
     try:
-        img = Image.open(io.BytesIO(res.content))
+        img = Image.open(io.BytesIO(data))
         img = ImageOps.exif_transpose(img).convert("RGB")
     except Exception as e:  # noqa: BLE001 — PIL โยนได้หลายแบบ
         raise ValueError("ไฟล์ไม่ใช่รูปภาพที่รองรับ") from e

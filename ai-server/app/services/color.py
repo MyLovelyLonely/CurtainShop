@@ -58,3 +58,4 @@ def similarity(q: np.ndarray, p: np.ndarray, scale: float = 18.0) -> float:
     qp = float((d.min(1) * q[:, 3]).sum())
     pq = float((d.min(0) * p[:, 3]).sum())
     return float(np.exp(-(0.6 * qp + 0.4 * pq) / scale))
+

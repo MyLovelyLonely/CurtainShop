@@ -27,15 +27,9 @@ PAGE_MAX_SIDE = int(os.getenv("PAGE_MAX_SIDE", "1288"))
 # รูปที่ ai-server ยอมโหลด: เฉพาะไฟล์ของร้านเอง (R2 + Supabase Storage) กันการยิง URL ภายนอก
 R2_PUBLIC_URL = os.getenv("R2_PUBLIC_URL", "").rstrip("/")
 ALLOWED_IMAGE_PREFIXES = [p for p in (R2_PUBLIC_URL + "/" if R2_PUBLIC_URL else "", SUPABASE_URL.rstrip("/") + "/storage/v1/object/public/" if SUPABASE_URL else "") if p]
-# ชั่วคราวช่วงทดสอบจำลอง: รูปผ้าของสินค้าทดสอบใน web/src/services/test-products.ts (ลบพร้อมไฟล์นั้น)
-TEST_ASSET_BASE = os.getenv("TEST_ASSET_BASE", "http://localhost:3000").rstrip("/")
-ALLOWED_IMAGE_PREFIXES += [
-    "https://www.ikea.com/th/th/images/products/",
-    "https://encrypted-tbn0.gstatic.com/images?",
-    TEST_ASSET_BASE + "/test-swatches/",  # รูปผ้าที่สร้างไว้ใน web/public/test-swatches
-]
 
 MODELS_DIR = ROOT / "models"
+LOGS_DIR = ROOT / "logs"  # คำค้นที่ระบบรับมือไม่ได้ (search_log)
 # ตรวจหน้าต่าง: YOLOE (YOLOv11 แบบระบุคลาสด้วยข้อความ) ใช้ได้เลยไม่ต้องเทรน
 # ถ้าเทรน YOLOv11 เองด้วยชุดข้อมูลหน้าต่าง ให้ชี้ WINDOW_MODEL ไปที่ไฟล์ .pt นั้น
 WINDOW_MODEL = os.getenv("WINDOW_MODEL", "yoloe-11s-seg.pt")
@@ -55,14 +49,7 @@ SIM_REFINE = os.getenv("SIM_REFINE", "true").lower() == "true"
 SIM_MAX_SIDE = int(os.getenv("SIM_MAX_SIDE", "1600"))
 
 # ---------- ค้นหาสินค้า (หัวข้อ 2.2–2.3) ----------
-# PostgreSQL ของ Supabase (ค่า PG* อยู่ใน web/.env.local) ใช้ pgvector ค้นเวกเตอร์
-PG = {
-    "host": os.getenv("PGHOST", ""),
-    "port": os.getenv("PGPORT", "5432"),
-    "dbname": os.getenv("PGDATABASE", "postgres"),
-    "user": os.getenv("PGUSER", ""),
-    "password": os.getenv("PGPASSWORD", ""),
-}
+# ข้อมูลสินค้า/เวกเตอร์อ่านเขียนผ่าน Supabase API (SUPABASE_URL ด้านบน) — project เดียวกับเว็บ
 TEXT_EMBED_MODEL = os.getenv("TEXT_EMBED_MODEL", "BAAI/bge-m3")
 # OpenCLIP รุ่นที่ตัวเข้ารหัสข้อความรองรับหลายภาษา (รวมภาษาไทย) และได้เวกเตอร์ 1024 มิติเท่าคอลัมน์ vector_data
 CLIP_MODEL = os.getenv("CLIP_MODEL", "xlm-roberta-large-ViT-H-14")

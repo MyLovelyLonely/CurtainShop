@@ -1,0 +1,3155 @@
+[
+ {
+  "category": "ผ้าม่าน",
+  "name": "Blackout Collection",
+  "description": "ผ้าม่านทึบแสง 100% เคลือบกันแสง 3 ชั้น",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "BK-102 ผ้าม่านกันแสงสีขาว",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีขาว กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-102.jpg",
+    "details": {
+     "code": "BK-102",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ขาว"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-102.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-103 ผ้าม่านกันแสงสีครีม",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีครีม กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-103.jpg",
+    "details": {
+     "code": "BK-103",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ครีม"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-103.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-104 ผ้าม่านกันแสงสีเบจ",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีเบจ กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-104.jpg",
+    "details": {
+     "code": "BK-104",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เบจ"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-104.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-105 ผ้าม่านกันแสงสีเทา",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีเทา กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-105.jpg",
+    "details": {
+     "code": "BK-105",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เทา"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-105.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-106 ผ้าม่านกันแสงสีเทาเข้ม",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีเทาเข้ม กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-106.jpg",
+    "details": {
+     "code": "BK-106",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เทาเข้ม"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-106.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-107 ผ้าม่านกันแสงสีกรมท่า",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีกรมท่า กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-107.jpg",
+    "details": {
+     "code": "BK-107",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "กรมท่า"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-107.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-108 ผ้าม่านกันแสงสีน้ำตาล",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีน้ำตาล กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-108.jpg",
+    "details": {
+     "code": "BK-108",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "น้ำตาล"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-108.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-109 ผ้าม่านกันแสงสีดำ",
+    "base_price": 1500,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสง 100% สีดำ กันแสงแดดและความร้อน เหมาะกับห้องนอนและห้องดูหนัง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-109.jpg",
+    "details": {
+     "code": "BK-109",
+     "collection": "Blackout Collection",
+     "pattern_name": "Plain Blackout",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ดำ"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "กันร้อน"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-109.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Blackout Collection 2026",
+  "description": "รุ่นปรับปรุงจาก Blackout Collection เนื้อผ้านุ่มขึ้น ทิ้งตัวสวย มีสีใหม่",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "BK-201 ผ้าม่านกันแสงลายลินินสีขาว",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีขาว ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-201.jpg",
+    "details": {
+     "code": "BK-201",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ขาว"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-201.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-202 ผ้าม่านกันแสงลายลินินสีเบจ",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีเบจ ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-202.jpg",
+    "details": {
+     "code": "BK-202",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เบจ"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-202.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-203 ผ้าม่านกันแสงลายลินินสีเทา",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีเทา ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-203.jpg",
+    "details": {
+     "code": "BK-203",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เทา"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-203.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-204 ผ้าม่านกันแสงลายลินินสีเขียวเสจ",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีเขียวเสจ ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-204.jpg",
+    "details": {
+     "code": "BK-204",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เขียวเสจ"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-204.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-205 ผ้าม่านกันแสงลายลินินสีฟ้าหม่น",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีฟ้าหม่น ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-205.jpg",
+    "details": {
+     "code": "BK-205",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ฟ้าหม่น"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-205.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-206 ผ้าม่านกันแสงลายลินินสีชมพูกะปิ",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีชมพูกะปิ ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-206.jpg",
+    "details": {
+     "code": "BK-206",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ชมพูกะปิ"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-206.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-207 ผ้าม่านกันแสงลายลินินสีมอคค่า",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีมอคค่า ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-207.jpg",
+    "details": {
+     "code": "BK-207",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "มอคค่า"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-207.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BK-208 ผ้าม่านกันแสงลายลินินสีเทาชาร์โคล",
+    "base_price": 1750,
+    "price_unit": "ตร.ม.",
+    "description": "ผ้าม่านทึบแสงผิวสัมผัสลายลินินสีเทาชาร์โคล ดูเป็นธรรมชาติแต่กันแสงได้เต็มที่",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-208.jpg",
+    "details": {
+     "code": "BK-208",
+     "collection": "Blackout Collection 2026",
+     "pattern_name": "Soft Blackout Linen Look",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เทาชาร์โคล"
+     ],
+     "composition": "Polyester 100% เคลือบ 3 ชั้น ผิวลายลินิน",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "blackout",
+     "tags": [
+      "กันแสง",
+      "ห้องนอน",
+      "ลุคลินิน",
+      "มาใหม่"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BK-208.jpg"
+     ],
+     "type": 3,
+     "unit_name": "ตร.ม.",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Linen Natural Vol.1",
+  "description": "ผ้าลินินผสมคอตตอน โทนธรรมชาติ",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "LN-101 ผ้าม่านลินินสีขาว",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีขาว เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-101.jpg",
+    "details": {
+     "code": "LN-101",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ขาว"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-101.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-102 ผ้าม่านลินินสีทราย",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีทราย เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-102.jpg",
+    "details": {
+     "code": "LN-102",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ทราย"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-102.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-103 ผ้าม่านลินินสีครีม",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีครีม เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-103.jpg",
+    "details": {
+     "code": "LN-103",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ครีม"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-103.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-104 ผ้าม่านลินินสีเขียวเสจ",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีเขียวเสจ เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-104.jpg",
+    "details": {
+     "code": "LN-104",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เขียวเสจ"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-104.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-105 ผ้าม่านลินินสีเทาอ่อน",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีเทาอ่อน เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-105.jpg",
+    "details": {
+     "code": "LN-105",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เทาอ่อน"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-105.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-106 ผ้าม่านลินินสีน้ำตาลอ่อน",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีน้ำตาลอ่อน เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-106.jpg",
+    "details": {
+     "code": "LN-106",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "น้ำตาลอ่อน"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-106.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-107 ผ้าม่านลินินสีฟ้าหม่น",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีฟ้าหม่น เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-107.jpg",
+    "details": {
+     "code": "LN-107",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ฟ้าหม่น"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-107.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-108 ผ้าม่านลินินสีเขียวมะกอก",
+    "base_price": 650,
+    "price_unit": "หลา",
+    "description": "ผ้าลินินแท้สีเขียวมะกอก เนื้อผ้ามีมิติ ระบายอากาศดี ให้ความรู้สึกเป็นธรรมชาติ",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-108.jpg",
+    "details": {
+     "code": "LN-108",
+     "collection": "Linen Natural Vol.1",
+     "pattern_name": "Pure Linen",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เขียวมะกอก"
+     ],
+     "composition": "Linen 55% Cotton 45%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "มินิมอล"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-108.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Linen Natural Vol.2",
+  "description": "ภาคต่อของ Linen Natural เพิ่มลายทางและลายก้างปลา",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "LN-201 ผ้าม่านลินินลายทางขาว-เบจ",
+    "base_price": 690,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายทางแนวตั้งสีขาว-เบจ ช่วยให้ห้องดูสูงโปร่งขึ้น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-201.jpg",
+    "details": {
+     "code": "LN-201",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ขาว",
+      "เบจ"
+     ],
+     "composition": "Linen 50% Cotton 50%",
+     "width_cm": 280,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ลายทาง"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-201.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-202 ผ้าม่านลินินลายทางครีม-น้ำตาล",
+    "base_price": 690,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายทางแนวตั้งสีครีม-น้ำตาล ช่วยให้ห้องดูสูงโปร่งขึ้น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-202.jpg",
+    "details": {
+     "code": "LN-202",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ครีม",
+      "น้ำตาล"
+     ],
+     "composition": "Linen 50% Cotton 50%",
+     "width_cm": 280,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ลายทาง"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-202.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-203 ผ้าม่านลินินลายทางขาว-เทา",
+    "base_price": 690,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายทางแนวตั้งสีขาว-เทา ช่วยให้ห้องดูสูงโปร่งขึ้น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-203.jpg",
+    "details": {
+     "code": "LN-203",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ขาว",
+      "เทา"
+     ],
+     "composition": "Linen 50% Cotton 50%",
+     "width_cm": 280,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ลายทาง"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-203.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-204 ผ้าม่านลินินลายทางขาว-กรมท่า",
+    "base_price": 690,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายทางแนวตั้งสีขาว-กรมท่า ช่วยให้ห้องดูสูงโปร่งขึ้น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-204.jpg",
+    "details": {
+     "code": "LN-204",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ขาว",
+      "กรมท่า"
+     ],
+     "composition": "Linen 50% Cotton 50%",
+     "width_cm": 280,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ลายทาง"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-204.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-205 ผ้าม่านลินินลายทางเขียวเสจ-ครีม",
+    "base_price": 690,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายทางแนวตั้งสีเขียวเสจ-ครีม ช่วยให้ห้องดูสูงโปร่งขึ้น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-205.jpg",
+    "details": {
+     "code": "LN-205",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "เขียวเสจ",
+      "ครีม"
+     ],
+     "composition": "Linen 50% Cotton 50%",
+     "width_cm": 280,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ลายทาง"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-205.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-251 ผ้าม่านลินินลายก้างปลาทราย-เบจ",
+    "base_price": 720,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายก้างปลาสีทราย-เบจ ดูภูมิฐาน เหมาะกับห้องทำงาน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-251.jpg",
+    "details": {
+     "code": "LN-251",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Herringbone",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "ทราย",
+      "เบจ"
+     ],
+     "composition": "Linen 40% Polyester 60%",
+     "width_cm": 280,
+     "repeat_cm": 12,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "คลาสสิก"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-251.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-252 ผ้าม่านลินินลายก้างปลาเทา-เทาอ่อน",
+    "base_price": 720,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายก้างปลาสีเทา-เทาอ่อน ดูภูมิฐาน เหมาะกับห้องทำงาน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-252.jpg",
+    "details": {
+     "code": "LN-252",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Herringbone",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "เทา",
+      "เทาอ่อน"
+     ],
+     "composition": "Linen 40% Polyester 60%",
+     "width_cm": 280,
+     "repeat_cm": 12,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "คลาสสิก"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-252.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "LN-253 ผ้าม่านลินินลายก้างปลาน้ำตาล-เบจ",
+    "base_price": 720,
+    "price_unit": "หลา",
+    "description": "ลินินทอลายก้างปลาสีน้ำตาล-เบจ ดูภูมิฐาน เหมาะกับห้องทำงาน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-253.jpg",
+    "details": {
+     "code": "LN-253",
+     "collection": "Linen Natural Vol.2",
+     "pattern_name": "Linen Herringbone",
+     "pattern_type": "ลายผ้า/เท็กซ์เจอร์ (Texture)",
+     "colors": [
+      "น้ำตาล",
+      "เบจ"
+     ],
+     "composition": "Linen 40% Polyester 60%",
+     "width_cm": 280,
+     "repeat_cm": 12,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "คลาสสิก"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/LN-253.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Sheer & Voile",
+  "description": "ผ้าโปร่งบางเบา ใช้คู่กับม่านทึบเป็นม่านสองชั้น",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "SH-202 ผ้าม่านโปร่งสีขาว",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีขาว แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-202.jpg",
+    "details": {
+     "code": "SH-202",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ขาว"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-202.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-203 ผ้าม่านโปร่งสีขาวงาช้าง",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีขาวงาช้าง แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-203.jpg",
+    "details": {
+     "code": "SH-203",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ขาวงาช้าง"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-203.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-204 ผ้าม่านโปร่งสีเทาอ่อน",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีเทาอ่อน แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-204.jpg",
+    "details": {
+     "code": "SH-204",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เทาอ่อน"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-204.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-205 ผ้าม่านโปร่งสีเบจ",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีเบจ แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-205.jpg",
+    "details": {
+     "code": "SH-205",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เบจ"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-205.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-206 ผ้าม่านโปร่งสีฟ้าอ่อน",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีฟ้าอ่อน แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-206.jpg",
+    "details": {
+     "code": "SH-206",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ฟ้าอ่อน"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-206.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-207 ผ้าม่านโปร่งสีชมพูอ่อน",
+    "base_price": 260,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งสีชมพูอ่อน แสงส่องผ่านนุ่มนวล ห้องดูสว่างเย็นตา",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-207.jpg",
+    "details": {
+     "code": "SH-207",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Plain Voile",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ชมพูอ่อน"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": null,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "เย็นสบาย",
+      "ม่านสองชั้น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-207.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-251 ผ้าม่านโปร่งลายทางสีขาว",
+    "base_price": 320,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งทอลายทางเส้นบางสีขาว เพิ่มมิติให้ม่านชั้นใน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-251.jpg",
+    "details": {
+     "code": "SH-251",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Voile Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ขาว"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": 10,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "ลายทาง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-251.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-252 ผ้าม่านโปร่งลายทางสีครีม",
+    "base_price": 320,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งทอลายทางเส้นบางสีครีม เพิ่มมิติให้ม่านชั้นใน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-252.jpg",
+    "details": {
+     "code": "SH-252",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Voile Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ครีม"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": 10,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "ลายทาง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-252.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-253 ผ้าม่านโปร่งลายทางสีเทา",
+    "base_price": 320,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งทอลายทางเส้นบางสีเทา เพิ่มมิติให้ม่านชั้นใน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-253.jpg",
+    "details": {
+     "code": "SH-253",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Voile Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "เทา"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": 10,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "ลายทาง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-253.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "SH-254 ผ้าม่านโปร่งลายทางสีเบจ",
+    "base_price": 320,
+    "price_unit": "หลา",
+    "description": "ผ้าโปร่งทอลายทางเส้นบางสีเบจ เพิ่มมิติให้ม่านชั้นใน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-254.jpg",
+    "details": {
+     "code": "SH-254",
+     "collection": "Sheer & Voile",
+     "pattern_name": "Voile Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "เบจ"
+     ],
+     "composition": "Polyester Voile",
+     "width_cm": 300,
+     "repeat_cm": 10,
+     "light_filter": "sheer",
+     "tags": [
+      "ผ้าโปร่ง",
+      "ลายทาง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/SH-254.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Royal Damask",
+  "description": "ผ้าแจ็คการ์ดลายคลาสสิก เหมาะกับม่านหลุยส์และห้องรับแขก",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "DM-501 ผ้าม่านลายดามัสก์แดงเลือดหมู-ทอง",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีแดงเลือดหมู-ทอง ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-501.jpg",
+    "details": {
+     "code": "DM-501",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "แดงเลือดหมู",
+      "ทอง"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-501.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-502 ผ้าม่านลายดามัสก์เทา-เงิน",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีเทา-เงิน ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-502.jpg",
+    "details": {
+     "code": "DM-502",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "เทา",
+      "เงิน"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-502.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-503 ผ้าม่านลายดามัสก์ครีม-ทอง",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีครีม-ทอง ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-503.jpg",
+    "details": {
+     "code": "DM-503",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "ครีม",
+      "ทอง"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-503.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-504 ผ้าม่านลายดามัสก์กรมท่า-ทอง",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีกรมท่า-ทอง ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-504.jpg",
+    "details": {
+     "code": "DM-504",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "กรมท่า",
+      "ทอง"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-504.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-505 ผ้าม่านลายดามัสก์เขียวเข้ม-ทอง",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีเขียวเข้ม-ทอง ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-505.jpg",
+    "details": {
+     "code": "DM-505",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "เขียวเข้ม",
+      "ทอง"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-505.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-506 ผ้าม่านลายดามัสก์น้ำตาล-ครีม",
+    "base_price": 890,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดทอลายดามัสก์สีน้ำตาล-ครีม ดูหรูหรา เหมาะกับม่านหลุยส์",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-506.jpg",
+    "details": {
+     "code": "DM-506",
+     "collection": "Royal Damask",
+     "pattern_name": "Damask Classic",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "น้ำตาล",
+      "ครีม"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "blackout",
+     "tags": [
+      "หรูหรา",
+      "ม่านหลุยส์",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-506.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-551 ผ้าม่านลายเหรียญครีม-ทอง",
+    "base_price": 950,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดลายเหรียญวงกลมซ้อนสีครีม-ทอง",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-551.jpg",
+    "details": {
+     "code": "DM-551",
+     "collection": "Royal Damask",
+     "pattern_name": "Royal Medallion",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "ครีม",
+      "ทอง"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "หรูหรา",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-551.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-552 ผ้าม่านลายเหรียญแชมเปญ-น้ำตาล",
+    "base_price": 950,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดลายเหรียญวงกลมซ้อนสีแชมเปญ-น้ำตาล",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-552.jpg",
+    "details": {
+     "code": "DM-552",
+     "collection": "Royal Damask",
+     "pattern_name": "Royal Medallion",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "แชมเปญ",
+      "น้ำตาล"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "หรูหรา",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-552.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-553 ผ้าม่านลายเหรียญเทา-ขาว",
+    "base_price": 950,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดลายเหรียญวงกลมซ้อนสีเทา-ขาว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-553.jpg",
+    "details": {
+     "code": "DM-553",
+     "collection": "Royal Damask",
+     "pattern_name": "Royal Medallion",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "เทา",
+      "ขาว"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "หรูหรา",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-553.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "DM-554 ผ้าม่านลายเหรียญม่วง-เงิน",
+    "base_price": 950,
+    "price_unit": "หลา",
+    "description": "ผ้าแจ็คการ์ดลายเหรียญวงกลมซ้อนสีม่วง-เงิน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-554.jpg",
+    "details": {
+     "code": "DM-554",
+     "collection": "Royal Damask",
+     "pattern_name": "Royal Medallion",
+     "pattern_type": "ลายดามัสก์ (Damask)",
+     "colors": [
+      "ม่วง",
+      "เงิน"
+     ],
+     "composition": "Jacquard Polyester",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "หรูหรา",
+      "คลาสสิก"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/DM-554.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Botanical Garden",
+  "description": "ลายใบไม้และดอกไม้ โทนธรรมชาติสดชื่น",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "BT-301 ผ้าม่านลายใบไม้ครีม-เขียว",
+    "base_price": 520,
+    "price_unit": "หลา",
+    "description": "ลายใบไม้ร่วงสีครีม-เขียว ให้ความรู้สึกสดชื่นเหมือนอยู่ในสวน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-301.jpg",
+    "details": {
+     "code": "BT-301",
+     "collection": "Botanical Garden",
+     "pattern_name": "Falling Leaves",
+     "pattern_type": "ลายใบไม้ (Botanical)",
+     "colors": [
+      "ครีม",
+      "เขียว"
+     ],
+     "composition": "Cotton 60% Polyester 40%",
+     "width_cm": 280,
+     "repeat_cm": 64,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ห้องนั่งเล่น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-301.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BT-302 ผ้าม่านลายใบไม้เบจ-เขียวมะกอก",
+    "base_price": 520,
+    "price_unit": "หลา",
+    "description": "ลายใบไม้ร่วงสีเบจ-เขียวมะกอก ให้ความรู้สึกสดชื่นเหมือนอยู่ในสวน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-302.jpg",
+    "details": {
+     "code": "BT-302",
+     "collection": "Botanical Garden",
+     "pattern_name": "Falling Leaves",
+     "pattern_type": "ลายใบไม้ (Botanical)",
+     "colors": [
+      "เบจ",
+      "เขียวมะกอก"
+     ],
+     "composition": "Cotton 60% Polyester 40%",
+     "width_cm": 280,
+     "repeat_cm": 64,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ห้องนั่งเล่น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-302.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BT-303 ผ้าม่านลายใบไม้ขาว-เขียวอ่อน",
+    "base_price": 520,
+    "price_unit": "หลา",
+    "description": "ลายใบไม้ร่วงสีขาว-เขียวอ่อน ให้ความรู้สึกสดชื่นเหมือนอยู่ในสวน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-303.jpg",
+    "details": {
+     "code": "BT-303",
+     "collection": "Botanical Garden",
+     "pattern_name": "Falling Leaves",
+     "pattern_type": "ลายใบไม้ (Botanical)",
+     "colors": [
+      "ขาว",
+      "เขียวอ่อน"
+     ],
+     "composition": "Cotton 60% Polyester 40%",
+     "width_cm": 280,
+     "repeat_cm": 64,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ห้องนั่งเล่น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-303.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BT-304 ผ้าม่านลายใบไม้เขียวเข้ม-ทอง",
+    "base_price": 520,
+    "price_unit": "หลา",
+    "description": "ลายใบไม้ร่วงสีเขียวเข้ม-ทอง ให้ความรู้สึกสดชื่นเหมือนอยู่ในสวน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-304.jpg",
+    "details": {
+     "code": "BT-304",
+     "collection": "Botanical Garden",
+     "pattern_name": "Falling Leaves",
+     "pattern_type": "ลายใบไม้ (Botanical)",
+     "colors": [
+      "เขียวเข้ม",
+      "ทอง"
+     ],
+     "composition": "Cotton 60% Polyester 40%",
+     "width_cm": 280,
+     "repeat_cm": 64,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ห้องนั่งเล่น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-304.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "BT-305 ผ้าม่านลายใบไม้ฟ้าอ่อน-กรมท่า",
+    "base_price": 520,
+    "price_unit": "หลา",
+    "description": "ลายใบไม้ร่วงสีฟ้าอ่อน-กรมท่า ให้ความรู้สึกสดชื่นเหมือนอยู่ในสวน",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-305.jpg",
+    "details": {
+     "code": "BT-305",
+     "collection": "Botanical Garden",
+     "pattern_name": "Falling Leaves",
+     "pattern_type": "ลายใบไม้ (Botanical)",
+     "colors": [
+      "ฟ้าอ่อน",
+      "กรมท่า"
+     ],
+     "composition": "Cotton 60% Polyester 40%",
+     "width_cm": 280,
+     "repeat_cm": 64,
+     "light_filter": "dimout",
+     "tags": [
+      "ธรรมชาติ",
+      "ห้องนั่งเล่น"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/BT-305.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-601 ผ้าม่านลายดอกไม้ขาว-ชมพู",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีขาว-ชมพู สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-601.jpg",
+    "details": {
+     "code": "FL-601",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "ขาว",
+      "ชมพู"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-601.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-602 ผ้าม่านลายดอกไม้ขาว-ฟ้า",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีขาว-ฟ้า สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-602.jpg",
+    "details": {
+     "code": "FL-602",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "ขาว",
+      "ฟ้า"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-602.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-603 ผ้าม่านลายดอกไม้ครีม-แดง",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีครีม-แดง สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-603.jpg",
+    "details": {
+     "code": "FL-603",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "ครีม",
+      "แดง"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-603.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-604 ผ้าม่านลายดอกไม้เหลืองอ่อน-ส้ม",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีเหลืองอ่อน-ส้ม สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-604.jpg",
+    "details": {
+     "code": "FL-604",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "เหลืองอ่อน",
+      "ส้ม"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-604.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-605 ผ้าม่านลายดอกไม้เขียวมิ้นท์-ขาว",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีเขียวมิ้นท์-ขาว สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-605.jpg",
+    "details": {
+     "code": "FL-605",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "เขียวมิ้นท์",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-605.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "FL-606 ผ้าม่านลายดอกไม้กรมท่า-ชมพู",
+    "base_price": 540,
+    "price_unit": "หลา",
+    "description": "ลายดอกไม้สีกรมท่า-ชมพู สไตล์วินเทจสดใส",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-606.jpg",
+    "details": {
+     "code": "FL-606",
+     "collection": "Botanical Garden",
+     "pattern_name": "Blossom",
+     "pattern_type": "ลายดอก (Floral)",
+     "colors": [
+      "กรมท่า",
+      "ชมพู"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 280,
+     "repeat_cm": 40,
+     "light_filter": "dimout",
+     "tags": [
+      "ลายดอก",
+      "วินเทจ"
+     ],
+     "care": "ซักมือด้วยน้ำเย็น ห้ามบิด ตากในที่ร่ม",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/FL-606.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Modern Geometric",
+  "description": "ลายกราฟิกและลายตาราง สำหรับบ้านสไตล์โมเดิร์น",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "GE-401 ผ้าม่านลายซิกแซกเทา-เหลืองมัสตาร์ด",
+    "base_price": 480,
+    "price_unit": "หลา",
+    "description": "ลายซิกแซกสีเทา-เหลืองมัสตาร์ด เพิ่มความสนุกให้ห้องสไตล์โมเดิร์น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-401.jpg",
+    "details": {
+     "code": "GE-401",
+     "collection": "Modern Geometric",
+     "pattern_name": "Chevron",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "เทา",
+      "เหลืองมัสตาร์ด"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "โมเดิร์น",
+      "คอนโด"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-401.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-402 ผ้าม่านลายซิกแซกขาว-กรมท่า",
+    "base_price": 480,
+    "price_unit": "หลา",
+    "description": "ลายซิกแซกสีขาว-กรมท่า เพิ่มความสนุกให้ห้องสไตล์โมเดิร์น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-402.jpg",
+    "details": {
+     "code": "GE-402",
+     "collection": "Modern Geometric",
+     "pattern_name": "Chevron",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "ขาว",
+      "กรมท่า"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "โมเดิร์น",
+      "คอนโด"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-402.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-403 ผ้าม่านลายซิกแซกเบจ-น้ำตาล",
+    "base_price": 480,
+    "price_unit": "หลา",
+    "description": "ลายซิกแซกสีเบจ-น้ำตาล เพิ่มความสนุกให้ห้องสไตล์โมเดิร์น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-403.jpg",
+    "details": {
+     "code": "GE-403",
+     "collection": "Modern Geometric",
+     "pattern_name": "Chevron",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "เบจ",
+      "น้ำตาล"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "โมเดิร์น",
+      "คอนโด"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-403.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-404 ผ้าม่านลายซิกแซกเทาเข้ม-ขาว",
+    "base_price": 480,
+    "price_unit": "หลา",
+    "description": "ลายซิกแซกสีเทาเข้ม-ขาว เพิ่มความสนุกให้ห้องสไตล์โมเดิร์น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-404.jpg",
+    "details": {
+     "code": "GE-404",
+     "collection": "Modern Geometric",
+     "pattern_name": "Chevron",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "เทาเข้ม",
+      "ขาว"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "โมเดิร์น",
+      "คอนโด"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-404.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-431 ผ้าม่านลายตารางครีม-ฟ้า",
+    "base_price": 390,
+    "price_unit": "หลา",
+    "description": "ลายตารางสีครีม-ฟ้า สไตล์คันทรี่ เหมาะกับห้องครัวและห้องทานข้าว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-431.jpg",
+    "details": {
+     "code": "GE-431",
+     "collection": "Modern Geometric",
+     "pattern_name": "Gingham Check",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "ครีม",
+      "ฟ้า"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 25,
+     "light_filter": "dimout",
+     "tags": [
+      "คันทรี่",
+      "ห้องครัว"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-431.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-432 ผ้าม่านลายตารางขาว-แดง",
+    "base_price": 390,
+    "price_unit": "หลา",
+    "description": "ลายตารางสีขาว-แดง สไตล์คันทรี่ เหมาะกับห้องครัวและห้องทานข้าว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-432.jpg",
+    "details": {
+     "code": "GE-432",
+     "collection": "Modern Geometric",
+     "pattern_name": "Gingham Check",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "ขาว",
+      "แดง"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 25,
+     "light_filter": "dimout",
+     "tags": [
+      "คันทรี่",
+      "ห้องครัว"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-432.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-433 ผ้าม่านลายตารางขาว-เขียว",
+    "base_price": 390,
+    "price_unit": "หลา",
+    "description": "ลายตารางสีขาว-เขียว สไตล์คันทรี่ เหมาะกับห้องครัวและห้องทานข้าว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-433.jpg",
+    "details": {
+     "code": "GE-433",
+     "collection": "Modern Geometric",
+     "pattern_name": "Gingham Check",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "ขาว",
+      "เขียว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 25,
+     "light_filter": "dimout",
+     "tags": [
+      "คันทรี่",
+      "ห้องครัว"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-433.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-434 ผ้าม่านลายตารางเบจ-น้ำตาล",
+    "base_price": 390,
+    "price_unit": "หลา",
+    "description": "ลายตารางสีเบจ-น้ำตาล สไตล์คันทรี่ เหมาะกับห้องครัวและห้องทานข้าว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-434.jpg",
+    "details": {
+     "code": "GE-434",
+     "collection": "Modern Geometric",
+     "pattern_name": "Gingham Check",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "เบจ",
+      "น้ำตาล"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 25,
+     "light_filter": "dimout",
+     "tags": [
+      "คันทรี่",
+      "ห้องครัว"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-434.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-461 ผ้าม่านลายสก็อตแดง-เขียว",
+    "base_price": 590,
+    "price_unit": "หลา",
+    "description": "ลายสก็อตแทาร์ทันสีแดง-เขียว ให้ความรู้สึกอบอุ่น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-461.jpg",
+    "details": {
+     "code": "GE-461",
+     "collection": "Modern Geometric",
+     "pattern_name": "Tartan",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "แดง",
+      "เขียว"
+     ],
+     "composition": "Wool 20% Polyester 80%",
+     "width_cm": 150,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "คลาสสิก",
+      "อบอุ่น"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-461.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-462 ผ้าม่านลายสก็อตกรมท่า-เขียว",
+    "base_price": 590,
+    "price_unit": "หลา",
+    "description": "ลายสก็อตแทาร์ทันสีกรมท่า-เขียว ให้ความรู้สึกอบอุ่น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-462.jpg",
+    "details": {
+     "code": "GE-462",
+     "collection": "Modern Geometric",
+     "pattern_name": "Tartan",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "กรมท่า",
+      "เขียว"
+     ],
+     "composition": "Wool 20% Polyester 80%",
+     "width_cm": 150,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "คลาสสิก",
+      "อบอุ่น"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-462.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "GE-463 ผ้าม่านลายสก็อตเทา-ดำ",
+    "base_price": 590,
+    "price_unit": "หลา",
+    "description": "ลายสก็อตแทาร์ทันสีเทา-ดำ ให้ความรู้สึกอบอุ่น",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-463.jpg",
+    "details": {
+     "code": "GE-463",
+     "collection": "Modern Geometric",
+     "pattern_name": "Tartan",
+     "pattern_type": "ลายเรขาคณิต (Geometric)",
+     "colors": [
+      "เทา",
+      "ดำ"
+     ],
+     "composition": "Wool 20% Polyester 80%",
+     "width_cm": 150,
+     "repeat_cm": 32,
+     "light_filter": "dimout",
+     "tags": [
+      "คลาสสิก",
+      "อบอุ่น"
+     ],
+     "care": "ซักแห้งเท่านั้น ห้ามซักน้ำ",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/GE-463.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Kids Fun",
+  "description": "ลายน่ารักสำหรับห้องเด็ก ปลอดภัย ไม่มีสารตะกั่ว",
+  "is_visible": true,
+  "products": [
+   {
+    "name": "KD-701 ผ้าม่านลายดาวฟ้า-เหลือง",
+    "base_price": 420,
+    "price_unit": "หลา",
+    "description": "ลายดาวสีฟ้า-เหลือง ทึบแสงช่วยให้เด็กนอนกลางวันหลับสบาย",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-701.jpg",
+    "details": {
+     "code": "KD-701",
+     "collection": "Kids Fun",
+     "pattern_name": "Little Stars",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "ฟ้า",
+      "เหลือง"
+     ],
+     "composition": "Polyester เคลือบกันแสง",
+     "width_cm": 280,
+     "repeat_cm": 30,
+     "light_filter": "blackout",
+     "tags": [
+      "ห้องเด็ก",
+      "กันแสง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-701.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-702 ผ้าม่านลายดาวกรมท่า-ขาว",
+    "base_price": 420,
+    "price_unit": "หลา",
+    "description": "ลายดาวสีกรมท่า-ขาว ทึบแสงช่วยให้เด็กนอนกลางวันหลับสบาย",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-702.jpg",
+    "details": {
+     "code": "KD-702",
+     "collection": "Kids Fun",
+     "pattern_name": "Little Stars",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "กรมท่า",
+      "ขาว"
+     ],
+     "composition": "Polyester เคลือบกันแสง",
+     "width_cm": 280,
+     "repeat_cm": 30,
+     "light_filter": "blackout",
+     "tags": [
+      "ห้องเด็ก",
+      "กันแสง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-702.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-703 ผ้าม่านลายดาวชมพู-ขาว",
+    "base_price": 420,
+    "price_unit": "หลา",
+    "description": "ลายดาวสีชมพู-ขาว ทึบแสงช่วยให้เด็กนอนกลางวันหลับสบาย",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-703.jpg",
+    "details": {
+     "code": "KD-703",
+     "collection": "Kids Fun",
+     "pattern_name": "Little Stars",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "ชมพู",
+      "ขาว"
+     ],
+     "composition": "Polyester เคลือบกันแสง",
+     "width_cm": 280,
+     "repeat_cm": 30,
+     "light_filter": "blackout",
+     "tags": [
+      "ห้องเด็ก",
+      "กันแสง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-703.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-704 ผ้าม่านลายดาวเทา-เหลือง",
+    "base_price": 420,
+    "price_unit": "หลา",
+    "description": "ลายดาวสีเทา-เหลือง ทึบแสงช่วยให้เด็กนอนกลางวันหลับสบาย",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-704.jpg",
+    "details": {
+     "code": "KD-704",
+     "collection": "Kids Fun",
+     "pattern_name": "Little Stars",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "เทา",
+      "เหลือง"
+     ],
+     "composition": "Polyester เคลือบกันแสง",
+     "width_cm": 280,
+     "repeat_cm": 30,
+     "light_filter": "blackout",
+     "tags": [
+      "ห้องเด็ก",
+      "กันแสง"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-704.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-751 ผ้าม่านลายจุดเขียวมิ้นท์-ขาว",
+    "base_price": 360,
+    "price_unit": "หลา",
+    "description": "ลายจุดน่ารักสีเขียวมิ้นท์-ขาว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-751.jpg",
+    "details": {
+     "code": "KD-751",
+     "collection": "Kids Fun",
+     "pattern_name": "Polka Dot",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "เขียวมิ้นท์",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 145,
+     "repeat_cm": 30,
+     "light_filter": "dimout",
+     "tags": [
+      "ห้องเด็ก",
+      "พาสเทล"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-751.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-752 ผ้าม่านลายจุดชมพู-ขาว",
+    "base_price": 360,
+    "price_unit": "หลา",
+    "description": "ลายจุดน่ารักสีชมพู-ขาว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-752.jpg",
+    "details": {
+     "code": "KD-752",
+     "collection": "Kids Fun",
+     "pattern_name": "Polka Dot",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "ชมพู",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 145,
+     "repeat_cm": 30,
+     "light_filter": "dimout",
+     "tags": [
+      "ห้องเด็ก",
+      "พาสเทล"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-752.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-753 ผ้าม่านลายจุดเหลือง-ขาว",
+    "base_price": 360,
+    "price_unit": "หลา",
+    "description": "ลายจุดน่ารักสีเหลือง-ขาว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-753.jpg",
+    "details": {
+     "code": "KD-753",
+     "collection": "Kids Fun",
+     "pattern_name": "Polka Dot",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "เหลือง",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 145,
+     "repeat_cm": 30,
+     "light_filter": "dimout",
+     "tags": [
+      "ห้องเด็ก",
+      "พาสเทล"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-753.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "KD-754 ผ้าม่านลายจุดฟ้า-ขาว",
+    "base_price": 360,
+    "price_unit": "หลา",
+    "description": "ลายจุดน่ารักสีฟ้า-ขาว",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-754.jpg",
+    "details": {
+     "code": "KD-754",
+     "collection": "Kids Fun",
+     "pattern_name": "Polka Dot",
+     "pattern_type": "ลายเด็ก (Kids)",
+     "colors": [
+      "ฟ้า",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 145,
+     "repeat_cm": 30,
+     "light_filter": "dimout",
+     "tags": [
+      "ห้องเด็ก",
+      "พาสเทล"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/KD-754.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "ผ้าม่าน",
+  "name": "Clearance 2024",
+  "description": "สินค้าลดราคาล้างสต็อก (ซ่อนจากลูกค้า ใช้ทดสอบ is_visible)",
+  "is_visible": false,
+  "products": [
+   {
+    "name": "CL-901 ผ้าม่านล้างสต็อกสีส้ม",
+    "base_price": 199,
+    "price_unit": "หลา",
+    "description": "ผ้าม่านสีส้ม รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-901.jpg",
+    "details": {
+     "code": "CL-901",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Plain",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ส้ม"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-901.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "CL-902 ผ้าม่านล้างสต็อกสีม่วง",
+    "base_price": 199,
+    "price_unit": "หลา",
+    "description": "ผ้าม่านสีม่วง รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-902.jpg",
+    "details": {
+     "code": "CL-902",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Plain",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "ม่วง"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-902.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "CL-903 ผ้าม่านล้างสต็อกสีเขียว",
+    "base_price": 199,
+    "price_unit": "หลา",
+    "description": "ผ้าม่านสีเขียว รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-903.jpg",
+    "details": {
+     "code": "CL-903",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Plain",
+     "pattern_type": "ลายเรียบ (Plain)",
+     "colors": [
+      "เขียว"
+     ],
+     "composition": "Polyester 100%",
+     "width_cm": 280,
+     "repeat_cm": null,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-903.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "CL-951 ผ้าม่านลายทางล้างสต็อกแดง-ขาว",
+    "base_price": 249,
+    "price_unit": "หลา",
+    "description": "ผ้าลายทางสีแดง-ขาว รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-951.jpg",
+    "details": {
+     "code": "CL-951",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "แดง",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-951.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "CL-952 ผ้าม่านลายทางล้างสต็อกเหลือง-ขาว",
+    "base_price": 249,
+    "price_unit": "หลา",
+    "description": "ผ้าลายทางสีเหลือง-ขาว รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-952.jpg",
+    "details": {
+     "code": "CL-952",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "เหลือง",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-952.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "CL-953 ผ้าม่านลายทางล้างสต็อกฟ้า-ขาว",
+    "base_price": 249,
+    "price_unit": "หลา",
+    "description": "ผ้าลายทางสีฟ้า-ขาว รุ่นเก่า ลดราคาล้างสต็อก",
+    "image_url": "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-953.jpg",
+    "details": {
+     "code": "CL-953",
+     "collection": "Clearance 2024",
+     "pattern_name": "Old Stock Stripe",
+     "pattern_type": "ลายทาง (Stripe)",
+     "colors": [
+      "ฟ้า",
+      "ขาว"
+     ],
+     "composition": "Cotton 100%",
+     "width_cm": 150,
+     "repeat_cm": 18,
+     "light_filter": "dimout",
+     "tags": [
+      "ลดราคา"
+     ],
+     "care": "ซักเครื่องโหมดถนอมผ้า น้ำเย็น ห้ามฟอกขาว รีดไฟอ่อน",
+     "images": [
+      "https://pub-5b88d0f34fc74ac1a7930de74ad0733b.r2.dev/seed/swatches/CL-953.jpg"
+     ],
+     "type": 3,
+     "unit_name": "หลา",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ },
+ {
+  "category": "อุปกรณ์ผ้าม่าน",
+  "name": "อุปกรณ์ติดตั้ง",
+  "description": null,
+  "is_visible": true,
+  "products": [
+   {
+    "name": "RL-02 รางม่านอลูมิเนียมสำหรับม่านจีบ",
+    "base_price": 950,
+    "price_unit": "เมตร",
+    "description": "รางอลูมิเนียมพร้อมลูกล้อ เลื่อนลื่น ไม่มีเสียง",
+    "image_url": null,
+    "details": {
+     "code": "RL-02",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "ขาว"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ราง"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "เมตร",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "RL-03 รางโชว์ไม้สักหัวกลม",
+    "base_price": 1800,
+    "price_unit": "ชุด",
+    "description": "รางไม้สักขนาด 28 มม. พร้อมหัวรางทรงกลมและขาจับ",
+    "image_url": null,
+    "details": {
+     "code": "RL-03",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "น้ำตาล"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ราง",
+      "ไม้"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "ชุด",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "RL-04 รางโค้งสำหรับหน้าต่างเบย์",
+    "base_price": 2400,
+    "price_unit": "ชุด",
+    "description": "รางดัดโค้งตามมุมหน้าต่างแบบเบย์ (bay window)",
+    "image_url": null,
+    "details": {
+     "code": "RL-04",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "เงิน"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ราง",
+      "หน้าต่างเบย์"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "ชุด",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "RD-01 ราวม่านสแตนเลส 1.5 ม.",
+    "base_price": 690,
+    "price_unit": "ชุด",
+    "description": "ราวสแตนเลสพร้อมห่วงและขาจับ ยาว 1.5 เมตร",
+    "image_url": null,
+    "details": {
+     "code": "RD-01",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "เงิน"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ราว"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "ชุด",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "HK-01 ตะขอผ้าม่าน (แพ็ค 50 ชิ้น)",
+    "base_price": 120,
+    "price_unit": "แพ็ค",
+    "description": "ตะขอสแตนเลสสำหรับม่านจีบ กันสนิม",
+    "image_url": null,
+    "details": {
+     "code": "HK-01",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "เงิน"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ตะขอ"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "แพ็ค",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "TB-01 สายรวบม่านพู่",
+    "base_price": 250,
+    "price_unit": "คู่",
+    "description": "สายรวบผ้าม่านแบบพู่ สำหรับม่านหลุยส์",
+    "image_url": null,
+    "details": {
+     "code": "TB-01",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "ทอง"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ที่รวบ",
+      "ม่านหลุยส์"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "คู่",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "TB-02 ที่รวบม่านสแตนเลส",
+    "base_price": 390,
+    "price_unit": "คู่",
+    "description": "ขอรวบม่านติดผนัง สแตนเลสขัดเงา",
+    "image_url": null,
+    "details": {
+     "code": "TB-02",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "เงิน"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ที่รวบ"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "คู่",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "MT-01 มอเตอร์ม่านไฟฟ้า",
+    "base_price": 6500,
+    "price_unit": "ชุด",
+    "description": "มอเตอร์ม่านจีบไฟฟ้า สั่งงานผ่านแอปและรีโมท",
+    "image_url": null,
+    "details": {
+     "code": "MT-01",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "ขาว"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ม่านไฟฟ้า",
+      "สมาร์ทโฮม"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "ชุด",
+     "sell_account_code": "41101"
+    }
+   },
+   {
+    "name": "RM-01 รีโมทม่านไฟฟ้า 5 ช่อง",
+    "base_price": 890,
+    "price_unit": "ชิ้น",
+    "description": "รีโมทควบคุมม่านไฟฟ้าได้ 5 ชุด",
+    "image_url": null,
+    "details": {
+     "code": "RM-01",
+     "collection": "อุปกรณ์ติดตั้ง",
+     "pattern_name": null,
+     "pattern_type": null,
+     "colors": [
+      "ขาว"
+     ],
+     "composition": null,
+     "width_cm": null,
+     "repeat_cm": null,
+     "light_filter": null,
+     "tags": [
+      "ม่านไฟฟ้า"
+     ],
+     "care": "เช็ดทำความสะอาดด้วยผ้าชุบน้ำหมาด ๆ",
+     "images": [],
+     "type": 3,
+     "unit_name": "ชิ้น",
+     "sell_account_code": "41101"
+    }
+   }
+  ]
+ }
+]

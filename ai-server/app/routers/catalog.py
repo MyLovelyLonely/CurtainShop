@@ -29,9 +29,14 @@ _reembed: dict = {"status": "idle"}
 
 
 def _run_reembed(ids: list[int] | None):
-    _reembed.update(status="running", started=time.time())
+    _reembed.clear()
+    _reembed.update(status="running", started=time.time(), done=0, total=None)
+
+    def progress(done: int, total: int):
+        _reembed.update(done=done, total=total)
+
     try:
-        _reembed.update(status="done", result=product_search.index_products(ids), finished=time.time())
+        _reembed.update(status="done", result=product_search.index_products(ids, progress), finished=time.time())
     except Exception as e:  # noqa: BLE001 — เก็บ error ไว้ให้ดูผ่าน GET
         _reembed.update(status="error", error=str(e))
 

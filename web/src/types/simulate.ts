@@ -73,7 +73,14 @@ export type RenderOptions = {
   length: "floor" | "sill";
   /** ม่านม้วน: สัดส่วนความสูงหน้าต่างที่ม่านลงมาบัง */
   drop: number;
+  /** ปรับขนาดเอง 1 = ค่าที่ระบบเลือกให้: ความกว้างผ้า (0.5–2), ความยาวผ้า (0.5–1.5 ไม่เกินพื้น), ขนาดลอน (0.5–2), ขนาดลาย (0.5–2) */
+  width_scale: number;
+  height_scale: number;
+  fold_scale: number;
+  pattern_scale: number;
 };
+
+export const SIZE_DEFAULTS = { width_scale: 1, height_scale: 1, fold_scale: 1, pattern_scale: 1 } as const;
 
 export type RenderInput = RenderOptions & {
   photo_url: string;
@@ -92,4 +99,4 @@ export type RenderResult = {
   note: string;
 };
 
-export const DEFAULT_OPTIONS: RenderOptions = { open_ratio: 0.35, length: "floor", drop: 0.7 };
+export const DEFAULT_OPTIONS: RenderOptions = { open_ratio: 0.35, length: "floor", drop: 0.7, ...SIZE_DEFAULTS };

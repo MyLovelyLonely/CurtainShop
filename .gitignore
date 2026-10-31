@@ -12,3 +12,8 @@ venv/
 
 # ผลทดสอบ OCR
 extract_out/
+
+# โมเดลที่ ultralytics ดาวน์โหลดอัตโนมัติ
+ai-server/models/
+ai-server/logs/
+ai-server/mobileclip_blt.ts

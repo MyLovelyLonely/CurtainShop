@@ -9,6 +9,11 @@ from collections import Counter
 
 # ตรงกับ LIGHT_FILTERS ใน web/src/types/catalog.ts
 LIGHT_LABELS = {"sheer": "โปร่งแสง sheer", "dimout": "กรองแสงบางส่วน dim-out", "blackout": "ทึบแสง กันแสง blackout"}
+# composition เขียนเป็นภาษาอังกฤษ (เช่น "Polyester 100%") แต่ลูกค้าพิมพ์ภาษาไทย
+MATERIALS_TH = {
+    "polyester": "โพลีเอสเตอร์", "cotton": "ฝ้าย คอตตอน", "linen": "ลินิน", "voile": "โวล",
+    "jacquard": "แจ็คการ์ด", "velvet": "กำมะหยี่", "silk": "ไหม", "rayon": "เรยอน",
+}
 
 
 def product_text(p: dict) -> str:
@@ -24,9 +29,11 @@ def product_text(p: dict) -> str:
         d.get("pattern_type"),
         " ".join(d.get("colors") or []),
         d.get("composition"),
+        " ".join(th for en, th in MATERIALS_TH.items() if en in (d.get("composition") or "").lower()),
         LIGHT_LABELS.get(d.get("light_filter") or ""),
         " ".join(d.get("tags") or []),
         p.get("catalog_name"),
+        p.get("category_name"),
         desc if isinstance(desc, str) else None,
         d.get("care"),  # วิธีดูแลรักษา เช่น ซักมือ/ซักเครื่อง
         f"หน้ากว้าง {width:g} ซม." if isinstance(width, (int, float)) else None,
@@ -93,11 +100,22 @@ COLOR_NEIGHBORS = {
     "ชมพู": ["แดง", "ม่วง"], "แดง": ["ชมพู"], "ม่วง": ["ชมพู"],
     "เหลือง": ["ทอง", "ส้ม"], "ทอง": ["เหลือง", "ครีม"], "ส้ม": ["เหลือง"],
 }
+# คำเรียกโทนสี → สีที่อยู่ในโทนนั้น
+EARTH = ["น้ำตาล", "เบจ", "ครีม", "ส้ม"]
+WARM = ["แดง", "ส้ม", "เหลือง", "น้ำตาล", "ครีม"]
+COOL = ["ฟ้า", "น้ำเงิน", "เขียว", "เทา", "ม่วง"]
+DARK = ["ดำ", "เทาเข้ม", "เทาชาร์โคล", "กรมท่า", "น้ำตาล", "มอคค่า", "เขียวเข้ม", "เขียวมะกอก", "แดงเลือดหมู", "ม่วง"]
+COLOR_GROUPS = {
+    "เอิร์ธโทน": EARTH, "เอิธโทน": EARTH, "earth tone": EARTH, "โทนธรรมชาติ": EARTH,
+    "โทนอบอุ่น": WARM, "โทนร้อน": WARM, "โทนเย็น": COOL,
+    "สีเข้ม": DARK, "โทนเข้ม": DARK, "dark": DARK,
+    "น้ำเงินเข้ม": ["กรมท่า"],
+}
 
 # คำค้น → คำที่อยู่ใน pattern_type (ดู PATTERN_TYPES ใน web/src/types/catalog.ts)
 PATTERNS = {
     "เรียบ": "plain", "plain": "plain",
-    "เท็กซ์เจอร์": "texture", "texture": "texture", "ลินิน": "texture",
+    "เท็กซ์เจอร์": "texture", "texture": "texture",
     "ลายทาง": "stripe", "ริ้ว": "stripe", "stripe": "stripe",
     "ดอก": "floral", "floral": "floral",
     "เรขาคณิต": "geometric", "ตาราง": "geometric", "สก็อต": "geometric", "geometric": "geometric", "check": "geometric",
@@ -105,29 +123,130 @@ PATTERNS = {
     "ใบไม้": "botanical", "botanical": "botanical", "leaf": "botanical",
     "เด็ก": "kids", "การ์ตูน": "kids", "kids": "kids",
 }
+# "มีลาย" = ทุกลายที่ไม่ใช่ผ้าเรียบ/เท็กซ์เจอร์, "ไม่มีลาย" = ผ้าเรียบ (ตรวจคำปฏิเสธก่อน เพราะ "ไม่มีลาย" มีคำว่า "มีลาย" อยู่ข้างใน)
+PATTERNED = {"stripe", "floral", "geometric", "damask", "botanical", "kids"}
+PLAIN_WORDS = ["ไม่มีลาย", "ไม่เอาลาย", "สีพื้น", "ผ้าพื้น"]
+PATTERNED_WORDS = ["มีลาย", "ลวดลาย", "ลายๆ", "ลาย ๆ", "patterned"]
+
+# อุปกรณ์ (หมวดที่ชื่อมีคำว่า "อุปกรณ์") — ค้น "รางม่าน" ไม่เอาผ้า, ค้นผ้าไม่เอาอุปกรณ์
+ACCESSORY_WORDS = ["ราง", "ราว", "ตะขอ", "สายรวบ", "ที่รวบ", "มอเตอร์", "รีโมท", "อุปกรณ์", "ขายึด", "รอก"]
+FABRIC_WORDS = re.compile(r"ผ้าม่าน|ผ้า|ม่าน")
+# "ผ้า" ที่ไม่ใช่ส่วนหนึ่งของ "ผ้าม่าน" (เช่น "ตะขอผ้าม่าน" ยังเป็นอุปกรณ์ แต่ "ผ้าโปร่ง" เป็นผ้า)
+FABRIC_ONLY = re.compile(r"ผ้า(?!ม่าน)")
+
 LIGHTS = {
-    "ทึบแสง": "blackout", "กันแสง": "blackout", "กันแดด": "blackout", "blackout": "blackout", "มืด": "blackout",
+    "ทึบ": "blackout", "กันแสง": "blackout", "กันแดด": "blackout", "blackout": "blackout", "มืด": "blackout",
     "กรองแสง": "dimout", "dimout": "dimout", "dim-out": "dimout",
+    "ดิมเอาท์": "dimout", "ดิมเอ้าท์": "dimout", "ดิมเอาต์": "dimout", "ดิมเอ้าต์": "dimout",
     "โปร่ง": "sheer", "sheer": "sheer", "ซีทรู": "sheer",
 }
 
 
+# คำอธิบายของแต่ละลาย/การกรองแสง ใช้เทียบความหมายกับคำค้นด้วย BGE-M3 (product_search.CONCEPT_MIN)
+# จับคำที่ไม่อยู่ในรายการข้างบน เช่น "ลายหมากรุก" → geometric, "ผ้าบางๆ แสงลอดได้" → sheer, "หรูๆ สไตล์ยุโรป" → damask
+# วลีต้องเจาะจง และไม่มีคำว่า ผ้า/ม่าน (ไม่งั้นไปคล้ายกับทุกคำค้นที่ขึ้นต้นด้วย "ผ้า..." เช่น "ผ้าซักง่าย")
+CONCEPTS = {
+    "patterns": {
+        "stripe": ["ลายทาง", "ลายเส้น", "ลายริ้ว", "ลายขวาง", "ลายแถบ", "stripes"],
+        "floral": ["ลายดอกไม้", "ลายดอกกุหลาบ", "ลายพฤกษา", "floral print"],
+        "geometric": ["ลายตาราง", "ลายหมากรุก", "ลายสก็อต", "ลายเรขาคณิต", "ลายสามเหลี่ยม", "plaid check"],
+        "damask": ["ลายดามัสก์", "ลายหรูหรา สไตล์ยุโรปคลาสสิก", "ลายวินเทจ", "ลายวิจิตร"],
+        "botanical": ["ลายใบไม้", "ลายต้นไม้", "ลายทรอปิคอล", "ลายมอนสเตอร่า"],
+        "kids": ["ลายการ์ตูน", "ลายสำหรับห้องเด็ก", "ลายน่ารัก", "ลายสัตว์"],
+        "plain": ["สีพื้นเรียบ", "เรียบไม่มีลาย", "มินิมอล"],
+    },
+    "lights": {
+        "sheer": ["โปร่งบาง แสงลอดผ่านได้", "บางใส ซีทรู"],
+        "dimout": ["กรองแสงบางส่วน", "ลดแสง ไม่มืดสนิท"],
+        "blackout": ["ทึบแสง กันแสงได้หมด", "ห้องมืดสนิท", "บังแดด กันความร้อน"],
+    },
+}
+
+
+# "ไม่มืดมาก" / "ไม่ทึบ" / "ไม่ต้องกันแสง" = ไม่เอาแบบนั้น (ถ้าไม่ได้ระบุแบบอื่น ก็เอาแบบที่เหลือ)
+NEGATED_LIGHT = re.compile(
+    r"ไม่(?:ค่อย|ต้อง|อยาก|เอา)?\s*(?:" + "|".join(sorted(map(re.escape, LIGHTS), key=len, reverse=True)) + ")"
+)
+
+CHEAP_WORDS = ["ราคาถูก", "ราคาไม่แพง", "ไม่แพง", "ถูกที่สุด", "ถูกๆ", "ถูก ๆ", "ราคาประหยัด", "ประหยัด", "งบน้อย", "cheap"]
+MAX_PRICE = re.compile(r"(?:ราคา)?\s*(?:ไม่เกิน|ต่ำกว่า|น้อยกว่า|ไม่ถึง|งบ|under|below|<)\s*(\d[\d,]*)\s*(?:บาท|฿|baht)?")
+
+
+def price_intent(q: str) -> tuple[bool, float | None, str]:
+    """→ (อยากได้ของถูก, ราคาสูงสุด, คำค้นที่เหลือหลังตัดเรื่องราคา) เช่น "ม่านทึบแสง ไม่เกิน 500 บาท" → (False, 500, "ม่านทึบแสง")"""
+    ql = q.lower()
+    m = MAX_PRICE.search(ql)
+    max_price = float(m.group(1).replace(",", "")) if m else None
+    if m:
+        ql = ql[: m.start()] + " " + ql[m.end() :]
+    cheap = any(w in ql for w in CHEAP_WORDS)
+    for w in CHEAP_WORDS:
+        ql = ql.replace(w, " ")
+    return cheap, max_price, " ".join(ql.split())
+
+
 # คำที่มีชื่อสีปนอยู่แต่ไม่ได้หมายถึงสี
-NOT_COLOR = ["ฟอกขาว", "ขาวดำ"]
+NOT_COLOR = ["ฟอกขาว", "ขาวดำ", "ไฟฟ้า"]
+
+# คำที่ลูกค้าใช้ แต่ข้อมูลสินค้าเขียนอีกแบบ → เติมคำในข้อมูลเข้าไปในคำค้น
+# "สีทึบ" / "สีมืด" = สีเข้ม ไม่ใช่ผ้าทึบแสง — เปลี่ยนคำก่อนค้น (ไม่งั้น "ทึบ"/"มืด" ไปตรงกับคำเรื่องการกรองแสง)
+REWRITE = {"สีทึบ": "สีเข้ม", "โทนทึบ": "โทนเข้ม", "สีมืด": "สีเข้ม", "โทนมืด": "โทนเข้ม"}
+SYNONYMS = {"ซักง่าย": "ซักเครื่องได้", "ดูแลง่าย": "ซักเครื่องได้", "ซักเครื่องซักผ้า": "ซักเครื่องได้"}
+
+
+def expand(q: str) -> str:
+    for k, v in REWRITE.items():
+        q = q.replace(k, v)
+    return " ".join([q, *(v for k, v in SYNONYMS.items() if k in q and v not in q)])
 
 
 def extract(q: str, extra_colors: set[str] = frozenset()) -> dict:
-    """คำค้น → {colors, patterns, lights} (เช่น "ผ้าม่านสีขาวเย็นสบาย" → colors={ขาว})"""
+    """คำค้น → {colors, patterns, lights, category} (เช่น "ผ้าม่านสีขาวเย็นสบาย" → colors={ขาว}, category={fabric})"""
     ql = q.lower()
     for w in NOT_COLOR:
         ql = ql.replace(w, " ")
+    negated = {v for m in NEGATED_LIGHT.finditer(ql) for k, v in LIGHTS.items() if k in m.group()}
+    ql = NEGATED_LIGHT.sub(" ", ql)
     found = {c for c in set(COLORS) | set(extra_colors) if c and c.lower() in ql}
+    group = {c for k, cs in COLOR_GROUPS.items() if k in ql for c in cs}
+    patterns = {v for k, v in PATTERNS.items() if k in ql}
+    if any(w in ql for w in PLAIN_WORDS):
+        patterns.add("plain")
+    elif any(w in ql for w in PATTERNED_WORDS) and not patterns - {"plain"}:
+        patterns = set(PATTERNED)  # ไม่ได้ระบุลายเจาะจง → ลายอะไรก็ได้
+    lights = {v for k, v in LIGHTS.items() if k in ql}
+    if not lights and negated:
+        lights = {"sheer", "dimout", "blackout"} - negated
+    if any(w in ql for w in ACCESSORY_WORDS) and not (patterns or lights or FABRIC_ONLY.search(ql)):
+        category = {"accessory"}
+    elif FABRIC_WORDS.search(ql) or patterns or lights:
+        category = {"fabric"}
+    else:
+        category = set()
     return {
         # คำที่อยู่ในคำที่ยาวกว่าไม่นับ เช่น "น้ำเงิน" ไม่ใช่ "เงิน"
-        "colors": {c for c in found if not any(c != o and c in o for o in found)},
-        "patterns": {v for k, v in PATTERNS.items() if k in ql},
-        "lights": {v for k, v in LIGHTS.items() if k in ql},
+        "colors": {c for c in found if not any(c != o and c in o for o in found)} | group,
+        "patterns": patterns,
+        "lights": lights,
+        "category": category,
     }
+
+
+def contradicts(want: dict, p: dict) -> bool:
+    """สินค้าขัดกับเงื่อนไขลาย/การกรองแสงที่คำค้นระบุชัด เช่น ค้น "มีลาย" ไม่เอาผ้าเรียบ, ค้น "กันแสง" ไม่เอาผ้าโปร่ง
+    - ระบุลาย: สินค้าที่ไม่มีประเภทลาย (ส่วนใหญ่เป็นอุปกรณ์ เช่น ราง ตะขอ) ก็ตัดออก
+    - ระบุการกรองแสง: สินค้าที่ไม่ได้กรอกช่องนี้ยังเก็บไว้ (ชื่ออาจบอกอยู่แล้ว เช่น "ผ้าม่านกันแสง")
+    - ระบุหมวด: ค้นอุปกรณ์ไม่เอาผ้า ค้นผ้าไม่เอาอุปกรณ์
+    สีไม่ใช้ตัด เพราะมีสีใกล้เคียง/สีจากรูปช่วยหา"""
+    accessory = "อุปกรณ์" in (p.get("category_name") or "")
+    if want.get("category") and accessory != ("accessory" in want["category"]):
+        return True
+    d = p.get("details") or {}
+    pattern = (d.get("pattern_type") or "").lower()
+    if want["patterns"] and not any(k in pattern for k in want["patterns"]):
+        return True
+    light = d.get("light_filter")
+    return bool(want["lights"] and light and light not in want["lights"])
 
 
 def structured_rank(want: dict, products: dict[int, dict]) -> list[tuple[int, float]]:

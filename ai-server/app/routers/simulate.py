@@ -41,6 +41,11 @@ class RenderRequest(BaseModel):
     drop: float = Field(0.7, ge=0.05, le=1)
     light_filter: Literal["sheer", "dimout", "blackout"] | None = None
     repeat_cm: float | None = Field(None, gt=0, le=500)
+    # ปรับขนาดเอง (1 = ค่าเริ่มต้น)
+    width_scale: float = Field(1, ge=0.5, le=2)
+    height_scale: float = Field(1, ge=0.5, le=1.5)
+    fold_scale: float = Field(1, ge=0.5, le=2)
+    pattern_scale: float = Field(1, ge=0.5, le=2)
     refine: bool = True
 
 
@@ -69,6 +74,10 @@ def render(req: RenderRequest):
         drop=req.drop,
         light_filter=req.light_filter,
         repeat_cm=req.repeat_cm,
+        width_scale=req.width_scale,
+        height_scale=req.height_scale,
+        fold_scale=req.fold_scale,
+        pattern_scale=req.pattern_scale,
     )
     draft = curtain_render.render(room, swatch, req.style, quads, opts, window_mask, floors, rails)
 

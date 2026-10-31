@@ -34,6 +34,11 @@ class Options:
     light_filter: str | None = None
     repeat_cm: float | None = None
     window_width_cm: float | None = None
+    # ลูกค้าปรับเอง (1 = ขนาดที่ระบบเลือกให้)
+    width_scale: float = 1.0  # ความกว้างของผ้า ยืด/หดจากกึ่งกลางหน้าต่าง
+    height_scale: float = 1.0  # ความยาวผ้าจากราง (ยาวได้ไม่เกินพื้น)
+    fold_scale: float = 1.0  # ขนาดลอน/จีบ: มากกว่า 1 = ลอนใหญ่ขึ้น จำนวนลอนน้อยลง
+    pattern_scale: float = 1.0  # ขนาดลายผ้า
 
 
 @dataclass
@@ -153,6 +158,18 @@ def _folds(theta: np.ndarray, side: float = 1.0) -> np.ndarray:
     return 0.6 + 0.4 * ((1 + np.cos(theta)) / 2) ** 0.7 + 0.05 * np.sin(theta) * side
 
 
+def _span(f: Frame, margin: float, o: Options) -> tuple[float, float]:
+    """ขอบซ้าย-ขวาของผ้า: เลยขอบหน้าต่างข้างละ margin × ความกว้างหน้าต่าง แล้วยืด/หดตาม width_scale จากกึ่งกลาง"""
+    x1, _, x2, _ = f.box
+    cx, half = (x1 + x2) / 2, (x2 - x1) * (0.5 + margin) * o.width_scale
+    return max(0.0, cx - half), min(f.shape[1] - 1.0, cx + half)
+
+
+def _bottom(f: Frame, base: float, o: Options) -> float:
+    """ขอบล่างของผ้า: ความยาวจากรางถึง base คูณ height_scale แต่ไม่เลยพื้น"""
+    return float(min(f.floor, f.rail + (base - f.rail) * o.height_scale))
+
+
 # ---------- ม่านแต่ละแบบ (วาดในกรอบตรง): คืน (สีผ้า HxWx3, mask HxW bool, ส่วนทึบเสมอ HxW bool) ----------
 
 
@@ -163,14 +180,14 @@ def _pleated(f: Frame, tex, o: Options):
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 
     rod_y = f.rail
-    bottom = f.floor if o.length == "floor" else min(f.floor, y2 + 0.08 * bh)
-    left, right = max(0.0, x1 - 0.14 * bw), min(W - 1.0, x2 + 0.14 * bw)
+    bottom = _bottom(f, f.floor if o.length == "floor" else min(f.floor, y2 + 0.08 * bh), o)
+    left, right = _span(f, 0.14, o)
     span = right - left
     half = span / 2
     panel = half + (span * 0.14 - half) * float(np.clip(o.open_ratio, 0, 1))
     # ผ้ากว้าง 2.2 เท่าของช่วงที่ปิด (จีบ) จำนวนจีบคงที่ รูดเปิดแล้วจีบจะถี่ขึ้น
     fabric = half * 2.2
-    folds = max(6, round(half / max(bw * 0.045, 8)))
+    folds = max(3, round(half / max(bw * 0.045 * o.fold_scale, 8)))
     period = panel / folds
     k = fabric / panel
 
@@ -205,10 +222,11 @@ def _roller(f: Frame, tex, o: Options):
     bw, bh = x2 - x1, y2 - y1
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 
-    X0, X1 = max(0.0, x1 - 0.02 * bw), min(W - 1.0, x2 + 0.02 * bw)
+    X0, X1 = _span(f, 0.02, o)
     tube = max(6.0, 0.05 * bh)
     top = f.rail
-    drop_y = top + tube + float(np.clip(o.drop, 0.05, 1)) * (y2 + 0.02 * bh - top - tube)
+    full = _bottom(f, y2 + 0.02 * bh, o)  # ปลายผ้าตอนลงสุด
+    drop_y = top + tube + float(np.clip(o.drop, 0.05, 1)) * max(1.0, full - top - tube)
     bar = max(3.0, 0.02 * bh)
     cols = (xx >= X0) & (xx <= X1)
 
@@ -249,9 +267,10 @@ def _louis(f: Frame, tex, o: Options):
     yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
 
     top = f.rail
-    bottom = f.floor if o.length == "floor" else min(f.floor, y2 + 0.08 * bh)
-    left, right = max(0.0, x1 - 0.14 * bw), min(W - 1.0, x2 + 0.14 * bw)
+    bottom = _bottom(f, f.floor if o.length == "floor" else min(f.floor, y2 + 0.08 * bh), o)
+    left, right = _span(f, 0.14, o)
     span = right - left
+    fs = o.fold_scale
     fr = max(4.0, 0.035 * bh)  # ความยาวพู่
     pitch = max(4.0, 0.022 * span)  # ระยะห่างระหว่างพู่
     trim = np.clip(tex.mean((0, 1)) * 0.62, 0, 1)  # สีพู่/เชือก: โทนเดียวกับผ้าแต่เข้มกว่า
@@ -270,7 +289,7 @@ def _louis(f: Frame, tex, o: Options):
     tie_w, bot_w = span * 0.11, span * 0.2
     tie_y = top + 0.55 * (bottom - top)
     fabric = span * 0.9  # ความกว้างผ้าต่อผืน (คงที่ ผืนแคบลง = จีบแน่นขึ้น)
-    folds = 7
+    folds = int(np.clip(round(7 / fs), 3, 14))
     for x0, d in ((left, 1.0), (right, -1.0)):
         s = (xx - x0) * d
         width = np.where(
@@ -308,7 +327,7 @@ def _louis(f: Frame, tex, o: Options):
     hem = base + depth * sag
     in_swag = (xx >= sx0) & (xx <= sx1) & (yy >= top) & (yy <= hem)
     r = np.clip((yy - top) / np.maximum(hem - top, 1.0), 0, 1)  # รอยพับโค้งตามขอบล่าง
-    shade = (0.62 + 0.38 * ((1 + np.cos(2 * np.pi * r * 4)) / 2) ** 0.8) * (0.78 + 0.22 * sag**0.5)
+    shade = (0.62 + 0.38 * ((1 + np.cos(2 * np.pi * r * 4 / fs)) / 2) ** 0.8) * (0.78 + 0.22 * sag**0.5)
     shade = np.where(yy < top + head, 0.92, shade)  # แถบหัวม่าน
     put(in_swag, _sample(tex, xx - sx0, r * bh * 0.6) * shade[..., None])
     m, col = _tassels(xx - sx0, yy - hem, fr, pitch, trim)
@@ -322,7 +341,7 @@ def _louis(f: Frame, tex, o: Options):
         t = np.clip(s / jab_w, 0, 1)
         jhem = top + (0.8 - 0.45 * t) * bh
         inside = (s >= 0) & (s <= jab_w) & (yy >= top) & (yy <= jhem)
-        theta = 2 * np.pi * s / (jab_w / 3)
+        theta = 2 * np.pi * s / (jab_w / max(1.5, 3 / fs))
         put(inside, _sample(tex, s * 2.5 * d, yy - top) * _folds(theta, d)[..., None])
         m, col = _tassels(s, yy - jhem, fr, pitch, trim)
         m &= (s >= 0) & (s <= jab_w)
@@ -343,6 +362,7 @@ def _frame(
     img_h: int,
     floor_pt: tuple[float, float] | None = None,
     rail_pt: tuple[float, float] | None = None,
+    width_scale: float = 1.0,
 ) -> tuple[Frame, np.ndarray]:
     """สร้างกรอบตรงของจุดนี้ + homography จากกรอบตรง → รูปห้อง
     floor_pt / rail_pt = จุดบนแนวพื้น / แนวรางที่ลูกค้าวาง (พิกเซล) ถ้าไม่มีใช้ขอบล่างของรูป / เหนือหน้าต่าง 10%"""
@@ -350,7 +370,7 @@ def _frame(
     tl, tr, br, bl = q
     bw = (np.linalg.norm(tr - tl) + np.linalg.norm(br - bl)) / 2
     bh = (np.linalg.norm(bl - tl) + np.linalg.norm(br - tr)) / 2
-    mx = 0.4 * bw
+    mx = bw * max(0.4, (1.28 * width_scale - 1) / 2 + 0.08)  # เผื่อที่ซ้าย-ขวาให้ผ้าที่ยืดกว้าง + รางที่ยื่นเลยผ้า
 
     def layout(mt: float):
         box = (mx, mt, mx + bw, mt + bh)
@@ -410,11 +430,12 @@ def render(
     luma = original @ np.array([0.299, 0.587, 0.114], np.float32)
 
     for i, quad in enumerate(quads):
-        frame, Hm = _frame(quad, H, floors[i] if floors else None, rails[i] if rails else None)
+        frame, Hm = _frame(quad, H, floors[i] if floors else None, rails[i] if rails else None, o.width_scale)
         x1, _, x2, _ = frame.box
         bw = x2 - x1
         px_per_cm = bw / (o.window_width_cm or DEFAULT_WINDOW_CM)
-        tile = int(np.clip((o.repeat_cm or DEFAULT_REPEAT_CM) * px_per_cm, 20, max(21, 0.7 * bw)))
+        tile = float(np.clip((o.repeat_cm or DEFAULT_REPEAT_CM) * px_per_cm, 20, max(21, 0.7 * bw)))
+        tile = int(np.clip(tile * o.pattern_scale, 10, max(11, 1.5 * bw)))
         rgb, mask, solid = _DRAW[style](frame, _texture(swatch, tile), o)
 
         # บิดจากกรอบตรงไปตามมุมมองของกรอบ 4 มุมในรูป
