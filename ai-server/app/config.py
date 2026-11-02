@@ -56,5 +56,7 @@ CLIP_MODEL = os.getenv("CLIP_MODEL", "xlm-roberta-large-ViT-H-14")
 CLIP_PRETRAINED = os.getenv("CLIP_PRETRAINED", "frozen_laion5b_s13b_b90k")
 # โมเดลค้นหารันบน CPU เป็นค่าเริ่มต้น เพื่อไม่แย่งหน่วยความจำ GPU กับ Stable Diffusion
 EMBED_DEVICE = os.getenv("EMBED_DEVICE", "cpu")
-# true = ให้ LLM (VLM_MODEL) สกัดเงื่อนไขจากคำค้นเพิ่ม (ช้ากว่าและใช้ GPU) / false = จับคำจากคลังคำในฐานข้อมูล
-SEARCH_LLM = os.getenv("SEARCH_LLM", "false").lower() == "true"
+# LLM Query (หัวข้อ 2.2 ข้อ 3): ให้ LLM (VLM_MODEL) สกัดเงื่อนไขจากคำค้น ถ้าเรียก LLM ไม่ได้จะใช้คลังคำ + เทียบความหมายแทน
+# false = ไม่เรียก LLM เลย (เครื่องไม่มี GPU / ไม่ได้เปิด Ollama)
+SEARCH_LLM = os.getenv("SEARCH_LLM", "true").lower() == "true"
+SEARCH_LLM_TIMEOUT = float(os.getenv("SEARCH_LLM_TIMEOUT", "15"))

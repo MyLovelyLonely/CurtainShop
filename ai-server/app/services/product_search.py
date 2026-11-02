@@ -1,6 +1,6 @@
 """ค้นหาสินค้า (หัวข้อ 2.2–2.3) + สร้างเวกเตอร์ของสินค้าเก็บใน vector_embedding
 
-ข้อความ: BGE-M3 (ความหมาย) + BM25 (คีย์เวิร์ด/รหัส) + คำค้นเชิงโครงสร้าง + OpenCLIP ข้อความ→รูป → รวมด้วย RRF
+ข้อความ: BGE-M3 (ความหมาย) + BM25 (คีย์เวิร์ด/รหัส) + คำค้นเชิงโครงสร้าง (LLM Query) + OpenCLIP ข้อความ→รูป → รวมด้วย RRF
 รูปภาพ: คะแนน = โทนสีใกล้เคียง + โบนัสเมื่อลายคล้าย (OpenCLIP รูป→รูป)
   ลูกค้าส่วนใหญ่ไม่ได้ถ่ายรูปผ้าเต็มกรอบ จึงไม่ค้นแบบเป๊ะ — ลายไม่ตรงก็ยังได้ผ้าโทนสีใกล้เคียง
   (OpenCLIP แทบไม่สนสี: รูปสีชมพูเรียบได้คะแนนกับผ้ากรมท่าเรียบสูงกว่าผ้าชมพู จึงใช้สีเป็นหลัก ลายเป็นโบนัส)
@@ -10,6 +10,7 @@
 เวกเตอร์ดึงครั้งเดียวแล้วเก็บไว้ (1,000 สินค้า ~20 MB) ดึงใหม่เมื่อสร้างเวกเตอร์ใหม่ หรือทุก VECTOR_REFRESH วินาที
 โทนสีของผ้าคำนวณตอนสร้างเวกเตอร์ + ทยอยคำนวณในเบื้องหลัง เก็บในไฟล์ (palette_store) ค้นด้วยรูปจึงไม่ต้องรอดาวน์โหลดรูปทุกผืน
 """
+import functools
 import logging
 import threading
 import time
@@ -17,7 +18,7 @@ import time
 import numpy as np
 from PIL import Image
 
-from app.config import SEARCH_LLM
+from app.config import SEARCH_LLM, SEARCH_LLM_TIMEOUT
 from app.services import bm25_rrf, color, db, embedding, imageio, palette_store, search_log
 from app.services.curtain_render import fabric_region
 
@@ -178,30 +179,51 @@ def _concept_extract(q: str) -> dict[str, set[str]]:
     return out
 
 
-def _llm_extract(q: str) -> dict:
-    """(ตัวเลือก) ให้ LLM สกัดสี/ลาย/การกรองแสงจากคำค้น"""
+LLM_QUERY_PROMPT = """Extract curtain-fabric search filters from a Thai/English shop search query.
+Return only JSON: {"colors": [...], "patterns": [...], "lights": [...]}
+- colors: Thai color words the customer wants, e.g. ขาว ครีม เทา น้ำเงิน (empty if none)
+- patterns: any of plain (เรียบ/สีพื้น), texture (เท็กซ์เจอร์), stripe (ลายทาง/ริ้ว), floral (ดอกไม้),
+  geometric (ตาราง/หมากรุก/สก็อต/เรขาคณิต), damask (ดามัสก์/หรูหราคลาสสิก), botanical (ใบไม้/ต้นไม้), kids (การ์ตูน/ห้องเด็ก)
+- lights: any of sheer (see-through), dimout (filters some light), blackout (blocks light/heat)
+Use only what the query asks for; leave a list empty when unsure. Ignore price words.
+Examples:
+"ผ้าม่านสีขาวเย็นสบาย" -> {"colors": ["ขาว"], "patterns": [], "lights": ["dimout", "blackout"]}
+"ม่านลายดอกไม้โทนชมพู โปร่งๆ" -> {"colors": ["ชมพู"], "patterns": ["floral"], "lights": ["sheer"]}
+"ผ้าห้องนอนเด็ก นอนกลางวันได้" -> {"colors": [], "patterns": ["kids"], "lights": ["blackout"]}
+Query: """
+LLM_KINDS = {
+    "patterns": set(bm25_rrf.PATTERNS.values()),
+    "lights": set(bm25_rrf.LIGHTS.values()),
+}
+
+
+@functools.lru_cache(maxsize=512)
+def _llm_query(q: str) -> tuple[tuple[str, tuple[str, ...]], ...]:
+    """LLM Query: คำค้นภาษาธรรมชาติ → เงื่อนไขเชิงโครงสร้าง (JSON)
+    เก็บผลตามคำค้น (คำค้นซ้ำ ๆ เช่น "ผ้าม่านทึบแสง" ไม่ต้องรอ LLM ใหม่) — เรียกไม่สำเร็จจะ raise จึงไม่ถูกเก็บ"""
     from app.services import vlm
 
+    res = vlm._client.chat.completions.create(
+        model=vlm.VLM_MODEL,
+        temperature=0,
+        timeout=SEARCH_LLM_TIMEOUT,
+        response_format={"type": "json_object"},
+        messages=[{"role": "user", "content": LLM_QUERY_PROMPT + q}],
+    )
+    out = vlm.parse_json(res.choices[0].message.content or "")
+    return tuple((k, tuple(str(v).strip().lower() for v in out.get(k) or [])) for k in ("colors", "patterns", "lights"))
+
+
+def _llm_extract(q: str, known_colors: set[str]) -> dict[str, set[str]] | None:
+    """ผลจาก LLM เฉพาะค่าที่ระบบรู้จัก (กัน LLM ตอบค่าที่ไม่มีในข้อมูลสินค้า แล้วไปตัดสินค้าทิ้งหมด) / None = เรียก LLM ไม่ได้"""
     try:
-        res = vlm._client.chat.completions.create(
-            model=vlm.VLM_MODEL,
-            temperature=0,
-            timeout=15,
-            response_format={"type": "json_object"},
-            messages=[
-                {
-                    "role": "user",
-                    "content": "Extract curtain-fabric search filters from this Thai/English query. "
-                    'Return JSON {"colors": [Thai color words], "patterns": [one of plain,texture,stripe,floral,'
-                    'geometric,damask,botanical,kids], "lights": [one of sheer,dimout,blackout]}. Query: ' + q,
-                }
-            ],
-        )
-        out = vlm.parse_json(res.choices[0].message.content or "")
-        return {k: set(out.get(k) or []) for k in ("colors", "patterns", "lights")}
-    except Exception:  # noqa: BLE001 — LLM ใช้ไม่ได้ก็ยังค้นด้วยวิธีอื่นได้
+        out = _llm_query(q)
+    except Exception:  # noqa: BLE001 — LLM ใช้ไม่ได้ก็ยังค้นด้วยคลังคำ/การเทียบความหมายได้
         log.exception("LLM สกัดคำค้นไม่สำเร็จ")
-        return {"colors": set(), "patterns": set(), "lights": set()}
+        return None
+    colors = {c.lower() for c in [*bm25_rrf.COLORS, *known_colors]}
+    allowed = {"colors": colors, **LLM_KINDS}
+    return {k: {v for v in vals if v in allowed[k]} for k, vals in out}
 
 
 def search_text(q: str, limit: int) -> dict:
@@ -215,16 +237,22 @@ def search_text(q: str, limit: int) -> dict:
     browse = not bm25_rrf.FABRIC_WORDS.sub(" ", q).strip()
 
     colors = {c for p in products.values() for c in ((p.get("details") or {}).get("colors") or [])}
+    # คำค้นเชิงโครงสร้าง (LLM Query): LLM สกัดเงื่อนไขจากคำค้น รวมกับคำที่ตรงในคลังคำ (เช่น "ทึบแสง", หมวดผ้า/อุปกรณ์)
+    # และการเทียบความหมายด้วย BGE-M3 — LLM ขนาดเล็กยังตอบพลาดบ้าง (เช่น "ลายมอนสเตอร่า" → ดอกไม้) จึงใช้ร่วมกัน ไม่แทนกัน
+    # และถ้าเรียก LLM ไม่ได้ก็ยังค้นได้
     want = bm25_rrf.extract(q, colors)
-    by_meaning = []  # เงื่อนไขที่ได้จากการเทียบความหมาย (คำไม่อยู่ในรายการคำ)
+    by_meaning = []  # เงื่อนไขที่คลังคำจับไม่ได้ แต่ได้จากการเทียบความหมาย / LLM (เอาไปเพิ่มคำในคลังคำ)
     for kind, found in ({} if browse else _concept_extract(q)).items():
         if found and not want[kind]:
             want[kind] = found
             want["category"] = want["category"] or {"fabric"}
             by_meaning.append(kind)
-    if SEARCH_LLM and not browse:
-        for k, v in _llm_extract(q).items():
-            want[k] |= v
+    for kind, found in ((_llm_extract(q, colors) or {}) if SEARCH_LLM and not browse else {}).items():
+        if found - want[kind]:
+            if not want[kind]:
+                by_meaning.append(kind)
+            want[kind] |= found
+            want["category"] = want["category"] or {"fabric"}
 
     structured = bm25_rrf.structured_rank(want, products)
     if browse:
