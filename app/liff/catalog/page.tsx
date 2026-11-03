@@ -243,12 +243,6 @@ export default function LiffCatalog() {
 
   // ออกจากหน้าเว็บ: ในแอป LINE = ปิดหน้า LIFF กลับห้องแชท / เบราว์เซอร์ธรรมดา = ปิดแท็บ
   // (เบราว์เซอร์ยอมให้ window.close() เฉพาะแท็บที่เปิดด้วยสคริปต์หรือลิงก์จาก LINE ถ้าปิดไม่ได้จะไม่เกิดอะไร)
-  const backToChat = () => {
-    import("@line/liff").then(({ default: liff }) => {
-      if (liff.isInClient()) liff.closeWindow(); else window.close();
-    }).catch(() => window.close());
-  };
-
   return (
     <div className="relative -mx-4 -mt-4 px-4 pt-4">
       {/* แสงฟุ้งหลังหัวหน้า */}
@@ -256,10 +250,10 @@ export default function LiffCatalog() {
 
       <div className="relative space-y-4">
         <div className="flex items-center justify-between">
-          <button type="button" onClick={backToChat} className="-ml-1 flex items-center gap-2 rounded-lg p-1 text-stone-900">
+          <Link href="/liff" className="-ml-1 flex items-center gap-2 rounded-lg p-1 text-stone-900">
             <ArrowLeft size={22} className="text-stone-600" />
-            <span className="text-base font-bold">หน้าแชท</span>
-          </button>
+            <span className="text-base font-bold">หน้าหลัก</span>
+          </Link>
           <Link href="/liff/estimate" aria-label="ใบสรุปราคา" title="ใบสรุปราคา"
             className="relative rounded-lg p-1.5 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary">
             {/* รถเข็นมีตาข่าย (วาดเอง lucide ไม่มีแบบนี้) */}
