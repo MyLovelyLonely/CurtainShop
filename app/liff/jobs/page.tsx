@@ -21,7 +21,7 @@ function detail(j: Job): { sub: string; action?: { href: string; label: string }
     case "pending": return { sub: "ได้รับมัดจำแล้ว ร้านจะนัดวันเข้าติดตั้ง" };
     case "in_progress": return { sub: j.started_at ? `ช่างเริ่มงาน ${thDate(j.started_at, true)}` : "ช่างกำลังติดตั้ง" };
     case "completed": return {
-      sub: `ติดตั้งเสร็จ ${j.completed_at ? thDate(j.completed_at, true) : ""} · รอชำระยอดคงเหลือ`,
+      sub: `ติดตั้งเสร็จ ${j.completed_at ? thDate(j.completed_at, true) : ""} · รอร้านออกใบแจ้งหนี้ยอดคงเหลือเพื่อชำระเงิน`,
       action: { href: "/liff/payments", label: "ชำระยอดคงเหลือ" },
     };
     default: return { sub: "ขอบคุณที่ใช้บริการ" };

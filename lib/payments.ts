@@ -28,6 +28,6 @@ export async function markPaid(client: PoolClient, paymentId: number) {
     job = j.rows[0] ?? null;
   }
 
-  // TODO: แจ้งเตือนลูกค้า (Flex Message) และแอดมิน (Use Case 22) เมื่อเชื่อม LINE Messaging API
+
   return { payment, job };
 }

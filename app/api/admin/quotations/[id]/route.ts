@@ -9,6 +9,7 @@ import { pool } from "@/lib/db";
 import { flowAccount } from "@/lib/flowaccount";
 import { faDoc } from "@/lib/documents";
 import { faQuotationBody, priceItems, type SizeEdit } from "@/lib/quotation";
+import { notifyQuotationRevised } from "@/lib/line";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -99,7 +100,7 @@ export async function PUT(req: Request, { params }: Params) {
     }
 
     await client.query("commit");
-    // TODO: แจ้งลูกค้าทาง LINE OA ให้ตรวจสอบใบเสนอราคาอีกครั้ง (Use Case 15 Alternate Flow)
+    await notifyQuotationRevised(Number(id)); // แจ้งลูกค้าทาง LINE OA ให้ตรวจสอบใบเสนอราคาอีกครั้ง (Use Case 15 Alternate Flow)
     return NextResponse.json({ quotation: updated.rows[0] });
   } catch (e) {
     await client.query("rollback").catch(() => {});

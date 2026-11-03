@@ -110,6 +110,29 @@ export async function notifyQuotationCreated(quotationId: number) {
     { label: "ตรวจสอบใบเสนอราคา", url: liffUrl(`documents/quotations/${q.quotation_id}`) },
   ));
 }
+// แจ้งเตือนการแก้ไขใบเสนอราคา (ลูกค้าแจ้งแก้ ร้านแก้แล้วส่งใหม่) Use Case 15 Alternate Flow, Activity Diagram 3-4
+//   เรียกหลังแอดมินแก้สำเร็จ (PUT /api/admin/quotations/{id}) ลูกค้าต้องตรวจสอบและยืนยันใหม่
+export async function notifyQuotationRevised(quotationId: number) {
+  const r = await pool.query(
+    `select q.quotation_id, q.total_amount, q.deposit_amount, c.line_user_id
+     from quotation q join price_estimate e using (estimate_id) join customer c using (customer_id)
+     where q.quotation_id = $1`,
+    [quotationId],
+  );
+  const q = r.rows[0];
+  if (!q) return;
+
+  await notify(q.line_user_id, flexCard(
+    `ร้านแก้ไขใบเสนอราคา #${q.quotation_id} แล้ว`,
+    "แก้ไขใบเสนอราคาแล้ว",
+    [
+      ["เลขที่", `#${q.quotation_id}`],
+      ["ยอดรวมใหม่", `${baht(q.total_amount)} บาท`],
+      ["มัดจำใหม่", `${baht(q.deposit_amount)} บาท`],
+    ],
+    { label: "ตรวจสอบและยืนยันอีกครั้ง", url: liffUrl(`documents/quotations/${q.quotation_id}`) },
+  ));
+}
 
 // ชื่อสถานะงานตาม Data Dictionary ตารางที่ 3-35 (Job)
 const JOB_STATUS: Record<string, string> = {
@@ -121,6 +144,7 @@ const JOB_STATUS: Record<string, string> = {
 
 // แจ้งเตือนสถานะงาน (งานเปลี่ยนสถานะตาม job ตั้งแต่สถานะแรก) Use Case 21 ข้อ 5, ขอบเขต 1.3.5
 export async function notifyJobStatus(jobId: number) {
+  //ใน ui jobs ต้องกดเข้าไปแล้วใส่ดีเทล jobs id น่าจะโอเคกว่า
   const r = await pool.query(
     `select j.job_id, j.status, c.line_user_id
      from job j join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
@@ -141,6 +165,7 @@ export async function notifyJobStatus(jobId: number) {
     { label: "ดูสถานะงาน", url: liffUrl("jobs") },
   ));
 }
+
 
 // แจ้งเตือนการออกใบแจ้งหนี้ (มัดจำ/ยอดคงเหลือ) ขอบเขต 1.3.6.2, Activity Diagram 3-4/3-5 "แจ้งเตือนลูกค้าผ่าน LINE OA"
 export async function notifyInvoiceIssued(invoiceId: number) {
@@ -217,10 +242,13 @@ export async function notifyContractConfirmed(contractId: number) {
   ));
 }
 
-// แจ้งเตือนแอดมินบันทึกรับเงินสดแล้ว Use Case 9 A2.2 -> ข้อ 6 "ระบบบันทึกผลการชำระเงินและแจ้งเตือนสถานะ"
-export async function notifyCashReceived(paymentId: number) {
+// แจ้งเตือนร้านได้รับเงินแล้ว Use Case 9 ข้อ 6 "ระบบบันทึกผลการชำระเงินและแจ้งเตือนสถานะ"
+//   เงินสด = แอดมินบันทึก (A2.2), QR = Stripe webhook (A1.3)
+const PAY_METHOD: Record<string, string> = { cash: "เงินสด", qr_code: "QR พร้อมเพย์" };
+
+export async function notifyPaymentReceived(paymentId: number) {
   const r = await pool.query(
-    `select p.amount, p.paid_at, i.type, i.invoice_id, i.flowaccount_serial, c.line_user_id
+    `select p.amount, p.paid_at, p.pay_method, i.type, i.invoice_id, i.flowaccount_serial, c.line_user_id
      from payment p join invoice i using (invoice_id)
        join quotation q using (quotation_id) join price_estimate e using (estimate_id) join customer c using (customer_id)
      where p.payment_id = $1`,
@@ -230,16 +258,18 @@ export async function notifyCashReceived(paymentId: number) {
   if (!p) return;
 
   const label = p.type === "deposit" ? "ค่ามัดจำ" : "ยอดคงเหลือ";
+  const method = PAY_METHOD[p.pay_method] ?? p.pay_method;
   await notify(p.line_user_id, flexCard(
-    `ร้านได้รับเงินสด${label} ${baht(p.amount)} บาทแล้ว`,
-    "ได้รับชำระเงินสดแล้ว",
+    `ร้านได้รับ${label} ${baht(p.amount)} บาทแล้ว`,
+    "ได้รับชำระเงินแล้ว",
     [
       ["ใบแจ้งหนี้", p.flowaccount_serial ?? `#${p.invoice_id}`],
       ["รายการ", label],
+      ["ช่องทาง", method],
       ["ยอดเงิน", `${baht(p.amount)} บาท`],
       ["เวลา", new Date(p.paid_at).toLocaleString("th-TH", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Bangkok" })],
     ],
-    { label: "ดูประวัติการชำระเงิน", url: liffUrl("payments") },
+    { label: "ดูประวัติการชำระเงิน", url: liffUrl(`payments/${p.invoice_id}`)},
   ));
 }
 
@@ -264,7 +294,7 @@ export async function notifyReceiptIssued(receiptId: number) {
       ["รายการ", label],
       ["ยอดเงิน", `${baht(receipt.amount)} บาท`],
     ],
-    { label: "ดูใบเสร็จ", url: liffUrl("documents") },
+    { label: "ดูใบเสร็จ", url: liffUrl("documents?type=receipts")},
   ));
 }
 //ใบกำกับภาษีแจ้งเฉพาะคนที่ขอ (note details-> ขอ)

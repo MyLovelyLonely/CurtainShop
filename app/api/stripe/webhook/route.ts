@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 import { markPaid } from "@/lib/payments";
-import { notifyJobStatus } from "@/lib/line";
+import { notifyJobStatus, notifyPaymentReceived } from "@/lib/line";
 import { verifyWebhook } from "@/lib/stripe";
 
 export async function POST(req: NextRequest) {
@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
       await client.query(`update payment set status = 'expired' where payment_id = $1 and status = 'pending'`, [paymentId]);
     }
     await client.query("commit");
+    if (result) await notifyPaymentReceived(result.payment.payment_id); // แจ้งลูกค้าว่าร้านได้รับเงินแล้ว (QR)
     if (result?.job) await notifyJobStatus(result.job.job_id); // มัดจำแล้ว = งาน "รอดำเนินการ"
     return NextResponse.json({ received: true });
   } catch (e) {
