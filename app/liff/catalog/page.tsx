@@ -11,7 +11,7 @@ import { useApi } from "@/components/liff/LiffProvider";
 
 // สินค้าจริงจาก GET /api/liff/catalog (เฉพาะแคตตาล็อกที่เปิดให้ลูกค้าเห็น)
 type Fabric = {
-  product_id: number; name: string; base_price: number; price_unit: string; image_url: string | null; catalog: string;
+  product_id: number; name: string; base_price: number; price_unit: string; image_url: string | null; category: string; catalog: string;
   code: string | null; light_filter: Light | null; pattern_type: string | null; colors: string[]; tags: string[];
   orders: number; // ถูกใส่ในใบประเมิน/ใบเสนอราคากี่ครั้ง > 0 = ยอดนิยม
 };
@@ -28,10 +28,14 @@ const unique = (list: string[]) => [...new Set(list)];
 const CHIP = "shrink-0 rounded-full border px-3.5 py-1.5 text-sm font-medium transition-colors";
 const chipTone = (on: boolean) => (on ? "border-stone-900 bg-stone-900 text-white" : "border-stone-300 bg-white text-stone-800 active:bg-stone-100");
 
-type Panel = "catalog" | "price";
+type Panel = "category" | "catalog" | "price";
+
+// หัวข้อหน้าตามหมวดที่เลือก (ชื่อหมวดมาจากตาราง category) หมวดใหม่ที่ไม่อยู่ในนี้ = "แคตตาล็อก" + ชื่อหมวด
+const CATEGORY_TITLE: Record<string, string> = { "": "แคตตาล็อก", "ผ้าม่าน": "แคตตาล็อกลายผ้า", "อุปกรณ์ผ้าม่าน": "แคตตาล็อกอุปกรณ์" };
+const categoryTitle = (c: string) => CATEGORY_TITLE[c] ?? `แคตตาล็อก${c}`;
 const OPTION = "rounded-xl border py-2 text-sm font-medium";
 
-// ชิปที่กดแล้วเปิดแผงตัวเลือกใต้แถวชิป (แบรนด์ / แคตตาล็อก / ราคา ใช้หน้าตาเดียวกัน)
+// ชิปที่กดแล้วเปิดแผงตัวเลือกใต้แถวชิป (หมวด / แคตตาล็อก / ราคา ใช้หน้าตาเดียวกัน)
 function DropChip({ label, on, open, onClick }: { label: string; on: boolean; open: boolean; onClick: () => void }) {
   return (
     <button type="button" onClick={onClick} aria-expanded={open} className={`${CHIP} ${chipTone(on)} flex items-center gap-1`}>
@@ -95,7 +99,7 @@ function FabricCard({ fabric }: { fabric: Fabric }) {
   // รูปที่โหลดไม่ขึ้น (ลิงก์เสีย) -> แสดง "ไม่มีรูป" แทนไอคอนรูปแตก
   const [broken, setBroken] = useState(false);
   return (
-    <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
+    <Link href={`/liff/catalog/${fabric.product_id}`} className="block overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition active:scale-[0.98]">
       <div className="relative aspect-square bg-stone-100">
         {fabric.image_url && !broken ? (
           // eslint-disable-next-line @next/next/no-img-element -- รูปจาก R2 / ลิงก์ภายนอก ยังไม่ได้ตั้ง next/image remotePatterns
@@ -115,7 +119,7 @@ function FabricCard({ fabric }: { fabric: Fabric }) {
           <span className="text-xs font-normal text-stone-500"> / {fabric.price_unit}</span>
         </p>
       </div>
-    </div>
+    </Link>
   );
 }
 
@@ -142,6 +146,7 @@ export default function LiffCatalog() {
   const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(true);
   const [popular, setPopular] = useState(false);
+  const [category, setCategory] = useState(""); // ว่าง = ทุกหมวด
   const [catalog, setCatalog] = useState<string[]>([]);
   const [priceSort, setPriceSort] = useState<PriceSort>("");
   const [minPrice, setMinPrice] = useState("");
@@ -157,7 +162,10 @@ export default function LiffCatalog() {
   useEffect(() => () => { if (photo) URL.revokeObjectURL(photo); }, [photo]);
 
   useEffect(() => {
-    api<{ products: Fabric[] }>("/api/liff/catalog").then((d) => setProducts(d.products), (e: Error) => setLoadError(e.message));
+    api<{ products: Fabric[] }>("/api/liff/catalog").then(
+      (d) => setProducts(d.products),
+      (e: Error) => setLoadError(e.message),
+    );
   }, [api]);
 
   // แถวชิปเลื่อนแนวนอน: มือถือปัดนิ้วได้เอง คอม = หมุนล้อเมาส์ / ลากเมาส์ แล้วโชว์เงาจางตรงขอบที่ยังเลื่อนต่อได้
@@ -196,7 +204,14 @@ export default function LiffCatalog() {
     onClickCapture: (e: React.MouseEvent) => { if (drag.current?.moved) { e.preventDefault(); e.stopPropagation(); } },
   };
 
-  const catalogs = useMemo(() => unique((products ?? []).map((f) => f.catalog)), [products]);
+  const categories = useMemo(() => unique((products ?? []).map((f) => f.category)), [products]);
+  // แคตตาล็อกให้เลือกเฉพาะของหมวดที่เลือกอยู่
+  const catalogs = useMemo(() => unique((products ?? []).filter((f) => !category || f.category === category).map((f) => f.catalog)), [products, category]);
+  // เปลี่ยนหมวด = ตัดแคตตาล็อกที่เลือกไว้แต่ไม่อยู่ในหมวดใหม่ออก
+  const pickCategory = (c: string) => {
+    setCategory(c);
+    if (c) setCatalog((prev) => prev.filter((name) => (products ?? []).some((f) => f.catalog === name && f.category === c)));
+  };
   // ช่วงราคาที่กรอก ใส่ต่ำ/สูงสลับกันมาก็ใช้ได้
   const [lo, hi] = (() => {
     const a = num(minPrice), b = num(maxPrice);
@@ -207,24 +222,23 @@ export default function LiffCatalog() {
     lo !== null && hi !== null ? `${money(lo)}–${money(hi)}` : lo !== null ? `${money(lo)} ขึ้นไป` : hi !== null ? `ไม่เกิน ${money(hi)}` : "",
   ].filter(Boolean).join(" · ") || "ราคา";
   const priceOn = priceSort !== "" || lo !== null || hi !== null;
-  const allOn = !popular && !catalog.length && !priceOn;
 
   const fabrics = useMemo(() => {
     const q = query.trim().toLowerCase();
     const list = (products ?? []).filter((f) =>
       (!q || [f.code ?? "", f.name, f.catalog, f.pattern_type ?? "", f.light_filter ? LIGHT_LABEL[f.light_filter] : "", ...f.colors, ...f.tags]
         .some((s) => s.toLowerCase().includes(q)))
-      && (!popular || f.orders > 0) && (!catalog.length || catalog.includes(f.catalog))
+      && (!category || f.category === category) && (!popular || f.orders > 0) && (!catalog.length || catalog.includes(f.catalog))
       && (lo === null || f.base_price >= lo) && (hi === null || f.base_price <= hi));
     // เรียงตามราคาก่อน (ถ้าเลือก) ราคาเท่ากันค่อยเรียงตามวันที่ (ยังไม่มีวันที่ ใช้ product_id แทน) / ยอดนิยม = ขายบ่อยก่อน
     const byDate = (a: Fabric, b: Fabric) => (newest ? b.product_id - a.product_id : a.product_id - b.product_id);
     return list.sort((a, b) =>
       (priceSort === "asc" ? a.base_price - b.base_price : priceSort === "desc" ? b.base_price - a.base_price : 0)
       || (popular ? b.orders - a.orders : 0) || byDate(a, b));
-  }, [products, query, popular, catalog, lo, hi, priceSort, newest]);
+  }, [products, query, category, popular, catalog, lo, hi, priceSort, newest]);
 
   const clearPrice = () => { setPriceSort(""); setMinPrice(""); setMaxPrice(""); };
-  const resetFilters = () => { setPopular(false); setCatalog([]); clearPrice(); setOpen(null); };
+  const resetFilters = () => { setCategory(""); setPopular(false); setCatalog([]); clearPrice(); setOpen(null); };
   const toggleOpen = (p: Panel) => setOpen((v) => (v === p ? null : p));
 
   // ออกจากหน้าเว็บ: ในแอป LINE = ปิดหน้า LIFF กลับห้องแชท / เบราว์เซอร์ธรรมดา = ปิดแท็บ
@@ -284,7 +298,7 @@ export default function LiffCatalog() {
 
         <div className="flex items-start justify-between gap-3 pt-6">
           <div>
-            <h1 className="text-xl font-bold text-stone-900">แคตตาล็อกลายผ้า</h1>
+            <h1 className="text-xl font-bold text-stone-900">{categoryTitle(category)}</h1>
             <p className="mt-0.5 text-xs text-stone-500">เลือกดูรายละเอียดและจำลองลายผ้าได้เลยค่ะ :)</p>
           </div>
           <span className="shrink-0 rounded-full border border-stone-200 bg-stone-100 px-3 py-1.5 text-sm text-stone-700">{products === null ? "…" : fabrics.length} รายการ</span>
@@ -294,7 +308,7 @@ export default function LiffCatalog() {
           <div className="relative -mx-4">
           <div ref={chipsRef} {...chipsHandlers}
             className="flex cursor-grab touch-pan-x select-none gap-2 overflow-x-auto overscroll-x-contain px-4 pb-1 active:cursor-grabbing [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            <button type="button" onClick={resetFilters} className={`${CHIP} ${chipTone(allOn)}`}>ทั้งหมด</button>
+            <DropChip label={category || "ทั้งหมด"} on open={open === "category"} onClick={() => toggleOpen("category")} />
             <button type="button" onClick={() => setPopular((v) => !v)} className={`${CHIP} ${chipTone(popular)}`}>ยอดนิยม</button>
             <DropChip label={multiLabel("แคตตาล็อก", catalog)} on={catalog.length > 0} open={open === "catalog"} onClick={() => toggleOpen("catalog")} />
             <DropChip label={priceLabel} on={priceOn} open={open === "price"} onClick={() => toggleOpen("price")} />
@@ -309,6 +323,22 @@ export default function LiffCatalog() {
           </div>
         )}
 
+        {showFilters && open === "category" && (
+          <DropPanel onClear={() => pickCategory("")} onDone={() => setOpen(null)}>
+            <div>
+              <p className="mb-1.5 text-xs font-semibold text-stone-500">หมวดสินค้า</p>
+              <div className="grid grid-cols-2 gap-2">
+                {["", ...categories].map((c) => (
+                  <button key={c || "all"} type="button" onClick={() => pickCategory(c)} aria-pressed={category === c}
+                    className={`${OPTION} ${chipTone(category === c)}`}>
+                    {c || "ทั้งหมด"}
+                    <span className="ml-1 text-xs opacity-60">{(products ?? []).filter((f) => !c || f.category === c).length}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </DropPanel>
+        )}
         {showFilters && open === "catalog" && (
           <DropPanel onClear={() => setCatalog([])} onDone={() => setOpen(null)}>
             <OptionGrid title="แคตตาล็อก" options={catalogs} value={catalog} onChange={setCatalog} />
