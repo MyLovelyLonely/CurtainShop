@@ -262,9 +262,12 @@ export default function LiffCatalog() {
           </button>
           <Link href="/liff/estimate" aria-label="ใบสรุปราคา" title="ใบสรุปราคา"
             className="relative rounded-lg p-1.5 text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M6 2.75h8l4.25 4.5v14H5.75v-18.5H6Z" stroke="#1c1410" strokeWidth="1.5" strokeLinejoin="round" />
-              <path d="M14 3v4.5h4M9 11h6M9 14.5h6M9 18h4" stroke="#1c1410" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            {/* รถเข็นมีตาข่าย (วาดเอง lucide ไม่มีแบบนี้) */}
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1c1410" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M2 3h2.5l2.2 11.2a1.5 1.5 0 0 0 1.5 1.2h9.6a1.5 1.5 0 0 0 1.5-1.2L21 6H5.1" />
+              <path d="M9.6 6l.5 9.4M13.6 6v9.4M17.6 6l-.5 9.4M5.9 10.5h14.2" strokeWidth="1" />
+              <circle cx="8.5" cy="20" r="1.3" />
+              <circle cx="17.5" cy="20" r="1.3" />
             </svg>
           </Link>
         </div>
