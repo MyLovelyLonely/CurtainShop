@@ -9,6 +9,7 @@ import { useLiffData } from "@/components/liff/LiffProvider";
 import { PageHeader} from "@/components/liff/PageHeader";
 import { useCart } from "@/components/liff/CartProvider";
 import { MAX_QTY } from "@/lib/quantity"; // จำนวนสูงสุดต่อรายการ (ใช้ค่าเดียวกับตะกร้าและ server)
+import { usesSize } from "@/lib/pricing"; // หน่วยนี้ต้องกรอกขนาดไหม
 
 
 const LIGHT_LABEL: Record<string, string> = { sheer: "โปร่งแสง", dimout: "กรองแสง", blackout: "ทึบแสง" };
@@ -174,13 +175,14 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
             จำลองในห้องฉัน
           </button>
         )}
-        {!p.category.includes("อุปกรณ์") && (
+        {/* เลือกปุ่มตามหน่วยราคา: ต้องกรอกขนาด (ตร.ม. / หลา / เมตร) = ไปหน้าประเมินราคา / ชิ้น-ชุด = ใส่ตะกร้าเลย */}
+        {usesSize(p.price_unit) && (
            <Link href={`/liff/catalog/${p.product_id}/measure`}
             className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-stone-900 py-2.5 text-sm font-semibold text-white active:bg-stone-700">
             ประเมินราคา
           </Link>
         )}
-        {p.category.includes("อุปกรณ์") && (
+        {!usesSize(p.price_unit) && (
           <div className="flex-1 space-y-1.5">
             <div className="flex gap-3">
               {/* ตัวเลือกจำนวน  [ − ] [ 2 ] [ + ]  กดปุ่มหรือพิมพ์เองก็ได้ */}
