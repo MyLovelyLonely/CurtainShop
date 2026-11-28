@@ -6,7 +6,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { MAX_QTY } from "@/lib/quantity";
 
-// ของ 1 รายการ: อุปกรณ์ไม่มีขนาด / ผ้าม่านมีขนาด (ซม.)
+// ของ 1 รายการ: ชิ้น/ชุดไม่มีขนาด / ผ้าม่านมีกว้าง x สูง / หน่วยเมตรมีแค่กว้าง (หน่วยเป็นเมตร)
 export type CartItem = {
   key: string;        // ไว้ลบหรือแก้ทีละรายการ
   product_id: number;
@@ -22,6 +22,7 @@ type Cart = {
   lastAddAt: number;                            // เวลาที่ใส่ของสำเร็จครั้งล่าสุด (รวมกรณีเพิ่มจำนวนรายการเดิม) ใช้สั่งจุดแดงให้เด้ง
   add: (item: Omit<CartItem, "key">) => void;   // ปุ่มเข้าตะกร้าทุกที่เรียกตัวนี้
   remove: (key: string) => void;
+  removeMany: (keys: string[]) => void;         // ลบหลายรายการพร้อมกัน (เรียก remove วนหลายครั้งไม่ได้ เพราะแต่ละครั้งเห็นตะกร้าเดิม)
   clear: () => void;                            // เรียกหลังส่งใบประเมินสำเร็จ
 };
 
@@ -79,6 +80,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     lastAddAt,
     add,
     remove: (key) => save(items.filter((i) => i.key !== key)),
+    removeMany: (keys) => save(items.filter((i) => !keys.includes(i.key))),
     clear: () => save([]),
   };
 

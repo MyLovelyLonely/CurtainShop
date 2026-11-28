@@ -16,7 +16,11 @@ export async function POST(req: Request) {
   const body = await req.json().catch(() => ({}));
   const input: { product_id: number; width?: number | null; height?: number | null; quantity?: number }[] = Array.isArray(body.items) ? body.items : [];
   if (!input.length) return NextResponse.json({ error: "กรุณาเลือกสินค้าอย่างน้อย 1 รายการ" }, { status: 400 });
-  const roomCount = Number(body.room_count) || 1;
+  // จำนวนห้อง: ไม่ส่งมา = 1 ห้อง / ส่งมาต้องเป็นจำนวนเต็ม 1–99 (ค่าเดียวกับหน้าสรุปราคา)
+  const roomCount = body.room_count == null ? 1 : Number(body.room_count);
+  if (!Number.isInteger(roomCount) || roomCount < 1 || roomCount > 99) {
+    return NextResponse.json({ error: "จำนวนห้องต้องเป็นเลข 1–99" }, { status: 400 });
+  }
   const method = body.method === "ai" ? "ai" : "manual";
 
   const buyer = parseEstimateBuyer(body.billing);

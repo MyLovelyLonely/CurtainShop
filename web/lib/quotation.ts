@@ -3,7 +3,7 @@
 //   สินค้า ราคาต่อหน่วย (base_price) จำนวนห้อง และมัดจำ 50% ระบบกำหนดเอง
 import "server-only";
 import { contactFields, r2, today, VAT_RATE } from "./documents";
-import { billedQuantity, isAreaUnit, lineTotal, missingSize } from "./pricing";
+import { billedQuantity, isAreaUnit, lineTotal, missingSize, usesSize } from "./pricing";
 
 const DEPOSIT_RATE = 0.5; // มัดจำ 50% ของยอดรวม
 
@@ -20,9 +20,9 @@ export type PricedItem = ReturnType<typeof priceItems>["items"][number];
 export function priceItems(rows: SourceRow[], edits: Map<number, SizeEdit>, roomCount: number) {
   const items = rows.map((row) => {
     const edit = edits.get(row.id);
-    // อุปกรณ์ (หน่วยชุด/ชิ้น) ไม่ใช้กว้าง x สูง เก็บเป็นค่าว่าง
+    // ผ้าม่าน (ตร.ม./หลา) ใช้กว้าง x สูง / อุปกรณ์ (เมตร) ใช้กว้าง / ชิ้น-ชุด ไม่ใช้ เก็บเป็นค่าว่าง
     const area = isAreaUnit(row.price_unit);
-    const width = !area ? null : edit && edit.width !== undefined ? edit.width : row.width === null ? null : Number(row.width);
+    const width = !usesSize(row.price_unit) ? null : edit && edit.width !== undefined ? edit.width : row.width === null ? null : Number(row.width);
     const height = !area ? null : edit && edit.height !== undefined ? edit.height : row.height === null ? null : Number(row.height);
     const windows = Number(edit?.quantity ?? row.quantity); // จำนวนหน้าต่างต่อห้อง
     const line = { width, height, quantity: windows, unit_price: Number(row.base_price) };
@@ -34,9 +34,11 @@ export function priceItems(rows: SourceRow[], edits: Map<number, SizeEdit>, room
   if (badQty.length) {
     return { items, error: `จำนวนหน้าต่างต้องเป็นจำนวนเต็มตั้งแต่ 1: ${badQty.map((i) => i.product.name).join(", ")}` };
   }
+  // บอกให้ตรงหน่วย: ผ้าม่าน (ตร.ม./หลา) ต้องมีกว้างและสูง / หน่วยเมตรต้องมีแค่กว้าง
   const noSize = items.filter((i) => missingSize(i, i.product.price_unit));
   if (noSize.length) {
-    return { items, error: `กรุณากรอกกว้างและสูงให้ครบ: ${noSize.map((i) => i.product.name).join(", ")}` };
+    const what = (u: string) => (isAreaUnit(u) ? "กว้างและสูง" : "ความกว้าง");
+    return { items, error: `กรุณากรอกขนาดให้ครบ: ${noSize.map((i) => `${i.product.name} (${what(i.product.price_unit)})`).join(", ")}` };
   }
 
   // ทุกห้องใช้รูปแบบเดียวกัน ยอดรวม = (รวมทุกสินค้าต่อห้อง) x จำนวนห้อง
